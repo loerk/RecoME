@@ -13,6 +13,11 @@ export default function Landing() {
     localStorage.setItem("users", JSON.stringify(users));
   }, [users]);
 
+  useEffect(() => {
+    if (userData) {
+      localStorage.setItem("currUser", JSON.stringify(userData));
+    }
+  }, [userData]);
   return (
     <div>
       {!userData.username ? (

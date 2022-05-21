@@ -10,15 +10,16 @@ export default function Header() {
   const { userData, setUserData } = useUserData();
   const navigate = useNavigate();
 
+  const logout = () => {
+    setUserData(null);
+    navigate("/login");
+  };
+
   useEffect(() => {
     if (userData) {
       localStorage.setItem("currUser", JSON.stringify(userData));
     }
   }, [userData]);
-  const logout = () => {
-    setUserData(null);
-    navigate("/login");
-  };
   return (
     <div className={theme ? "text-white" : null}>
       <div className=" flex justify-between p-4">

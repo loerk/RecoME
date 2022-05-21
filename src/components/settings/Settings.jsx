@@ -1,15 +1,41 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useUserData } from "../../contexts/UserDataContext";
 import { useTheme } from "../../contexts/ThemeContext";
+import { useNavigate } from "react-router-dom";
+import { useUsers } from "../../contexts/UsersContext";
 
 export default function Settings() {
   const { userData, setUserData } = useUserData();
   const { theme } = useTheme();
   const [choiceUsername, setChoiceUsername] = useState();
+  const navigate = useNavigate();
+  const { users, setUsers } = useUsers();
+  const updateUserData = () => {
+    setUserData([{ ...userData, username: choiceUsername }]);
+  };
 
+  const updateUserArray = () => {
+    if (users === undefined || !userData[0].username) {
+      return;
+    } else {
+      setUsers(
+        users.map((user) => {
+          if (user.id === userData[0].id) {
+            console.log(user.id);
+            return [{ ...user, username: choiceUsername }];
+          } else {
+            return user;
+          }
+        })
+      );
+    }
+  };
+  console.log(users);
   const handleSubmit = (e) => {
     e.preventDefault();
-    setUserData({ ...userData, username: choiceUsername });
+    updateUserData();
+    updateUserArray();
+    navigate("/landing");
   };
 
   return (
@@ -33,7 +59,7 @@ export default function Settings() {
               : "w-full hover:translate-y-1  text-3xl p-3 bg-black  text-white  font-face-tm my-4"
           }
         >
-          set {userData.username}
+          set {choiceUsername} as username
         </button>
       </form>
     </div>

@@ -85,6 +85,14 @@ export default function Register() {
       <div className="w-72 m-auto">
         <form className="flex flex-wrap gap-2" onSubmit={handleSubmit}>
           <input
+            type="text"
+            placeholder="username"
+            className="w-full font-face-tm text-2xl p-2 border-2"
+            name="username"
+            onChange={handleChange}
+            value={registerData.username}
+          />
+          <input
             type="email"
             placeholder="Email address"
             className="w-full font-face-tm text-2xl p-2 border-2"

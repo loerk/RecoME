@@ -19,14 +19,14 @@ function App() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (currUser === undefined) {
+    if (currUser === undefined || currUser === null) {
       navigate("/login");
     }
     else {
       navigate("/landing")
     }
   }, []);
-  console.log("appCurrUser", currUser, userData)
+
   return (
     <UsersContextProvider>
       <UserDataContextProvider>
