@@ -4,36 +4,32 @@ import { useTheme } from "../../contexts/ThemeContext";
 import { useUserData } from "../../contexts/UserDataContext";
 import { useUsers } from "../../contexts/UsersContext";
 
-export default function Login({ setCurrUser }) {
+export default function Login() {
   const { userData, setUserData } = useUserData();
   const { theme } = useTheme();
   const { users } = useUsers();
   const [validUser, setValidUser] = useState(true);
+  const [loginData, setLoginData] = useState({});
 
   const navigate = useNavigate();
-  useEffect(() => {
-    localStorage.setItem("users", JSON.stringify(users));
-  }, [users]);
-  console.log("gobal", users);
-  useEffect(() => {
-    localStorage.setItem("currUser", JSON.stringify(userData));
-  }, [userData]);
+
   function handleChange(event) {
     const { name, value, type, checked } = event.target;
-    setUserData((prevUserData) => ({
-      ...prevUserData,
+    setLoginData((prevLoginData) => ({
+      ...prevLoginData,
       [name]: type === "checkbox" ? checked : value,
     }));
   }
 
   function handleSubmit(event) {
     event.preventDefault();
-    const knownUser = users.find((user) => user.email === userData.email);
-    console.log("users", users, "data", userData);
-    console.log("currUser", knownUser);
+
+    const knownUser = users.filter((user) => user.email === loginData.email);
+    // console.log("users", users, "data", userData);
+    // console.log("currUser", knownUser);
+
     if (knownUser.length !== 0) {
       setUserData(knownUser);
-      setCurrUser(knownUser);
       navigate("/landing");
     } else {
       setValidUser(false);
@@ -63,7 +59,7 @@ export default function Login({ setCurrUser }) {
             className="w-full font-face-tm text-2xl p-2 border-2"
             name="email"
             onChange={handleChange}
-            value={userData.email}
+            value={loginData.email}
           />
           <input
             type="password"
@@ -71,7 +67,7 @@ export default function Login({ setCurrUser }) {
             className=" w-full font-face-tm text-2xl p-2 border-2"
             name="password"
             onChange={handleChange}
-            value={userData.password}
+            value={loginData.password}
           />
 
           <div className="form--marketing">
@@ -80,7 +76,7 @@ export default function Login({ setCurrUser }) {
               type="checkbox"
               name="stayLoggedIn"
               onChange={handleChange}
-              checked={userData.stayLoggedIn}
+              checked={loginData.stayLoggedIn}
             />
             <label
               className={

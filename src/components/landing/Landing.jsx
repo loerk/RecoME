@@ -9,11 +9,10 @@ export default function Landing() {
   const { users } = useUsers();
   const { userData, setUserData } = useUserData();
 
-  console.log("landing userdata", userData.username);
+  useEffect(() => {
+    localStorage.setItem("users", JSON.stringify(users));
+  }, [users]);
 
-  console.log("LandingCurrUser", userData);
-
-  console.log("landing", users);
   return (
     <div>
       {!userData.username ? (

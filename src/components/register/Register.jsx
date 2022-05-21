@@ -6,58 +6,70 @@ import { useNavigate, NavLink } from "react-router-dom";
 import { nanoid } from "nanoid";
 import { useUsers } from "../../contexts/UsersContext";
 
-export default function Register({ currUser, setCurrUser }) {
+export default function Register() {
   const { userData, setUserData } = useUserData();
   const { theme } = useTheme();
   const { users, setUsers } = useUsers();
   const [confirmed, setConfirmed] = useState(true);
   const [hasAccount, setHasAccount] = useState(false);
-
+  const [registerData, setRegisterData] = useState({});
   const navigate = useNavigate();
   const createID = () => {
     return nanoid();
   };
-  useEffect(() => {
-    localStorage.setItem("users", JSON.stringify(users));
-  }, [users]);
-  console.log("gobal", users);
-  useEffect(() => {
-    localStorage.setItem("currUser", JSON.stringify(userData));
-  }, []);
   function handleChange(event) {
     const { name, value, type, checked } = event.target;
-    setUserData((prevUserData) => ({
-      ...prevUserData,
+    setRegisterData((prevRegisterData) => ({
+      ...prevRegisterData,
       id: createID(),
       [name]: type === "checkbox" ? checked : value,
     }));
-  }
 
-  if (users.length !== 0) {
-    const knownUser = users.filter((user) => user.email === userData.email);
-    console.log("regi", knownUser);
-    if (knownUser.length !== 0) {
-      setHasAccount(true);
-      return;
-    }
+    // console.log("hfjdalguals", registerData);
+
+    // setUserData((prevUserData) => ({
+    //   ...prevUserData,
+    //   id: createID(),
+    //   [name]: type === "checkbox" ? checked : value,
+    // }));
   }
 
   function handleSubmit(event) {
     event.preventDefault();
-
-    setHasAccount(false);
-    if (userData.password === userData.passwordConfirm) {
-      setConfirmed(true);
-      setCurrUser([{ ...userData, isLoggedIn: true, memberSince: Date.now() }]);
-      setUsers([...users, { ...currUser }]);
-      console.log("added?", users);
-    } else {
+    //check if passwords match
+    if (
+      registerData.password !== registerData.passwordConfirm ||
+      registerData.password === "" ||
+      registerData.password === ""
+    ) {
       setConfirmed(false);
       return;
     }
+    //check if user already exists
+    if (users.length !== 0) {
+      const knownUser = users.find((user) => user.email === registerData.email);
+      if (knownUser) {
+        if (knownUser.length !== 0) {
+          setHasAccount(true);
+          return;
+        }
+      }
+    }
+    setHasAccount(false);
+    setConfirmed(true);
+    setUserData({
+      ...registerData,
+      isLoggedIn: true,
+      memberSince: Date.now(),
+    });
+
+    setUsers([
+      ...users,
+      { ...registerData, isLoggedIn: true, memberSince: Date.now() },
+    ]);
     navigate("/landing");
   }
-  setUserData({ ...currUser });
+
   return (
     <div className=" flex justify-center flex-col">
       <h1
@@ -78,7 +90,7 @@ export default function Register({ currUser, setCurrUser }) {
             className="w-full font-face-tm text-2xl p-2 border-2"
             name="email"
             onChange={handleChange}
-            value={userData.email}
+            value={registerData.email}
           />
           <input
             type="password"
@@ -86,7 +98,7 @@ export default function Register({ currUser, setCurrUser }) {
             className=" w-full font-face-tm text-2xl p-2 border-2"
             name="password"
             onChange={handleChange}
-            value={userData.password}
+            value={registerData.password}
           />
           <input
             type="password"
@@ -94,7 +106,7 @@ export default function Register({ currUser, setCurrUser }) {
             className=" w-full font-face-tm text-2xl p-2 border-2"
             name="passwordConfirm"
             onChange={handleChange}
-            value={userData.passwordConfirm}
+            value={registerData.passwordConfirm}
           />
 
           <div>
@@ -103,7 +115,7 @@ export default function Register({ currUser, setCurrUser }) {
               type="checkbox"
               name="stayLoggedIn"
               onChange={handleChange}
-              checked={userData.stayLoggedIn}
+              checked={registerData.stayLoggedIn}
             />
             <label
               className={

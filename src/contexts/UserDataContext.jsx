@@ -39,7 +39,6 @@ export function UserDataContextProvider({ children }) {
         }
   );
 
-  console.log("initialValue", userData);
   const contextValue = { userData: userData, setUserData: setUserData };
   return (
     <UserDataContext.Provider value={contextValue}>

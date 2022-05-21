@@ -1,21 +1,23 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useTheme } from "../../contexts/ThemeContext";
 import { MdLightMode, MdOutlineLightMode } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import { useUserData } from "../../contexts/UserDataContext";
 import Navigation from "../navigation/Navigation";
 
-export default function Header({ currUser, setCurrUser }) {
+export default function Header() {
   const { theme, setTheme } = useTheme();
+  const { userData, setUserData } = useUserData();
   const navigate = useNavigate();
-  if (currUser) {
-    const sessionUser = currUser[0];
-    console.log("header", sessionUser.email);
-  }
 
+  useEffect(() => {
+    if (userData) {
+      localStorage.setItem("currUser", JSON.stringify(userData));
+    }
+  }, [userData]);
   const logout = () => {
-    setCurrUser(null);
+    setUserData(null);
     navigate("/login");
-    localStorage.removeItem("currUser");
   };
   return (
     <div className={theme ? "text-white" : null}>
@@ -27,7 +29,7 @@ export default function Header({ currUser, setCurrUser }) {
             <MdOutlineLightMode style={{ color: "white" }} />
           )}
         </button>
-        {currUser ? (
+        {userData && userData.email ? (
           <>
             <Navigation />
             <button onClick={() => logout()} className="mr-4">
