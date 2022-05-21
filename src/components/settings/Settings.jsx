@@ -1,20 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { useUserData } from "../../contexts/UserDataContext";
 import { useTheme } from "../../contexts/ThemeContext";
 
 export default function Settings() {
   const { userData, setUserData } = useUserData();
   const { theme } = useTheme();
+  const [choiceUsername, setChoiceUsername] = useState();
 
-  function handleChange(event) {
-    const { name, value } = event.target;
-    setUserData({
-      ...userData,
-      [name]: value,
-    });
-  }
   const handleSubmit = (e) => {
     e.preventDefault();
+    setUserData({ ...userData, username: choiceUsername });
   };
 
   return (
@@ -25,7 +20,9 @@ export default function Settings() {
           placeholder="Enter Username"
           className="w-full font-face-tm text-2xl p-2 border-2"
           name="username"
-          onChange={handleChange}
+          onChange={(e) => {
+            setChoiceUsername(e.target.value);
+          }}
           value={userData.name}
         />
 

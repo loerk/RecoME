@@ -12,10 +12,18 @@ export default function Register({ currUser, setCurrUser }) {
   const { users, setUsers } = useUsers();
   const [confirmed, setConfirmed] = useState(true);
   const [hasAccount, setHasAccount] = useState(false);
+
   const navigate = useNavigate();
   const createID = () => {
     return nanoid();
   };
+  useEffect(() => {
+    localStorage.setItem("users", JSON.stringify(users));
+  }, [users]);
+  console.log("gobal", users);
+  useEffect(() => {
+    localStorage.setItem("currUser", JSON.stringify(userData));
+  }, []);
   function handleChange(event) {
     const { name, value, type, checked } = event.target;
     setUserData((prevUserData) => ({
@@ -24,19 +32,23 @@ export default function Register({ currUser, setCurrUser }) {
       [name]: type === "checkbox" ? checked : value,
     }));
   }
-  const knownUser = users.filter((user) => user.email === userData.email);
 
-  function handleSubmit(event) {
-    event.preventDefault();
-
+  if (users.length !== 0) {
+    const knownUser = users.filter((user) => user.email === userData.email);
+    console.log("regi", knownUser);
     if (knownUser.length !== 0) {
       setHasAccount(true);
       return;
     }
+  }
+
+  function handleSubmit(event) {
+    event.preventDefault();
+
     setHasAccount(false);
     if (userData.password === userData.passwordConfirm) {
       setConfirmed(true);
-      setCurrUser({ ...userData, isLoggedIn: true, memberSince: Date.now() });
+      setCurrUser([{ ...userData, isLoggedIn: true, memberSince: Date.now() }]);
       setUsers([...users, { ...currUser }]);
       console.log("added?", users);
     } else {
@@ -45,13 +57,7 @@ export default function Register({ currUser, setCurrUser }) {
     }
     navigate("/landing");
   }
-  useEffect(() => {
-    localStorage.setItem("users", JSON.stringify(users));
-  }, [users]);
-  console.log("gobal", users);
-  useEffect(() => {
-    localStorage.setItem("currUser", JSON.stringify(userData));
-  }, []);
+  setUserData({ ...currUser });
   return (
     <div className=" flex justify-center flex-col">
       <h1

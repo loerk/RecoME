@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { nanoid } from "nanoid";
 const UserDataContext = createContext(false);
 
@@ -38,6 +38,7 @@ export function UserDataContextProvider({ children }) {
           ],
         }
   );
+
   console.log("initialValue", userData);
   const contextValue = { userData: userData, setUserData: setUserData };
   return (

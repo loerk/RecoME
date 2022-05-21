@@ -11,7 +11,13 @@ export default function Login({ setCurrUser }) {
   const [validUser, setValidUser] = useState(true);
 
   const navigate = useNavigate();
-
+  useEffect(() => {
+    localStorage.setItem("users", JSON.stringify(users));
+  }, [users]);
+  console.log("gobal", users);
+  useEffect(() => {
+    localStorage.setItem("currUser", JSON.stringify(userData));
+  }, [userData]);
   function handleChange(event) {
     const { name, value, type, checked } = event.target;
     setUserData((prevUserData) => ({
@@ -22,7 +28,7 @@ export default function Login({ setCurrUser }) {
 
   function handleSubmit(event) {
     event.preventDefault();
-    const knownUser = users.filter((user) => user.email === userData.email);
+    const knownUser = users.find((user) => user.email === userData.email);
     console.log("users", users, "data", userData);
     console.log("currUser", knownUser);
     if (knownUser.length !== 0) {
