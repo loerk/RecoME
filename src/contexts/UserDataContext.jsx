@@ -6,7 +6,7 @@ export const useUserData = () => {
   return useContext(UserDataContext);
 };
 const initialValue = JSON.parse(localStorage.getItem("currUser"));
-console.log("initialValue", initialValue);
+
 export function UserDataContextProvider({ children }) {
   const [userData, setUserData] = useState(
     initialValue

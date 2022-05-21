@@ -19,7 +19,7 @@ function App() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (userData === undefined) {
+    if (currUser === undefined) {
       navigate("/login");
     }
     else {
