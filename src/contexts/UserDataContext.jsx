@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
-
+import { nanoid } from "nanoid";
 const UserDataContext = createContext(false);
 
 export const useUserData = () => {
@@ -7,14 +7,33 @@ export const useUserData = () => {
 };
 
 export function UserDataContextProvider({ children }) {
-  const [formData, setFormData] = useState({
+  const [userData, setUserData] = useState({
+    id: nanoid(),
     email: "",
     password: "",
     passwordConfirm: "",
+    memberSince: 0,
     stayLoggedIn: false,
+    isLoggedIn: false,
+    friends: [],
+    bubbles: [],
+    invitedFriends: [],
+    invitedBy: "",
+    recos: [
+      {
+        private: [],
+        public: [],
+        specified: [
+          {
+            to: [],
+            reco: {},
+          },
+        ],
+      },
+    ],
   });
 
-  const contextValue = { formData, setFormData };
+  const contextValue = { userData: userData, setUserData: setUserData };
   return (
     <UserDataContext.Provider value={contextValue}>
       {children}

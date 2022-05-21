@@ -7,7 +7,7 @@ export const useTheme = () => {
 };
 
 export function ThemeContextProvider({ children }) {
-  const [theme, setTheme] = useState("white");
+  const [theme, setTheme] = useState(false);
   const contextValue = { theme, setTheme };
   return (
     <ThemeContext.Provider value={contextValue}>
