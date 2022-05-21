@@ -3,18 +3,30 @@ import './App.css';
 import Header from './components/header/Header';
 import Register from './components/register/Register.jsx';
 import { useTheme } from './contexts/ThemeContext';
-import { UserDataContextProvider } from './contexts/UserDataContext';
-import { Routes, Route } from "react-router-dom";
+import { UserDataContextProvider, useUserData } from './contexts/UserDataContext';
+import { Routes, Route, useNavigate } from "react-router-dom";
 import Login from './components/login/Login';
 import { UsersContextProvider } from './contexts/UsersContext';
 import Landing from './components/landing/Landing';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import Settings from './components/settings/Settings';
 
 
 function App() {
   const { theme } = useTheme()
   const [currUser, setCurrUser] = useState()
-  console.log("appCurrUser", currUser)
+  const { userData } = useUserData()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (userData === undefined) {
+      navigate("/login");
+    }
+    else {
+      navigate("/landing")
+    }
+  }, []);
+  console.log("appCurrUser", currUser, userData)
   return (
     <UsersContextProvider>
       <UserDataContextProvider>
@@ -24,6 +36,7 @@ function App() {
             <Route path="/" element={<Register setCurrUser={setCurrUser} />} />
             <Route path="login" element={<Login setCurrUser={setCurrUser} />} />
             <Route path="landing" element={<Landing currUser={currUser} />} />
+            <Route path="settings" element={<Settings />} />
           </Routes>
         </div>
       </UserDataContextProvider>

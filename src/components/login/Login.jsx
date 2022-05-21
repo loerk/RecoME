@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
 import { useTheme } from "../../contexts/ThemeContext";
 import { useUserData } from "../../contexts/UserDataContext";
@@ -34,6 +34,9 @@ export default function Login({ setCurrUser }) {
     }
   }
 
+  useEffect(() => {
+    localStorage.setItem("currUser", JSON.stringify(userData));
+  }, []);
   return (
     <div className="flex justify-center flex-col">
       <h1

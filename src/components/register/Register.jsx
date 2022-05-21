@@ -49,6 +49,9 @@ export default function Register({ currUser, setCurrUser }) {
     localStorage.setItem("users", JSON.stringify(users));
   }, [users]);
   console.log("gobal", users);
+  useEffect(() => {
+    localStorage.setItem("currUser", JSON.stringify(userData));
+  }, []);
   return (
     <div className=" flex justify-center flex-col">
       <h1

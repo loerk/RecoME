@@ -5,34 +5,40 @@ const UserDataContext = createContext(false);
 export const useUserData = () => {
   return useContext(UserDataContext);
 };
-
+const initialValue = JSON.parse(localStorage.getItem("currUser"));
+console.log("initialValue", initialValue);
 export function UserDataContextProvider({ children }) {
-  const [userData, setUserData] = useState({
-    id: nanoid(),
-    email: "",
-    password: "",
-    passwordConfirm: "",
-    memberSince: 0,
-    stayLoggedIn: false,
-    isLoggedIn: false,
-    friends: [],
-    bubbles: [],
-    invitedFriends: [],
-    invitedBy: "",
-    recos: [
-      {
-        private: [],
-        public: [],
-        specified: [
-          {
-            to: [],
-            reco: {},
-          },
-        ],
-      },
-    ],
-  });
-
+  const [userData, setUserData] = useState(
+    initialValue
+      ? initialValue
+      : {
+          id: nanoid(),
+          username: "",
+          email: "",
+          password: "",
+          passwordConfirm: "",
+          memberSince: 0,
+          stayLoggedIn: false,
+          isLoggedIn: false,
+          friends: [],
+          bubbles: [],
+          invitedFriends: [],
+          invitedBy: "",
+          recos: [
+            {
+              private: [],
+              public: [],
+              specified: [
+                {
+                  to: [],
+                  reco: {},
+                },
+              ],
+            },
+          ],
+        }
+  );
+  console.log("initialValue", userData);
   const contextValue = { userData: userData, setUserData: setUserData };
   return (
     <UserDataContext.Provider value={contextValue}>
