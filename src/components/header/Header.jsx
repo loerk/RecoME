@@ -15,6 +15,7 @@ export default function Header({ currUser, setCurrUser }) {
   const logout = () => {
     setCurrUser(null);
     navigate("/login");
+    localStorage.removeItem("currUser");
   };
   return (
     <div className={theme ? "text-white" : null}>
