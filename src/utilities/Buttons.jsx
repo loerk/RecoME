@@ -1,12 +1,18 @@
 import React from "react";
-import { AiOutlinePlusCircle } from "react-icons/ai";
-import { useNavigate } from "react-router-dom";
-export function AddButton() {
-  const navigate = useNavigate();
+import { AiFillPlusCircle, AiOutlinePlusCircle } from "react-icons/ai";
+import { useTheme } from "../contexts/ThemeContext";
+
+export function AddButton({ action }) {
+  const { theme } = useTheme();
+  console.log(theme);
   return (
     <div className="flex">
-      <button className="m-auto mt-8">
-        <AiOutlinePlusCircle></AiOutlinePlusCircle>
+      <button onClick={action} className="m-auto mt-8">
+        {theme ? (
+          <AiFillPlusCircle className="text-white" />
+        ) : (
+          <AiOutlinePlusCircle />
+        )}
       </button>
     </div>
   );

@@ -9,6 +9,7 @@ export default function Header() {
   const { theme, setTheme } = useTheme();
   const { userData, setUserData } = useUserData();
   const navigate = useNavigate();
+  const [logout, setLogout] = useState(false);
 
   let currUser = userData;
   if (userData.length) {
@@ -22,7 +23,13 @@ export default function Header() {
     }
   }, []);
 
+  useEffect(() => {
+    if (logout) {
+      localStorage.removeItem("currUser");
+    }
+  }, [logout]);
   const handleLogout = () => {
+    setLogout(true);
     setUserData(0);
     navigate("/login");
   };
@@ -35,7 +42,7 @@ export default function Header() {
 
   return (
     <div className={theme ? "text-white" : null}>
-      <div className=" flex justify-between p-4">
+      <div className=" flex justify-around p-4">
         <button onClick={() => setTheme(!theme)}>
           {!theme ? (
             <MdLightMode />

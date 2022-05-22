@@ -46,7 +46,10 @@ export default function Landing() {
                   ))
                 ) : (
                   <div className="flex">
-                    <button className="m-auto mt-8">
+                    <button
+                      onClick={() => navigate("/bubbles")}
+                      className="m-auto mt-8"
+                    >
                       <AiOutlinePlusCircle></AiOutlinePlusCircle>
                     </button>
                   </div>
@@ -68,7 +71,10 @@ export default function Landing() {
                   ))
                 ) : (
                   <div className="flex">
-                    <button className="m-auto mt-8">
+                    <button
+                      onClick={() => navigate("/friends")}
+                      className="m-auto mt-8"
+                    >
                       <AiOutlinePlusCircle></AiOutlinePlusCircle>
                     </button>
                   </div>
@@ -92,7 +98,10 @@ export default function Landing() {
                   )
                 ) : (
                   <div className="flex">
-                    <button className="m-auto mt-8">
+                    <button
+                      onClick={() => navigate("/friends")}
+                      className="m-auto mt-8"
+                    >
                       <AiOutlinePlusCircle></AiOutlinePlusCircle>
                     </button>
                   </div>

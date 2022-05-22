@@ -11,6 +11,10 @@ import Landing from './components/landing/Landing';
 import { useEffect, useState } from 'react';
 import Settings from './components/settings/Settings';
 import PageNotFound from './PageNotFound';
+import Bubbles from './components/bubbles/Bubbles';
+import Bubble from './components/bubbles/Bubble';
+import CreateBubble from './components/bubbles/CreateBubble';
+
 
 
 function App() {
@@ -34,7 +38,7 @@ function App() {
   return (
     <UsersContextProvider>
       <UserDataContextProvider>
-        <div className={theme ? "bg-black h-screen" : "h-screen"}>
+        <div className={theme ? "bg-black min-h-screen h-full" : "h-screen"}>
           <Header />
           <Routes>
             <Route path="/" element={<Register />} />
@@ -42,6 +46,11 @@ function App() {
             <Route path="landing" element={<Landing />} />
             <Route path="settings" element={<Settings />} />
             <Route path="*" element={<PageNotFound />} />
+            <Route path="bubbles" element={<Bubbles />} >
+              <Route path="createBubble" element={<CreateBubble />} />
+              <Route path=":bubbleId" element={<Bubble />} />
+            </Route>
+
           </Routes>
         </div>
       </UserDataContextProvider>
