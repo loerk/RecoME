@@ -10,6 +10,7 @@ export default function Login() {
   const { users } = useUsers();
   const [validUser, setValidUser] = useState(true);
   const [loginData, setLoginData] = useState({});
+  const [validPassword, setValidPassword] = useState(true);
 
   const navigate = useNavigate();
 
@@ -25,12 +26,17 @@ export default function Login() {
     event.preventDefault();
 
     const knownUser = users.filter((user) => user.email === loginData.email);
-    // console.log("users", users, "data", userData);
-    // console.log("currUser", knownUser);
-
     if (knownUser.length !== 0) {
-      setUserData(knownUser);
-      navigate("/landing");
+      const loginSuccess = users.find(
+        (user) =>
+          user.password === loginData.password && user.email === loginData.email
+      );
+      if (loginSuccess) {
+        setUserData(knownUser);
+        navigate("/landing");
+      } else {
+        setValidPassword(false);
+      }
     } else {
       setValidUser(false);
     }
@@ -91,6 +97,9 @@ export default function Login() {
           </div>
           {!validUser ? (
             <p className="text-fuchsia-600">please register first</p>
+          ) : null}
+          {!validPassword ? (
+            <p className="text-fuchsia-600">wrong password, try again</p>
           ) : null}
           <button
             className={

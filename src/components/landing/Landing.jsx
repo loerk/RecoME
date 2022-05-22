@@ -20,15 +20,9 @@ export default function Landing() {
   }, [userData]);
   return (
     <div>
-      {!userData.username ? (
-        <Settings />
-      ) : (
-        <>
-          <div>Your bubbles</div>
-          <div>Your friends</div>
-          <div>Your recs</div>
-        </>
-      )}
+      <div>Your bubbles</div>
+      <div>Your friends</div>
+      <div>Your recs</div>
     </div>
   );
 }

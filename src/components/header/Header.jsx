@@ -30,7 +30,7 @@ export default function Header() {
             <MdOutlineLightMode style={{ color: "white" }} />
           )}
         </button>
-        {userData && userData.email ? (
+        {userData && userData[0].email ? (
           <>
             <Navigation />
             <button onClick={() => logout()} className="mr-4">

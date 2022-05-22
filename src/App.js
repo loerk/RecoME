@@ -14,12 +14,12 @@ import Settings from './components/settings/Settings';
 
 function App() {
   const { theme } = useTheme()
-  const [currUser, setCurrUser] = useState()
+
   const { userData } = useUserData()
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (currUser === undefined || currUser === null) {
+    if (!userData) {
       navigate("/login");
     }
     else {
@@ -31,11 +31,11 @@ function App() {
     <UsersContextProvider>
       <UserDataContextProvider>
         <div className={theme ? "bg-black h-screen" : "h-screen"}>
-          <Header currUser={currUser} setCurrUser={setCurrUser} />
+          <Header />
           <Routes>
-            <Route path="/" element={<Register setCurrUser={setCurrUser} />} />
-            <Route path="login" element={<Login setCurrUser={setCurrUser} />} />
-            <Route path="landing" element={<Landing currUser={currUser} />} />
+            <Route path="/" element={<Register />} />
+            <Route path="login" element={<Login />} />
+            <Route path="landing" element={<Landing />} />
             <Route path="settings" element={<Settings />} />
           </Routes>
         </div>
