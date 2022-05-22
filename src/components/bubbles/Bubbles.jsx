@@ -57,8 +57,8 @@ export default function Bubbles() {
   //   console.log(userData);
   // };
 
-  const createBubble = () => {
-    navigate("/bubbles/createBubble");
+  const addBubble = () => {
+    navigate("/bubbles/addBubble");
   };
   return (
     <div className="mt-10">
@@ -98,7 +98,7 @@ export default function Bubbles() {
           />
         </div>
       </div>
-      <AddButton action={createBubble} />
+      <AddButton action={addBubble} />
       <div>
         <Outlet />
         <BubbleList searchParams={searchParams} />

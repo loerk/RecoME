@@ -17,6 +17,7 @@ export default function Register() {
   const createID = () => {
     return nanoid();
   };
+
   function handleChange(event) {
     const { name, value, type, checked } = event.target;
     setRegisterData((prevRegisterData) => ({
@@ -24,7 +25,7 @@ export default function Register() {
       id: createID(),
       [name]: type === "checkbox" ? checked : value,
     }));
-
+    console.log("userdata", userData);
     // console.log("hfjdalguals", registerData);
 
     // setUserData((prevUserData) => ({
@@ -58,6 +59,7 @@ export default function Register() {
     setHasAccount(false);
     setConfirmed(true);
     setUserData({
+      ...userData,
       ...registerData,
       isLoggedIn: true,
       memberSince: Date.now(),
@@ -65,7 +67,12 @@ export default function Register() {
 
     setUsers([
       ...users,
-      { ...registerData, isLoggedIn: true, memberSince: Date.now() },
+      {
+        ...userData,
+        ...registerData,
+        isLoggedIn: true,
+        memberSince: Date.now(),
+      },
     ]);
     navigate("/landing");
   }

@@ -4,25 +4,23 @@ import { nanoid } from "nanoid";
 import { useNavigate } from "react-router-dom";
 
 export default function BubbleList({ searchParams }) {
-  const [bubblesArr, setBubblesArr] = useState([]);
   const { userData } = useUserData();
   const navigate = useNavigate();
   let currUser = { ...userData };
   //   if (userData.length) {
   //     currUser = { ...userData[0] };
   //   }
-  console.log("CUURRENT", [currUser.bubbleData]);
-  useEffect(() => {
-    if (currUser.bubbleData !== undefined) {
-      setBubblesArr([currUser.bubbleData]);
-    }
-  }, []);
 
-  const bubbles = bubblesArr;
-  console.log("BUBBLES", bubbles);
+  //   useEffect(() => {
+  //     if (currUser[0].bubbleData !== undefined) {
+  //       setBubblesArr([currUser[0].bubbleData]);
+  //     }
+  //   }, []);
+
+  const bubbles = userData.bubbles;
   return (
     <div className=" m-auto p-10 mt-5">
-      {bubbles ? (
+      {bubbles !== undefined ? (
         <ul>
           {bubbles
             .filter((bubble) => {

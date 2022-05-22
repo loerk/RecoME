@@ -7,16 +7,10 @@ import { useUserData } from "../../contexts/UserDataContext";
 import { useUsers } from "../../contexts/UsersContext";
 
 export default function Landing() {
-  const [currUser, setCurrUser] = useState(false);
+  const [currUser, setCurrUser] = useState({});
   const { users } = useUsers();
   const { userData } = useUserData();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (userData) {
-      setCurrUser(userData);
-    }
-  }, []);
 
   useEffect(() => {
     localStorage.setItem("users", JSON.stringify(users));
@@ -32,7 +26,7 @@ export default function Landing() {
     <>
       {currUser ? (
         <div>
-          <div className="flex items-center m-auto gap-7 my-7 p-10 flex-col bg-red-300 w-96 rounded shadow-2xl ">
+          <div className="flex items-center m-auto gap-7 my-7 p-10 flex-col bg-gradient-to-r from-purple-500 to-pink-500 rounded shadow-2xl ">
             <div>
               <h1>Your bubbles</h1>
               <ul>
@@ -57,7 +51,7 @@ export default function Landing() {
               </ul>
             </div>
           </div>
-          <div className="flex items-center m-auto gap-7 my-7 p-10 flex-col bg-red-300 w-96 rounded shadow-2xl ">
+          <div className="flex items-center m-auto gap-7 my-7 p-10 flex-col bg-gradient-to-r from-violet-500 to-fuchsia-500  rounded shadow-2xl ">
             <div>
               <h1>Your friends</h1>
               <ul>
@@ -82,7 +76,7 @@ export default function Landing() {
               </ul>
             </div>
           </div>{" "}
-          <div className="flex items-center m-auto gap-7 my-7 p-10 flex-col bg-red-300 w-96 rounded shadow-2xl ">
+          <div className="flex items-center m-auto gap-7 my-7 p-10 flex-col  bg-gradient-to-r from-cyan-500 to-blue-500  rounded shadow-2xl ">
             <div>
               <h1>Latest Recos</h1>
               <ul>

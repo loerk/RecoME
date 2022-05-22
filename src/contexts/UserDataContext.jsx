@@ -1,6 +1,31 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { nanoid } from "nanoid";
-const UserDataContext = createContext(false);
+const UserDataContext = createContext({
+  id: nanoid(),
+  username: "",
+  email: "",
+  password: "",
+  passwordConfirm: "",
+  memberSince: 0,
+  stayLoggedIn: false,
+  isLoggedIn: false,
+  friends: [],
+  bubbles: [],
+  invitedFriends: [],
+  invitedBy: "",
+  recos: [
+    {
+      private: [],
+      public: [],
+      specified: [
+        {
+          to: [],
+          reco: {},
+        },
+      ],
+    },
+  ],
+});
 
 export const useUserData = () => {
   return useContext(UserDataContext);

@@ -2,10 +2,12 @@ import { nanoid } from "nanoid";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUserData } from "../../contexts/UserDataContext";
+import { useUsers } from "../../contexts/UsersContext";
 
-export default function CreateBubble() {
-  const [bubbleData, setBubbleData] = useState({});
+export default function AddBubble() {
+  const [bubbleData, setBubbleData] = useState([]);
   const { userData, setUserData } = useUserData();
+  const { users, setUsers } = useUsers();
   const navigate = useNavigate();
 
   function handleChange(event) {
@@ -15,18 +17,35 @@ export default function CreateBubble() {
       [name]: value,
       id: nanoid(),
       createdAt: Date.now(),
+      createdBy: userData.id,
     }));
   }
 
   function handleSubmit(event) {
     event.preventDefault();
-    console.log(bubbleData);
+    console.log("1111bubbbbbbble", bubbleData);
+    //setUserData({ ...userData, bubbleData: [bubbleData, newBubble] });
+    if (!userData.bubbles) {
+      setUserData({ ...userData, bubbles: [bubbleData] });
+    } else {
+      setUserData({ ...userData, bubbles: [...userData.bubbles, bubbleData] });
+    }
     navigate(-1);
   }
+
   useEffect(() => {
-    setUserData({ ...userData, bubbleData });
-  }, [bubbleData]);
-  console.log("user", userData);
+    setUsers(
+      users.map((user) => {
+        if (user.id === userData.id) {
+          return userData;
+        }
+        return user;
+      })
+    );
+
+    localStorage.setItem("users", JSON.stringify(users));
+  }, [userData]);
+  console.log("usergfyuifuy", users);
   return (
     <div className="w-72 m-auto mt-8">
       <form className="flex flex-wrap gap-2" onSubmit={handleSubmit}>

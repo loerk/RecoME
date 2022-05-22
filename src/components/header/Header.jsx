@@ -11,26 +11,17 @@ export default function Header() {
   const navigate = useNavigate();
   const [logout, setLogout] = useState(false);
 
-  let currUser = userData;
-  if (userData.length) {
-    currUser = userData[0];
-  }
   useEffect(() => {
-    if (!userData) {
+    if (!userData.isLoggedIn) {
       navigate("/login");
     } else {
       navigate("/landing");
     }
   }, []);
 
-  useEffect(() => {
-    if (logout) {
-      localStorage.removeItem("currUser");
-    }
-  }, [logout]);
   const handleLogout = () => {
     setLogout(true);
-    setUserData(0);
+    setUserData({ ...userData, isLoggedIn: false });
     navigate("/login");
   };
 
@@ -50,7 +41,7 @@ export default function Header() {
             <MdOutlineLightMode style={{ color: "white" }} />
           )}
         </button>
-        {currUser.username !== "" && currUser !== 0 ? (
+        {userData.isLoggedIn ? (
           <>
             <Navigation />
             <button onClick={handleLogout} className="mr-4">

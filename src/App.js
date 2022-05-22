@@ -13,7 +13,7 @@ import Settings from './components/settings/Settings';
 import PageNotFound from './PageNotFound';
 import Bubbles from './components/bubbles/Bubbles';
 import Bubble from './components/bubbles/Bubble';
-import CreateBubble from './components/bubbles/CreateBubble';
+import AddBubble from './components/bubbles/AddBubble';
 
 
 
@@ -23,11 +23,8 @@ function App() {
   const { userData } = useUserData()
   const navigate = useNavigate()
 
-
   useEffect(() => {
-
     if (!userData || userData[0].email === "") {
-
       navigate("/login");
     }
     else {
@@ -47,7 +44,7 @@ function App() {
             <Route path="settings" element={<Settings />} />
             <Route path="*" element={<PageNotFound />} />
             <Route path="bubbles" element={<Bubbles />} >
-              <Route path="createBubble" element={<CreateBubble />} />
+              <Route path="addBubble" element={<AddBubble />} />
               <Route path=":bubbleId" element={<Bubble />} />
             </Route>
 

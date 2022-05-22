@@ -25,7 +25,8 @@ export default function Login() {
   function handleSubmit(event) {
     event.preventDefault();
 
-    const knownUser = users.filter((user) => user.email === loginData.email);
+    const knownUser = users.find((user) => user.email === loginData.email);
+
     if (knownUser.length !== 0) {
       const loginSuccess = users.find(
         (user) =>
@@ -33,6 +34,7 @@ export default function Login() {
       );
       if (loginSuccess) {
         setUserData(knownUser);
+        //setUserData({...userData, knownUser})
         navigate("/landing");
       } else {
         setValidPassword(false);
