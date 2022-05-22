@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useTheme } from "../../contexts/ThemeContext";
 import { MdLightMode, MdOutlineLightMode } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
@@ -10,6 +10,10 @@ export default function Header() {
   const { userData, setUserData } = useUserData();
   const navigate = useNavigate();
 
+  let currUser = userData;
+  if (userData.length) {
+    currUser = userData[0];
+  }
   useEffect(() => {
     if (!userData) {
       navigate("/login");
@@ -18,8 +22,8 @@ export default function Header() {
     }
   }, []);
 
-  const logout = () => {
-    setUserData(null);
+  const handleLogout = () => {
+    setUserData(0);
     navigate("/login");
   };
 
@@ -28,7 +32,7 @@ export default function Header() {
       localStorage.setItem("currUser", JSON.stringify(userData));
     }
   }, [userData]);
-  console.log(userData);
+
   return (
     <div className={theme ? "text-white" : null}>
       <div className=" flex justify-between p-4">
@@ -39,10 +43,10 @@ export default function Header() {
             <MdOutlineLightMode style={{ color: "white" }} />
           )}
         </button>
-        {userData && userData[0] ? (
+        {currUser.username !== "" && currUser !== 0 ? (
           <>
             <Navigation />
-            <button onClick={() => logout()} className="mr-4">
+            <button onClick={handleLogout} className="mr-4">
               Logout
             </button>
           </>

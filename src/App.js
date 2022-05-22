@@ -19,8 +19,11 @@ function App() {
   const { userData } = useUserData()
   const navigate = useNavigate()
 
+
   useEffect(() => {
+
     if (!userData || userData[0].email === "") {
+
       navigate("/login");
     }
     else {
