@@ -10,6 +10,14 @@ export default function Header() {
   const { userData, setUserData } = useUserData();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (!userData) {
+      navigate("/login");
+    } else {
+      navigate("/landing");
+    }
+  }, []);
+
   const logout = () => {
     setUserData(null);
     navigate("/login");
@@ -20,6 +28,7 @@ export default function Header() {
       localStorage.setItem("currUser", JSON.stringify(userData));
     }
   }, [userData]);
+  console.log(userData);
   return (
     <div className={theme ? "text-white" : null}>
       <div className=" flex justify-between p-4">
@@ -30,7 +39,7 @@ export default function Header() {
             <MdOutlineLightMode style={{ color: "white" }} />
           )}
         </button>
-        {userData && userData[0].email ? (
+        {userData && userData[0] ? (
           <>
             <Navigation />
             <button onClick={() => logout()} className="mr-4">

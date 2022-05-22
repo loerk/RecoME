@@ -10,6 +10,7 @@ import { UsersContextProvider } from './contexts/UsersContext';
 import Landing from './components/landing/Landing';
 import { useEffect, useState } from 'react';
 import Settings from './components/settings/Settings';
+import PageNotFound from './PageNotFound';
 
 
 function App() {
@@ -19,7 +20,7 @@ function App() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (!userData) {
+    if (!userData || userData[0].email === "") {
       navigate("/login");
     }
     else {
@@ -37,6 +38,7 @@ function App() {
             <Route path="login" element={<Login />} />
             <Route path="landing" element={<Landing />} />
             <Route path="settings" element={<Settings />} />
+            <Route path="*" element={<PageNotFound />} />
           </Routes>
         </div>
       </UserDataContextProvider>
