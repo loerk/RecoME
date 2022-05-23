@@ -1,13 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import { useUserData } from "../../contexts/UserDataContext";
 import { nanoid } from "nanoid";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function BubbleList({ searchParams }) {
   const { userData } = useUserData();
+  const [editMode, setShowBubblesList] = useState();
+
   const navigate = useNavigate();
   const bubbles = userData.bubbles;
+  const params = useParams();
+  console.log(params.bubbleId);
 
+  let currBubble = userData.bubbles.find(
+    (bubble) => bubble.id === params.bubbleId
+  );
+
+  console.log("currBUbbel", currBubble);
   return (
     <div className=" m-auto p-10 mt-5">
       {bubbles.length !== 0 ? (
@@ -15,7 +24,11 @@ export default function BubbleList({ searchParams }) {
           {bubbles
             .filter((bubble) => {
               let filter = searchParams.get("filter");
-              if (!filter) return true;
+              if (!filter && !currBubble) {
+                return true;
+              } else if (currBubble) {
+                return bubble.id === currBubble.id;
+              }
               let name = bubble.name.toLowerCase();
               return name.includes(filter.toLowerCase());
             })
@@ -23,7 +36,7 @@ export default function BubbleList({ searchParams }) {
               return (
                 <div
                   key={nanoid()}
-                  onClick={() => navigate("/landing")}
+                  onClick={() => navigate(`/bubbles/${bubble.id}`)}
                   className="m-3 cursor-pointer flex justify-center"
                 >
                   <div className="flex h-60 flex-col hover:shadow-inner md:flex-row md:max-w-xl rounded-lg bg-white shadow-lg">

@@ -13,13 +13,6 @@ export default function Header() {
   const navigate = useNavigate();
   const [logout, setLogout] = useState(false);
   console.log("headerLevel", userData);
-  useEffect(() => {
-    if (!userData.isLoggedIn) {
-      navigate("/login");
-    } else {
-      navigate("/landing");
-    }
-  }, []);
 
   const handleLogout = () => {
     setLogout(true);
