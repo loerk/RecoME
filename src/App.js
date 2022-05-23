@@ -19,10 +19,9 @@ import AddBubble from './components/bubbles/AddBubble';
 
 function App() {
   const { theme } = useTheme()
-
   const { userData } = useUserData()
   const navigate = useNavigate()
-
+  console.log("applevel", userData)
   useEffect(() => {
     if (!userData || userData[0].email === "") {
       navigate("/login");

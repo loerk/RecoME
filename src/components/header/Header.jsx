@@ -12,7 +12,7 @@ export default function Header() {
   const { users, setUsers } = useUsers();
   const navigate = useNavigate();
   const [logout, setLogout] = useState(false);
-
+  console.log("headerLevel", userData);
   useEffect(() => {
     if (!userData.isLoggedIn) {
       navigate("/login");
