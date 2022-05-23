@@ -67,6 +67,7 @@ export default function Register() {
       bubbles: [],
       invitedFriends: [],
       invitedBy: "",
+      avatarUrl: `https://api.multiavatar.com/${registerData.username}.png`,
       recos: [
         {
           private: [],
@@ -90,7 +91,7 @@ export default function Register() {
         memberSince: Date.now(),
       },
     ]);
-    navigate("/landing");
+    navigate("/");
   }
 
   return (

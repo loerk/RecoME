@@ -33,7 +33,7 @@ export default function Header() {
 
   return (
     <div className={theme ? "text-white" : null}>
-      <div className=" flex justify-around p-4">
+      <div className=" flex justify-between py-4 px-4">
         <button onClick={() => setTheme(!theme)}>
           {!theme ? (
             <MdLightMode />
@@ -44,9 +44,12 @@ export default function Header() {
         {userData.isLoggedIn ? (
           <>
             <Navigation />
-            <button onClick={handleLogout} className="mr-4">
-              Logout
-            </button>
+            <div className="flex-col gap-4 ">
+              <img src={userData.avatarUrl} alt="" className="w-10" />
+              <button onClick={handleLogout} className="mr-4">
+                Logout
+              </button>
+            </div>
           </>
         ) : null}
       </div>

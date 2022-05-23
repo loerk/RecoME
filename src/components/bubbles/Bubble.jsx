@@ -21,7 +21,9 @@ export default function Bubble() {
     navigate("/bubbles");
     setUserData({ ...userData, bubbles: [...deletedItemsArr] });
   };
-  const addFriends = () => {};
+  const addFriends = () => {
+    navigate("/friends/addFriend");
+  };
   const addPrivateRecos = () => {};
   const addPublicRecos = () => {};
 

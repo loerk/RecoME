@@ -31,7 +31,7 @@ export default function Login() {
       );
       if (loginSuccess) {
         setUserData({ ...knownUser, isLoggedIn: true });
-        navigate("/landing");
+        navigate("/");
       } else {
         setValidPassword(false);
       }
@@ -110,7 +110,7 @@ export default function Login() {
             Sign in
           </button>
           <NavLink
-            to="/"
+            to="/register"
             className={
               theme
                 ? "w-full text-2xl p-1 bg-black  hover:translate-y-1 text-center text-white border-2 border-white-900 font-face-tm"

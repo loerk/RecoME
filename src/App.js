@@ -14,6 +14,9 @@ import PageNotFound from './PageNotFound';
 import Bubbles from './components/bubbles/Bubbles';
 import Bubble from './components/bubbles/Bubble';
 import AddBubble from './components/bubbles/AddBubble';
+import Friends from './components/friends/Friends';
+import Friend from './components/friends/Friend';
+import AddFriend from './components/friends/AddFriend';
 
 
 
@@ -26,7 +29,6 @@ function App() {
     if (!userData.isLoggedIn) {
       navigate("/login");
     }
-
   }, []);
 
   return (
@@ -44,6 +46,11 @@ function App() {
             <Route path=":bubbleId" element={<Bubble />} />
             <Route path="addBubble" element={<AddBubble />} />
           </Route>
+          <Route path="friends" element={<Friends />} >
+            <Route path=":friendId" element={<Friend />} />
+            <Route path="addFriend" element={<AddFriend />} />
+          </Route>
+
 
         </Routes>
       </div>
