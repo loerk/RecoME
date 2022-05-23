@@ -60,12 +60,14 @@ export default function Register() {
     setConfirmed(true);
     setUserData({
       ...registerData,
+      lastLogin: Date.now(),
       isLoggedIn: true,
       memberSince: Date.now(),
       stayLoggedIn: false,
       friends: [],
       bubbles: [],
       invitedFriends: [],
+      notifications: [],
       invitedBy: "",
       avatarUrl: `https://api.multiavatar.com/${registerData.username}.png`,
       recos: [

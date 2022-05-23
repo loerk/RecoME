@@ -23,7 +23,6 @@ export default function AddBubble() {
 
   function handleSubmit(event) {
     event.preventDefault();
-    console.log("1111bubbbbbbble", bubbleData);
     if (!userData.bubbles) {
       setUserData({ ...userData, bubbles: [bubbleData] });
     } else {

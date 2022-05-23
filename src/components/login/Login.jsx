@@ -30,7 +30,7 @@ export default function Login() {
           user.password === loginData.password && user.email === loginData.email
       );
       if (loginSuccess) {
-        setUserData({ ...knownUser, isLoggedIn: true });
+        setUserData({ ...knownUser, isLoggedIn: true, lastLogin: Date.now() });
         navigate("/");
       } else {
         setValidPassword(false);
