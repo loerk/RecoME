@@ -59,10 +59,26 @@ export default function Register() {
     setHasAccount(false);
     setConfirmed(true);
     setUserData({
-      ...userData,
       ...registerData,
       isLoggedIn: true,
       memberSince: Date.now(),
+      stayLoggedIn: false,
+      friends: [],
+      bubbles: [],
+      invitedFriends: [],
+      invitedBy: "",
+      recos: [
+        {
+          private: [],
+          public: [],
+          specified: [
+            {
+              to: [],
+              reco: {},
+            },
+          ],
+        },
+      ],
     });
 
     setUsers([

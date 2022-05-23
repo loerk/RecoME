@@ -8,7 +8,7 @@ import { useUsers } from "../../contexts/UsersContext";
 
 export default function Landing() {
   const [currUser, setCurrUser] = useState({});
-  const { users } = useUsers();
+  const { users, setUsers } = useUsers();
   const { userData } = useUserData();
   const navigate = useNavigate();
 

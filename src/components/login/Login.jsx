@@ -11,7 +11,6 @@ export default function Login() {
   const [validUser, setValidUser] = useState(true);
   const [loginData, setLoginData] = useState({});
   const [validPassword, setValidPassword] = useState(true);
-
   const navigate = useNavigate();
 
   function handleChange(event) {
@@ -24,17 +23,14 @@ export default function Login() {
 
   function handleSubmit(event) {
     event.preventDefault();
-
     const knownUser = users.find((user) => user.email === loginData.email);
-
-    if (knownUser.length !== 0) {
+    if (knownUser) {
       const loginSuccess = users.find(
         (user) =>
           user.password === loginData.password && user.email === loginData.email
       );
       if (loginSuccess) {
         setUserData(knownUser);
-        //setUserData({...userData, knownUser})
         navigate("/landing");
       } else {
         setValidPassword(false);
@@ -47,6 +43,7 @@ export default function Login() {
   useEffect(() => {
     localStorage.setItem("currUser", JSON.stringify(userData));
   }, []);
+
   return (
     <div className="flex justify-center flex-col">
       <h1

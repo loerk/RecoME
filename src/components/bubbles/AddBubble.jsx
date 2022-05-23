@@ -10,7 +10,7 @@ export default function AddBubble() {
   const { users, setUsers } = useUsers();
   const navigate = useNavigate();
 
-  function handleChange(event) {
+  const handleChange = (event) => {
     const { name, value } = event.target;
     setBubbleData((prevBubbleData) => ({
       ...prevBubbleData,
@@ -19,12 +19,11 @@ export default function AddBubble() {
       createdAt: Date.now(),
       createdBy: userData.id,
     }));
-  }
+  };
 
   function handleSubmit(event) {
     event.preventDefault();
     console.log("1111bubbbbbbble", bubbleData);
-    //setUserData({ ...userData, bubbleData: [bubbleData, newBubble] });
     if (!userData.bubbles) {
       setUserData({ ...userData, bubbles: [bubbleData] });
     } else {
@@ -34,18 +33,10 @@ export default function AddBubble() {
   }
 
   useEffect(() => {
-    setUsers(
-      users.map((user) => {
-        if (user.id === userData.id) {
-          return userData;
-        }
-        return user;
-      })
-    );
-
+    setUsers(users.map((user) => (user.id === userData.id ? userData : user)));
     localStorage.setItem("users", JSON.stringify(users));
   }, [userData]);
-  console.log("usergfyuifuy", users);
+
   return (
     <div className="w-72 m-auto mt-8">
       <form className="flex flex-wrap gap-2" onSubmit={handleSubmit}>
@@ -61,17 +52,17 @@ export default function AddBubble() {
           type="text"
           placeholder="descriptions"
           className=" w-full font-face-tm text-2xl p-2 border-2"
-          name="categories"
+          name="description"
           onChange={handleChange}
-          value={bubbleData.categories}
+          value={bubbleData.description}
         />
         <input
           type="text"
           placeholder="add categories (with comma)"
           className=" w-full font-face-tm text-2xl p-2 border-2"
-          name="description"
+          name="categories"
           onChange={handleChange}
-          value={bubbleData.description}
+          value={bubbleData.categories}
         />
         <input
           id="url"

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useUserData } from "../../contexts/UserDataContext";
 import { nanoid } from "nanoid";
 import { useNavigate } from "react-router-dom";
@@ -6,21 +6,11 @@ import { useNavigate } from "react-router-dom";
 export default function BubbleList({ searchParams }) {
   const { userData } = useUserData();
   const navigate = useNavigate();
-  let currUser = { ...userData };
-  //   if (userData.length) {
-  //     currUser = { ...userData[0] };
-  //   }
-
-  //   useEffect(() => {
-  //     if (currUser[0].bubbleData !== undefined) {
-  //       setBubblesArr([currUser[0].bubbleData]);
-  //     }
-  //   }, []);
-
   const bubbles = userData.bubbles;
+
   return (
     <div className=" m-auto p-10 mt-5">
-      {bubbles !== undefined ? (
+      {bubbles.length !== 0 ? (
         <ul>
           {bubbles
             .filter((bubble) => {
@@ -53,7 +43,7 @@ export default function BubbleList({ searchParams }) {
                         Last updated 3 mins ago
                       </p>
                       <div className="flex space-x-2 justify-center mt-auto">
-                        {bubble.categories.split(" ").map((category) => {
+                        {bubble.categories.split(",").map((category) => {
                           return (
                             <span className="text-xs tracking-widest font-face-tl inline-block py-1 px-2.5 leading-none text-center whitespace-nowrap align-baseline font-bold bg-lime-400 text-black rounded-full">
                               {category}
