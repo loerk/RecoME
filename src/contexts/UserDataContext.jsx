@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useState } from "react";
 import { nanoid } from "nanoid";
 const UserDataContext = createContext({
   id: nanoid(),

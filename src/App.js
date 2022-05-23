@@ -35,9 +35,9 @@ function App() {
       <div className={theme ? "bg-black min-h-screen h-full" : "h-screen"}>
         <Header />
         <Routes>
-          <Route path="/" element={<Register />} />
+          <Route path="/register" element={<Register />} />
           <Route path="login" element={<Login />} />
-          <Route path="landing" element={<Landing />} />
+          <Route path="/" element={<Landing />} />
           <Route path="settings" element={<Settings />} />
           <Route path="*" element={<PageNotFound />} />
           <Route path="bubbles" element={<Bubbles />} >
