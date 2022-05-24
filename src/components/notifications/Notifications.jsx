@@ -5,48 +5,28 @@ import { useNavigate } from "react-router-dom";
 export default function Notifications() {
   const { userData } = useUserData();
   const navigate = useNavigate();
-  const [hasNewNotifications, setHasNewNotifications] = useState(false);
-  const [newNotificationsArr, setNewNotificationsArr] = useState([]);
   const [showNotificationsList, setShowNotificationsList] = useState(false);
+  const hasNewNotifications = userData.notifications.length !== 0;
 
-  // const resetNotifications =()=>{
-
-  //    setUserData({...userData, notifications:[]})
-  // }
-  useEffect(() => {
-    console.log("render");
-    const checkNotifications = () => {
-      if (userData.notifications.length !== 0) {
-        const newNotifications = userData.notifications.filter(
-          (notification) => notification.status === "new"
-        );
-        if (newNotifications.length !== 0) {
-          setHasNewNotifications(true);
-        }
-        setNewNotificationsArr([...newNotifications]);
-      }
-    };
-
-    checkNotifications();
-  }, []);
   return (
     <div className="p-2">
       <img src={userData.avatarUrl} alt="" className="w-10" />
       {hasNewNotifications ? (
         <div className="relative">
           <button
-            onClick={() => setShowNotificationsList(true)}
+            onClick={() => setShowNotificationsList(!showNotificationsList)}
             className="bg-clip-text pt-2  text-transparent bg-gradient-to-r from-pink-500 to-violet-500"
           >
-            {newNotificationsArr.length} NEWS
+            {userData.notifications.length} NEWS
           </button>
           {showNotificationsList ? (
             <ul>
-              {newNotificationsArr.map((note) => {
+              {userData.notifications.map((note) => {
                 return (
                   <li
+                    onClick={() => navigate("/friends/details")}
                     className="
-                        absolute
+                        absolute      
                         right-10
                         text-sm
                         py-2
@@ -60,7 +40,7 @@ export default function Notifications() {
                         cursor-pointer
                         "
                   >
-                    <button onClick={navigate("/friends")}>{note.type}</button>
+                    {note.type}
                   </li>
                 );
               })}

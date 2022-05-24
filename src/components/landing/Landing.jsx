@@ -33,7 +33,7 @@ export default function Landing() {
                   <div className="text-center">
                     <img
                       onClick={() => navigate(`/bubbles/${bubble.id}`)}
-                      className="w-28 opacity-50  hover:opacity-100 rounded-full cursor-pointer"
+                      className="w-28 h-28 object-cover object-center opacity-50  hover:opacity-100 rounded-full cursor-pointer"
                       src={bubble.imageUrl}
                       alt=""
                     />

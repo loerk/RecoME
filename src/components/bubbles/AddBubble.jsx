@@ -18,6 +18,7 @@ export default function AddBubble() {
       id: nanoid(),
       createdAt: Date.now(),
       createdBy: userData.id,
+      members: [{ userId: userData.id, username: userData.username }],
     }));
   };
 

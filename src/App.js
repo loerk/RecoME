@@ -17,6 +17,7 @@ import AddBubble from './components/bubbles/AddBubble';
 import Friends from './components/friends/Friends';
 import Friend from './components/friends/Friend';
 import AddFriend from './components/friends/AddFriend';
+import Details from './components/friends/Details';
 
 
 
@@ -49,6 +50,7 @@ function App() {
           <Route path="friends" element={<Friends />} >
             <Route path=":friendId" element={<Friend />} />
             <Route path="addFriend" element={<AddFriend />} />
+            <Route path="details" element={<Details />} />
           </Route>
 
 

@@ -44,18 +44,16 @@ export default function Bubble() {
       <div className="grid grid-cols-1 md:grid-cols-3 my-4 gap-4 text-center">
         <div>
           <h1 className="mb-3 uppercase">Members</h1>
-          <ul>
-            {currBubble.members ? (
-              currBubble.members.map((member) => (
-                <li key={nanoid()}>{member.username}</li>
-              ))
+          <div>
+            {currBubble.members.length !== 0 ? (
+              <p>{currBubble.members.length}</p>
             ) : (
               <>
                 <p>Oh your bubble doesn't have any members ..yet</p>
                 <p>add some</p>
               </>
             )}
-          </ul>
+          </div>
           <AddButton action={addFriends} />
         </div>
         <div>

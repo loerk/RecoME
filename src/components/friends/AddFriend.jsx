@@ -7,7 +7,7 @@ import { useUsers } from "../../contexts/UsersContext";
 export default function AddFriend() {
   const { userData, setUserData } = useUserData();
   const { users, setUsers } = useUsers();
-  const [successfulInvited, setSuccessfulInvited] = useState(false);
+  const [successfulInvited, setSuccessfulInvited] = useState("");
   const navigate = useNavigate();
   const [addFriendData, setAddFriendData] = useState({
     email: "",
@@ -15,11 +15,11 @@ export default function AddFriend() {
   });
   console.log("currUser", userData);
   const handleBubble = (e) => {
-    let invitedBy = userData.id;
     setAddFriendData({
       ...addFriendData,
       toBubble: e.target.value,
-      invitedBy: invitedBy,
+      invitedBy: userData.id,
+      invitedByUser: userData.username,
     });
   };
   const handleEmail = (e) => {
@@ -28,6 +28,10 @@ export default function AddFriend() {
   console.log(addFriendData);
 
   const sendNotification = () => {
+    if (addFriendData.email === "") {
+      setSuccessfulInvited("no");
+      return;
+    }
     const addFriend = users.find((user) => user.email === addFriendData.email);
     if (userData.invitedFriends.length === 0) {
       setUserData({ ...userData, invitedFriends: [addFriendData.id] });
@@ -87,7 +91,7 @@ export default function AddFriend() {
     } else {
       setUserData({ ...userData, invitedFriends: [{ addFriendData }] });
     }
-    setSuccessfulInvited(true);
+    setSuccessfulInvited("yes");
   };
 
   useEffect(() => {
@@ -158,15 +162,15 @@ export default function AddFriend() {
           >
             Invite Friend to your Bubble
           </button>
-          {successfulInvited ? (
+          {successfulInvited === "yes" ? (
             <p className="text-fuchsia-600 pt-3">
               Great, your friend got invited!
             </p>
-          ) : (
+          ) : successfulInvited === "no" ? (
             <p className="text-fuchsia-600 pt-3">
-              Oops, something went wrong, check the email!
+              Ooops, an email is missing :/ try again!
             </p>
-          )}
+          ) : null}
         </div>
       ) : (
         <p>You dont have any bubbles, please add a bubble first</p>
