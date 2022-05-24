@@ -7,7 +7,7 @@ import { useUsers } from "../../contexts/UsersContext";
 export default function Login() {
   const { userData, setUserData } = useUserData();
   const { theme } = useTheme();
-  const { users } = useUsers();
+  const { users, setUsers } = useUsers();
   const [validUser, setValidUser] = useState(true);
   const [loginData, setLoginData] = useState({});
   const [validPassword, setValidPassword] = useState(true);
@@ -42,6 +42,8 @@ export default function Login() {
 
   useEffect(() => {
     localStorage.setItem("currUser", JSON.stringify(userData));
+    setUsers(users.map((user) => (user.id === userData.id ? userData : user)));
+    localStorage.setItem("users", JSON.stringify(users));
   }, []);
 
   return (

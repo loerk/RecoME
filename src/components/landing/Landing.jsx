@@ -12,16 +12,16 @@ export default function Landing() {
   const { userData } = useUserData();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    localStorage.setItem("users", JSON.stringify(users));
-  }, [users]);
+  // useEffect(() => {
+  //   localStorage.setItem("users", JSON.stringify(users));
+  // }, [users]);
 
-  useEffect(() => {
-    if (userData) {
-      localStorage.setItem("currUser", JSON.stringify(userData));
-    }
-  }, [userData]);
-  console.log(userData);
+  // useEffect(() => {
+  //   if (userData) {
+  //     localStorage.setItem("currUser", JSON.stringify(userData));
+  //   }
+  // }, [userData]);
+  console.log("landing", userData);
   return (
     <>
       {currUser ? (

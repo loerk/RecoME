@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useUserData } from "../../contexts/UserDataContext";
 import { useUsers } from "../../contexts/UsersContext";
 import Navigation from "../navigation/Navigation";
+import Notifications from "../notifications/Notifications";
 
 export default function Header() {
   const { theme, setTheme } = useTheme();
@@ -12,6 +13,7 @@ export default function Header() {
   const { users, setUsers } = useUsers();
   const navigate = useNavigate();
   const [logout, setLogout] = useState(false);
+
   console.log("headerLevel", userData);
 
   const handleLogout = () => {
@@ -26,10 +28,10 @@ export default function Header() {
     }
   }, [userData]);
 
-  // useEffect(() => {
-  //   setUsers(users.map((user) => (user.id === userData.id ? userData : user)));
-  //   localStorage.setItem("users", JSON.stringify(users));
-  // }, [logout]);
+  useEffect(() => {
+    setUsers(users.map((user) => (user.id === userData.id ? userData : user)));
+    localStorage.setItem("users", JSON.stringify(users));
+  }, [logout]);
 
   return (
     <div className={theme ? "text-white" : null}>
@@ -44,11 +46,10 @@ export default function Header() {
         {userData.isLoggedIn ? (
           <>
             <Navigation />
-            <div className="flex-col gap-4 ">
-              <img src={userData.avatarUrl} alt="" className="w-10" />
-              <button onClick={handleLogout} className="mr-4">
-                Logout
-              </button>
+            <Notifications />
+            <div className="absolute right-28 top-7">
+              <p>Hi {userData.username} !</p>
+              <button onClick={handleLogout}>Logout</button>
             </div>
           </>
         ) : null}

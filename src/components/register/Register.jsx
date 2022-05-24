@@ -25,7 +25,7 @@ export default function Register() {
       id: createID(),
       [name]: type === "checkbox" ? checked : value,
     }));
-    console.log("userdata", userData);
+    console.log("userdataRegister", userData);
     // console.log("hfjdalguals", registerData);
 
     // setUserData((prevUserData) => ({
