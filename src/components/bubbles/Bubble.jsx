@@ -43,7 +43,7 @@ export default function Bubble() {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 my-4 gap-4 text-center">
         <div>
-          <h1 className="mb-3 uppercase">Your friends</h1>
+          <h1 className="mb-3 uppercase">Members</h1>
           <ul>
             {currBubble.members ? (
               currBubble.members.map((member) => (
@@ -59,9 +59,7 @@ export default function Bubble() {
           <AddButton action={addFriends} />
         </div>
         <div>
-          <h1 className="mb-3 uppercase">
-            All your public bubble Recommendations
-          </h1>
+          <h1 className="mb-3 uppercase">Recommendations</h1>
           <ul>
             {currBubble.publicRecos ? (
               currBubble.publicRecos.map((publicReco) => (
@@ -79,9 +77,7 @@ export default function Bubble() {
           <AddButton action={addPublicRecos} />
         </div>
         <div>
-          <h1 className="mb-3 uppercase">
-            All your private Recommendation from your friends
-          </h1>
+          <h1 className="mb-3 uppercase">private save</h1>
           <ul>
             {currBubble.privateRecos ? (
               currBubble.privateRecos.recoFrom.map((privateRecos) => (
@@ -89,7 +85,7 @@ export default function Bubble() {
               ))
             ) : (
               <>
-                <p>Oh you don't have any Recommendations ..yet</p>
+                <p>Oh you don't have any private Recommendations ..yet</p>
                 <p>add some</p>
               </>
             )}

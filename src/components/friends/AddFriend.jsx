@@ -7,6 +7,7 @@ import { useUsers } from "../../contexts/UsersContext";
 export default function AddFriend() {
   const { userData, setUserData } = useUserData();
   const { users, setUsers } = useUsers();
+  const [successfulInvited, setSuccessfulInvited] = useState(false);
   const navigate = useNavigate();
   const [addFriendData, setAddFriendData] = useState({
     email: "",
@@ -28,6 +29,14 @@ export default function AddFriend() {
 
   const sendNotification = () => {
     const addFriend = users.find((user) => user.email === addFriendData.email);
+    if (userData.invitedFriends.length === 0) {
+      setUserData({ ...userData, invitedFriends: [addFriendData.id] });
+    } else {
+      setUserData({
+        ...userData,
+        invitedFriends: [...userData.invitedFriends, addFriend.id],
+      });
+    }
     if (addFriend.notifications.length !== 0) {
       setUsers(
         users.map((user) => {
@@ -78,6 +87,7 @@ export default function AddFriend() {
     } else {
       setUserData({ ...userData, invitedFriends: [{ addFriendData }] });
     }
+    setSuccessfulInvited(true);
   };
 
   useEffect(() => {
@@ -143,11 +153,20 @@ export default function AddFriend() {
             placeholder="Add your Friends Email"
           />
           <button
-            className="bg-black rounded-md  text-white px-2 py-1"
+            className="inline-block leading-tight uppercase  shadow-md hover:bg-gradient-to-r from-cyan-500 to-blue-500 hover:shadow-lg focus:bg-black focus:shadow-lg focus:outline-none focus:ring-0 active:bg-pink-800 active:shadow-lg transition duration-150 ease-in-out bg-black rounded-md  text-white px-2 py-1"
             onClick={sendNotification}
           >
             Invite Friend to your Bubble
           </button>
+          {successfulInvited ? (
+            <p className="text-fuchsia-600 pt-3">
+              Great, your friend got invited!
+            </p>
+          ) : (
+            <p className="text-fuchsia-600 pt-3">
+              Oops, something went wrong, check the email!
+            </p>
+          )}
         </div>
       ) : (
         <p>You dont have any bubbles, please add a bubble first</p>

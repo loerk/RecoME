@@ -1,32 +1,40 @@
 import React from "react";
-import { Outlet, useNavigate, useSearchParams } from "react-router-dom";
+import {
+  Outlet,
+  useNavigate,
+  useSearchParams,
+  useParams,
+} from "react-router-dom";
 import { AddButton } from "../../utilities/Buttons";
 import BubbleList from "./BubbleList";
 
 export default function Bubbles() {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
+  const params = useParams();
 
   const addBubble = () => {
     navigate("/bubbles/addBubble");
   };
-
+  console.log("bubblesparams", params);
   return (
     <div className="mt-10">
-      <div className="flex justify-center">
-        <div className="mb-3 xl:w-96">
-          <input
-            value={searchParams.get("filter") || ""}
-            onChange={(e) => {
-              let filter = e.target.value;
-              if (filter) {
-                setSearchParams({ filter });
-              } else {
-                setSearchParams({ filter: "" });
-              }
-            }}
-            type="search"
-            className="
+      {!params.bubbleId ? (
+        <div>
+          <div className="flex justify-center">
+            <div className="mb-3 xl:w-96">
+              <input
+                value={searchParams.get("filter") || ""}
+                onChange={(e) => {
+                  let filter = e.target.value;
+                  if (filter) {
+                    setSearchParams({ filter });
+                  } else {
+                    setSearchParams({ filter: "" });
+                  }
+                }}
+                type="search"
+                className="
           text-center
         form-control
         block
@@ -44,12 +52,15 @@ export default function Bubbles() {
         m-0
         focus:text-gray-700 focus:bg-white focus:border-slate-600 focus:outline-none
       "
-            id="exampleSearch"
-            placeholder="Search Bubble"
-          />
+                id="exampleSearch"
+                placeholder="Search Bubble"
+              />
+            </div>
+          </div>
+          <AddButton action={addBubble} />
         </div>
-      </div>
-      <AddButton action={addBubble} />
+      ) : null}
+
       <div>
         <Outlet />
         <BubbleList searchParams={searchParams} />

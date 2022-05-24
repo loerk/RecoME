@@ -10,7 +10,7 @@ export default function BubbleList({ searchParams }) {
   const params = useParams();
 
   return (
-    <div className=" m-auto p-10 mt-5">
+    <div className=" m-auto max-w-[50%] p-10 mt-5">
       {bubbles.length !== 0 ? (
         <ul>
           {bubbles
@@ -44,7 +44,7 @@ export default function BubbleList({ searchParams }) {
                         <p className="text-gray-600 text-xs">
                           Last updated 3 mins ago
                         </p>
-                        <div className="flex space-x-2 justify-center mt-auto">
+                        <div className="flex flex-wrap  gap-2 justify-center mt-auto">
                           {bubble.categories.split(",").map((category) => {
                             return (
                               <span className="text-xs tracking-widest font-face-tl inline-block py-1 px-2.5 leading-none text-center whitespace-nowrap align-baseline font-bold bg-lime-400 text-black rounded-full">

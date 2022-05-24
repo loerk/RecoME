@@ -13,6 +13,24 @@ export default function Settings() {
   const updateUserData = () => {
     setUserData([{ ...userData, username: choiceUsername }]);
   };
+  const deleteUser = () => {
+    const deletedArr = users.filter((user) => user.id !== userData.id);
+    setUsers(deletedArr);
+    setUserData(0);
+    navigate("/login");
+  };
+  useEffect(() => {
+    localStorage.setItem("users", JSON.stringify(users));
+  }, [users]);
+  return (
+    <div className="text-center mt-28">
+      <p>Think about it, but here you can...</p>
+      <p>say goodbye forever :/</p>
+      <button className="bg-black text-white p-2 mt-10" onClick={deleteUser}>
+        goodbye
+      </button>
+    </div>
+  );
 
   // const updateUserArray = () => {
   //   if (users === undefined || !userData[0].username) {
