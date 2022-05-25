@@ -35,7 +35,7 @@ export default function AddBubble() {
   useEffect(() => {
     setUsers(users.map((user) => (user.id === userData.id ? userData : user)));
     localStorage.setItem("users", JSON.stringify(users));
-  }, [userData]);
+  }, [userData]); // eslint-disable-line
 
   return (
     <div className="w-72 m-auto mt-8">
@@ -73,7 +73,6 @@ export default function AddBubble() {
           onChange={handleChange}
           value={bubbleData.imageUrl}
         />
-
         <button className="w-full hover:translate-y-1  text-3xl p-3 bg-white  text-black  font-face-tm my-4">
           create
         </button>

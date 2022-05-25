@@ -1,13 +1,12 @@
 import { nanoid } from "nanoid";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import { useUserData } from "../../contexts/UserDataContext";
 import { useUsers } from "../../contexts/UsersContext";
-import Gallery from "../../gallery/Gallery";
 
 export default function Landing() {
-  const { users, setUsers } = useUsers();
+  const { users } = useUsers();
   const { userData } = useUserData();
   const navigate = useNavigate();
 
@@ -20,6 +19,7 @@ export default function Landing() {
       localStorage.setItem("currUser", JSON.stringify(userData));
     }
   }, [userData]);
+
   console.log("landing", userData);
   return (
     <div>

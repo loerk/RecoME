@@ -1,6 +1,5 @@
 import { nanoid } from "nanoid";
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useUserData } from "../../contexts/UserDataContext";
 import { useUsers } from "../../contexts/UsersContext";
 
@@ -8,7 +7,7 @@ export default function AddFriend() {
   const { userData, setUserData } = useUserData();
   const { users, setUsers } = useUsers();
   const [successfulInvited, setSuccessfulInvited] = useState("");
-  const navigate = useNavigate();
+
   const [addFriendData, setAddFriendData] = useState({
     email: "",
     toBubble: "",
@@ -109,21 +108,20 @@ export default function AddFriend() {
             defaultValue={addFriendData.toBubble}
             aria-label="Default select example"
             className="form-select appearance-none mb-5
-            block
-            w-full
-            px-3
-            py-2
-            text-base
-            font-normal
-            text-gray-700
-            bg-white bg-clip-padding bg-no-repeat
-            border border-solid border-gray-300
-            rounded
-            transition
-            ease-in-out
-            m-0
-         
-            focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
+              block
+              w-full
+              px-3
+              py-2
+              text-base
+              font-normal
+              text-gray-700
+              bg-white bg-clip-padding bg-no-repeat
+              border border-solid border-gray-300
+              rounded
+              transition
+              ease-in-out
+              m-0      
+              focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
           >
             <option selected>select a bubble</option>
             {userData.bubbles.map((bubble) => {
@@ -136,7 +134,7 @@ export default function AddFriend() {
             name="email"
             onChange={handleEmail}
             className="
-            mb-5
+                mb-5
                 form-control
                 block
                 w-full
@@ -151,8 +149,7 @@ export default function AddFriend() {
                 transition
                 ease-in-out
                 m-0
-                focus:text-gray-700 focus:bg-white focus:border-slate-600 focus:outline-none
-                     "
+                focus:text-gray-700 focus:bg-white focus:border-slate-600 focus:outline-none"
             id="exampleSearch"
             placeholder="Add your Friends Email"
           />

@@ -32,7 +32,11 @@ export default function Bubble() {
       <div className="mt-6">
         <div className=" relative w-full">
           <div className="relative overflow-hidden bg-contain">
-            <img src={currBubble.imageUrl} className="block  w-96 m-auto" />
+            <img
+              src={currBubble.imageUrl}
+              className="block  w-96 m-auto"
+              alt=""
+            />
             <div className="absolute top-0 right-0 bottom-0 left-0 w-full h-full overflow-hidden bg-fixed bg-black opacity-50"></div>
           </div>
           <div className="md:block absolute top-6 left-1/3 text-white  uppercase">

@@ -1,11 +1,10 @@
 import { nanoid } from "nanoid";
 import React from "react";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { useUserData } from "../../contexts/UserDataContext";
 
 export default function FriendsList() {
   const { userData } = useUserData();
-  const navigate = useNavigate();
   const friends = userData.friends;
   const params = useParams();
 
@@ -25,8 +24,8 @@ export default function FriendsList() {
                 return (
                   <div
                     key={nanoid()}
-                    onClick={() => navigate(`/friends/${friend.id}`)}
-                    className="grid grid-cols-3 gap-4 flex items-center"
+                    //onClick={() => navigate(`/friends/${friend.id}`)}
+                    //className="grid grid-cols-3 gap-4 flex items-center"
                   >
                     <div className="mb-4">
                       <img

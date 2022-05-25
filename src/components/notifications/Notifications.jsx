@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useUserData } from "../../contexts/UserDataContext";
 import { useNavigate } from "react-router-dom";
 

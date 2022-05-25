@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useTheme } from "../../contexts/ThemeContext";
 import { useUserData } from "../../contexts/UserDataContext";
-
 import { useNavigate, NavLink } from "react-router-dom";
 import { nanoid } from "nanoid";
 import { useUsers } from "../../contexts/UsersContext";
@@ -26,13 +25,6 @@ export default function Register() {
       [name]: type === "checkbox" ? checked : value,
     }));
     console.log("userdataRegister", userData);
-    // console.log("hfjdalguals", registerData);
-
-    // setUserData((prevUserData) => ({
-    //   ...prevUserData,
-    //   id: createID(),
-    //   [name]: type === "checkbox" ? checked : value,
-    // }));
   }
 
   function handleSubmit(event) {

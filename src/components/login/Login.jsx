@@ -44,7 +44,7 @@ export default function Login() {
     localStorage.setItem("currUser", JSON.stringify(userData));
     setUsers(users.map((user) => (user.id === userData.id ? userData : user)));
     localStorage.setItem("users", JSON.stringify(users));
-  }, []);
+  }, []); // eslint-disable-line
 
   return (
     <div className="flex justify-center flex-col">

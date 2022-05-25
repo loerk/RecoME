@@ -1,16 +1,17 @@
 
 import './App.css';
-import Header from './components/header/Header';
-import Register from './components/register/Register.jsx';
+import { useEffect } from 'react';
 import { useTheme } from './contexts/ThemeContext';
 import { useUserData } from './contexts/UserDataContext';
 import { Routes, Route, useNavigate } from "react-router-dom";
-import Login from './components/login/Login';
 import { UsersContextProvider } from './contexts/UsersContext';
+
+import Header from './components/header/Header';
+import Register from './components/register/Register.jsx';
+import Login from './components/login/Login';
 import Landing from './components/landing/Landing';
-import { useEffect, useState } from 'react';
 import Settings from './components/settings/Settings';
-import PageNotFound from './PageNotFound';
+import PageNotFound from './components/pageNotFound/PageNotFound';
 import Bubbles from './components/bubbles/Bubbles';
 import Bubble from './components/bubbles/Bubble';
 import AddBubble from './components/bubbles/AddBubble';
@@ -25,16 +26,16 @@ function App() {
   const { theme } = useTheme()
   const { userData } = useUserData()
   const navigate = useNavigate()
+
   console.log("applevel", userData)
   useEffect(() => {
     if (!userData.isLoggedIn) {
       navigate("/login");
     }
-  }, []);
+  }, []);// eslint-disable-line
 
   return (
     <UsersContextProvider>
-
       <div className={theme ? "bg-black min-h-screen h-full" : "h-screen"}>
         <Header />
         <Routes>
@@ -52,11 +53,8 @@ function App() {
             <Route path="addFriend" element={<AddFriend />} />
             <Route path="details" element={<Details />} />
           </Route>
-
-
         </Routes>
       </div>
-
     </UsersContextProvider>
   );
 }

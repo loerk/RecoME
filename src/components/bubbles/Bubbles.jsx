@@ -6,6 +6,7 @@ import {
   useParams,
 } from "react-router-dom";
 import { AddButton } from "../../utilities/Buttons";
+
 import BubbleList from "./BubbleList";
 
 export default function Bubbles() {
