@@ -19,6 +19,7 @@ import Friends from './components/friends/Friends';
 import Friend from './components/friends/Friend';
 import AddFriend from './components/friends/AddFriend';
 import Details from './components/friends/Details';
+import ScrollContainer from "./utilities/ScrollContainer"
 
 
 
@@ -38,22 +39,24 @@ function App() {
     <UsersContextProvider>
       <div className={theme ? "bg-black min-h-screen h-full" : "h-screen"}>
         <Header />
-        <Routes>
-          <Route path="/register" element={<Register />} />
-          <Route path="login" element={<Login />} />
-          <Route path="/" element={<Landing />} />
-          <Route path="settings" element={<Settings />} />
-          <Route path="*" element={<PageNotFound />} />
-          <Route path="bubbles" element={<Bubbles />} >
-            <Route path=":bubbleId" element={<Bubble />} />
-            <Route path="addBubble" element={<AddBubble />} />
-          </Route>
-          <Route path="friends" element={<Friends />} >
-            <Route path=":friendId" element={<Friend />} />
-            <Route path="addFriend" element={<AddFriend />} />
-            <Route path="details" element={<Details />} />
-          </Route>
-        </Routes>
+        <ScrollContainer>
+          <Routes>
+            <Route path="/register" element={<Register />} />
+            <Route path="login" element={<Login />} />
+            <Route path="/" element={<Landing />} />
+            <Route path="settings" element={<Settings />} />
+            <Route path="*" element={<PageNotFound />} />
+            <Route path="bubbles" element={<Bubbles />} >
+              <Route path=":bubbleId" element={<Bubble />} />
+              <Route path="addBubble" element={<AddBubble />} />
+            </Route>
+            <Route path="friends" element={<Friends />} >
+              <Route path=":friendId" element={<Friend />} />
+              <Route path="addFriend" element={<AddFriend />} />
+              <Route path="details" element={<Details />} />
+            </Route>
+          </Routes>
+        </ScrollContainer>
       </div>
     </UsersContextProvider>
   );
