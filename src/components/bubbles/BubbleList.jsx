@@ -1,6 +1,5 @@
 import React from "react";
 import { useUserData } from "../../contexts/UserDataContext";
-import { v1 as uuidv1 } from "uuid";
 import { useNavigate, useParams } from "react-router-dom";
 
 export default function BubbleList({ searchParams }) {
@@ -10,9 +9,9 @@ export default function BubbleList({ searchParams }) {
   const params = useParams();
 
   return (
-    <div className=" m-auto bg-transparent p-10 mt-5">
+    <div className=" m-auto bg-transparent mt-5">
       {bubbles.length !== 0 ? (
-        <ul className="grid xl:grid-cols-4 md:grid-cols-3 gap-4">
+        <div className="grid xl:grid-cols-4 md:m-10 md:grid-cols-3 md:gap-4">
           {bubbles
             .filter((bubble) => {
               let filter = searchParams.get("filter");
@@ -24,13 +23,14 @@ export default function BubbleList({ searchParams }) {
               if (params.bubbleId === undefined) {
                 return (
                   <div
-                    key={uuidv1()}
+                    key={bubble.id}
                     onClick={() => navigate(`/bubbles/${bubble.id}`)}
-                    className="m-3 cursor-pointer flex justify-center"
+                    className="mb-10 md:m-auto cursor-pointer md:w-72 w-full flex justify-center"
                   >
-                    <div className="flex w-full md:relative flex-col hover:shadow-inner md:flex-row md:max-w-xl rounded-lg bg-transparent shadow-lg ">
+                    <div className="flex flex-col w-full relative md:flex-row md:rounded-lg shadow-lg max-w-xl">
+                      {/* flex w-full md:relative flex-col hover:shadow-inner md:flex-row md:max-w-xl rounded-lg bg-transparent shadow-lg  */}
                       <img
-                        className=" w-full -z-10 h-full md:absolute object-cover md:w-auto  bg-white md:opacity-40 rounded md:rounded-l-lg"
+                        className=" -z-10 absolute w-full shadow-lg h-full object-cover  bg-white opacity-40  md:rounded md:rounded-l-lg"
                         src={bubble.imageUrl}
                         alt=""
                       />
@@ -42,10 +42,10 @@ export default function BubbleList({ searchParams }) {
                           {bubble.description}
                         </p>
 
-                        <div className="flex flex-wrap  gap-2  mt-auto">
+                        <div className="flex flex-wrap  gap-2 md:w-56 mt-auto">
                           {bubble.categories.split(",").map((category) => {
                             return (
-                              <span className="text-xs tracking-widest mt-2 font-face-tl inline-block py-1 px-2.5 leading-none whitespace-nowrap align-baseline font-bold bg-lime-400 text-black rounded-full">
+                              <span className="text-xs tracking-widest mt-2 font-face-tl inline-block py-1 px-2.5 leading-none whitespace-nowrap  font-bold  text-black border border-black bg-white opacity-70 hover:opacity-100  rounded-md">
                                 {category}
                               </span>
                             );
@@ -59,7 +59,7 @@ export default function BubbleList({ searchParams }) {
                 return null;
               }
             })}
-        </ul>
+        </div>
       ) : (
         <p className="text-center pt-5">:/ you dont have any bubbles</p>
       )}
