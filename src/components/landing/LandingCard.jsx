@@ -1,4 +1,4 @@
-import { nanoid } from "nanoid";
+import { v1 as uuidv1 } from "uuid";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { AddButton } from "../../utilities/Buttons";
@@ -12,7 +12,7 @@ export default function LandingCard({ currUser }) {
         <ul>
           {currUser.bubbles ? (
             currUser.bubbles.map((bubble) => (
-              <li key={nanoid()}>
+              <li key={uuidv1()}>
                 <button onClick={() => navigate("/bubbles")}>
                   {bubble.name}
                 </button>

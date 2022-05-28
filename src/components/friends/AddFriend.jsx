@@ -1,4 +1,4 @@
-import { nanoid } from "nanoid";
+import { v1 as uuidv1 } from "uuid";
 import React, { useEffect, useState } from "react";
 import { useUserData } from "../../contexts/UserDataContext";
 import { useUsers } from "../../contexts/UsersContext";
@@ -51,7 +51,7 @@ export default function AddFriend() {
                 {
                   ...addFriendData,
                   invitedAt: Date.now(),
-                  invitationId: nanoid(),
+                  invitationId: uuidv1(),
                   type: "invitationToBubble",
                   status: "new",
                 },
@@ -71,7 +71,7 @@ export default function AddFriend() {
                 {
                   ...addFriendData,
                   invitedAt: Date.now(),
-                  invitationId: nanoid(),
+                  invitationId: uuidv1(),
                   type: "invitationToBubble",
                   status: "new",
                 },

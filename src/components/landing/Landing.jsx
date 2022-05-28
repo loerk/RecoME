@@ -1,4 +1,4 @@
-import { nanoid } from "nanoid";
+import { v1 as uuidv1 } from "uuid";
 import React, { useEffect } from "react";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
@@ -29,7 +29,7 @@ export default function Landing() {
           <ul className="flex gap-6 flex-wrap justify-center">
             {userData.bubbles.length !== 0 ? (
               userData.bubbles.map((bubble) => (
-                <li key={nanoid()}>
+                <li key={uuidv1()}>
                   <div className="text-center">
                     <img
                       onClick={() => navigate(`/bubbles/${bubble.id}`)}
@@ -60,7 +60,7 @@ export default function Landing() {
           <ul>
             {userData.friends.length !== 0 ? (
               userData.friends.map((friend) => (
-                <li key={nanoid()}>
+                <li key={uuidv1()}>
                   <button onClick={() => navigate("/friends")}>
                     {friend.name}
                   </button>
@@ -86,7 +86,7 @@ export default function Landing() {
             {!userData.recos ? (
               userData.recos.map((type) =>
                 type.map((reco) => (
-                  <li key={nanoid()}>
+                  <li key={uuidv1()}>
                     <button onClick={() => navigate("/bubbles")}>
                       {reco.title}
                     </button>

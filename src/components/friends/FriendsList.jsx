@@ -1,4 +1,4 @@
-import { nanoid } from "nanoid";
+import { v1 as uuidv1 } from "uuid";
 import React from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { useUserData } from "../../contexts/UserDataContext";
@@ -23,7 +23,7 @@ export default function FriendsList() {
               if (params.friendId === undefined) {
                 return (
                   <div
-                    key={nanoid()}
+                    key={uuidv1()}
                     //onClick={() => navigate(`/friends/${friend.id}`)}
                     //className="grid grid-cols-3 gap-4 flex items-center"
                   >

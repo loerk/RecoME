@@ -17,3 +17,17 @@ export function AddButton({ action }) {
     </div>
   );
 }
+
+export function HoverButton({ name, action }) {
+  const { theme } = useTheme();
+  <button
+    onClick={action}
+    className={
+      theme
+        ? "w-full hover:translate-y-1  text-3xl p-3 bg-white  text-black  font-face-tm my-4"
+        : "w-full hover:translate-y-1  text-3xl p-3 bg-black  text-white  font-face-tm my-4"
+    }
+  >
+    {name}
+  </button>;
+}

@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState } from "react";
-import { nanoid } from "nanoid";
+import { v1 as uuidv1 } from "uuid";
 const UserDataContext = createContext({
-  id: nanoid(),
+  id: uuidv1(),
   username: "",
   email: "",
   password: "",
@@ -37,7 +37,7 @@ const initialValue = JSON.parse(localStorage.getItem("currUser"));
 export function UserDataContextProvider({ children }) {
   const [userData, setUserData] = useState(
     initialValue || {
-      id: nanoid(),
+      id: uuidv1(),
       username: "",
       email: "",
       password: "",

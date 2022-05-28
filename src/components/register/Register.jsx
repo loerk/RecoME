@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useTheme } from "../../contexts/ThemeContext";
 import { useUserData } from "../../contexts/UserDataContext";
 import { useNavigate, NavLink } from "react-router-dom";
-import { nanoid } from "nanoid";
+import { v1 as uuidv1 } from "uuid";
 import { useUsers } from "../../contexts/UsersContext";
 
 export default function Register() {
@@ -14,7 +14,7 @@ export default function Register() {
   const [registerData, setRegisterData] = useState({});
   const navigate = useNavigate();
   const createID = () => {
-    return nanoid();
+    return uuidv1();
   };
 
   function handleChange(event) {

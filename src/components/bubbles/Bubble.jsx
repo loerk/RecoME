@@ -2,11 +2,13 @@ import React from "react";
 import { useUserData } from "../../contexts/UserDataContext";
 import { useParams, useNavigate } from "react-router-dom";
 import { AddButton } from "../../utilities/Buttons";
-import { nanoid } from "nanoid";
+import { v1 as uuidv1 } from "uuid";
+import { useTheme } from "../../contexts/ThemeContext";
 
 export default function Bubble() {
   const navigate = useNavigate();
   let params = useParams();
+  const theme = useTheme();
 
   const { userData, setUserData } = useUserData();
 
@@ -65,7 +67,7 @@ export default function Bubble() {
           <ul>
             {currBubble.publicRecos ? (
               currBubble.publicRecos.map((publicReco) => (
-                <li key={nanoid()}>{publicReco.username}</li>
+                <li key={uuidv1()}>{publicReco.username}</li>
               ))
             ) : (
               <>
@@ -100,7 +102,17 @@ export default function Bubble() {
           It's always hard to say goodbye, but sometimes there is no other
           option
         </p>
-        <button onClick={deleteBubble}>DELETE BUBBLE</button>
+        {/* TODO:theme funktioniert nicht */}
+        <button
+          className={
+            theme
+              ? "w-40 hover:translate-y-1  text-3xl p-3 bg-white  text-black  font-face-tm my-4"
+              : "w-40 hover:translate-y-1  text-3xl p-3 bg-black  text-white  font-face-tm my-4"
+          }
+          onClick={deleteBubble}
+        >
+          DELETE BUBBLE
+        </button>
       </div>
     </div>
   );
