@@ -85,7 +85,7 @@ export default function Bubble() {
           <ul>
             {currBubble.privateRecos ? (
               currBubble.privateRecos.recoFrom.map((privateRecos) => (
-                <li key={nanoid()}>{privateRecos.username}</li>
+                <li key={uuidv1()}>{privateRecos.username}</li>
               ))
             ) : (
               <>

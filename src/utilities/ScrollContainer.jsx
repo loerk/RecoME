@@ -1,6 +1,7 @@
 import React from "react";
 
 export default function ScrollContainer({ children }) {
+  window.scrollTo(0, 0);
   return (
     <div
       className="scrollbar-hidden"

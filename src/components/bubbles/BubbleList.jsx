@@ -1,6 +1,6 @@
 import React from "react";
 import { useUserData } from "../../contexts/UserDataContext";
-import { nanoid } from "nanoid";
+import { v1 as uuidv1 } from "uuid";
 import { useNavigate, useParams } from "react-router-dom";
 
 export default function BubbleList({ searchParams }) {
@@ -24,7 +24,7 @@ export default function BubbleList({ searchParams }) {
               if (params.bubbleId === undefined) {
                 return (
                   <div
-                    key={nanoid()}
+                    key={uuidv1()}
                     onClick={() => navigate(`/bubbles/${bubble.id}`)}
                     className="m-3 cursor-pointer flex justify-center"
                   >

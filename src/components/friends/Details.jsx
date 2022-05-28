@@ -7,6 +7,7 @@ export default function Details() {
   const { userData } = useUserData();
   const { users } = useUsers();
   const [bubbleInvitations, setBubbleInvitations] = useState();
+
   console.log("hiiiiii");
 
   //map users Notifications
@@ -20,11 +21,15 @@ export default function Details() {
           console.log("22222", user);
           //find specific Bubble
           user.bubbles.map((bubble) => {
+            console.log("bubble", bubble);
             //if you found the specific Bubble setState
+            console.log("bubbleId", bubble.id);
+            console.log("notifi.toBubble", notification.toBubble);
             if (bubble.id === notification.toBubble) {
+              console.log("YWEEESSSSAAA");
               setBubbleInvitations({
                 ...bubble,
-                invitedBy: notification.invitedBy,
+                invitedBy: notification.invitedByUser,
               });
             } else {
               return null;

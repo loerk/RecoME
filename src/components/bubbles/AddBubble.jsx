@@ -1,4 +1,4 @@
-import { nanoid } from "nanoid";
+import { v1 as uuidv1 } from "uuid";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUserData } from "../../contexts/UserDataContext";
@@ -15,7 +15,7 @@ export default function AddBubble() {
     setBubbleData((prevBubbleData) => ({
       ...prevBubbleData,
       [name]: value,
-      id: nanoid(),
+      id: uuidv1(),
       createdAt: Date.now(),
       createdBy: userData.id,
       members: [{ userId: userData.id, username: userData.username }],

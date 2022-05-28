@@ -9,7 +9,7 @@ export default function Landing() {
   const { users } = useUsers();
   const { userData } = useUserData();
   const navigate = useNavigate();
-
+  window.scrollTo(0, 0);
   useEffect(() => {
     localStorage.setItem("users", JSON.stringify(users));
   }, [users]);
