@@ -10,9 +10,9 @@ export default function BubbleList({ searchParams }) {
   const params = useParams();
 
   return (
-    <div className=" m-auto max-w-[50%] p-10 mt-5">
+    <div className=" m-auto bg-transparent p-10 mt-5">
       {bubbles.length !== 0 ? (
-        <ul>
+        <ul className="grid xl:grid-cols-4 md:grid-cols-3 gap-4">
           {bubbles
             .filter((bubble) => {
               let filter = searchParams.get("filter");
@@ -28,26 +28,24 @@ export default function BubbleList({ searchParams }) {
                     onClick={() => navigate(`/bubbles/${bubble.id}`)}
                     className="m-3 cursor-pointer flex justify-center"
                   >
-                    <div className="flex h-60 flex-col hover:shadow-inner md:flex-row md:max-w-xl rounded-lg bg-white shadow-lg">
+                    <div className="flex w-full md:relative flex-col hover:shadow-inner md:flex-row md:max-w-xl rounded-lg bg-transparent shadow-lg ">
                       <img
-                        className=" w-full h-96 md:h-auto object-cover md:w-48 rounded-t-lg md:rounded-none md:rounded-l-lg"
+                        className=" w-full -z-10 h-full md:absolute object-cover md:w-auto  bg-white md:opacity-40 rounded md:rounded-l-lg"
                         src={bubble.imageUrl}
                         alt=""
                       />
-                      <div className="p-6 flex flex-col justify-start">
+                      <div className="p-6 flex flex-col justify-start px-3">
                         <h5 className="text-gray-900 text-xl font-medium mb-2">
                           {bubble.name}
                         </h5>
-                        <p className="text-gray-700 text-base mb-4">
+                        <p className="text-gray-700  md:w-28 text-base mb-4 md:truncate ">
                           {bubble.description}
                         </p>
-                        <p className="text-gray-600 text-xs">
-                          Last updated 3 mins ago
-                        </p>
-                        <div className="flex flex-wrap  gap-2 justify-center mt-auto">
+
+                        <div className="flex flex-wrap  gap-2  mt-auto">
                           {bubble.categories.split(",").map((category) => {
                             return (
-                              <span className="text-xs tracking-widest font-face-tl inline-block py-1 px-2.5 leading-none text-center whitespace-nowrap align-baseline font-bold bg-lime-400 text-black rounded-full">
+                              <span className="text-xs tracking-widest mt-2 font-face-tl inline-block py-1 px-2.5 leading-none whitespace-nowrap align-baseline font-bold bg-lime-400 text-black rounded-full">
                                 {category}
                               </span>
                             );
