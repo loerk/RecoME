@@ -1,19 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { useUserData } from "../../contexts/UserDataContext";
 import { useUsers } from "../../contexts/UsersContext";
-import { VscChromeClose } from "react-icons/vsc";
-import { VscCheck } from "react-icons/vsc";
+import { VscChromeClose, VscCheck } from "react-icons/vsc";
 
 export default function Details() {
   const { userData } = useUserData();
   const { users } = useUsers();
-  const [invitedByUser, setInvitedByUser] = useState();
+  const [invitedByUser, setInvitedByUser] = useState({
+    userName: "",
+    userId: null,
+    notificationId: null,
+  });
   const [invitedToBubble, setInvitedToBubble] = useState();
 
   console.log("hiiiiii");
   useEffect(() => {
     //map users Notifications
-    userData.notifications.map((notification) => {
+    userData.notifications?.map((notification) => {
       console.log("111111", notification);
       //if Notification hasProperty of toBubble it has a bubble
       if (notification.toBubble) {
@@ -29,7 +32,11 @@ export default function Details() {
               console.log("notifi.toBubble", notification.toBubble);
               if (bubble.id === notification.toBubble) {
                 console.log("YWEEESSSSAAA");
-                setInvitedByUser(notification.invitedByUser);
+                setInvitedByUser({
+                  userName: notification.invitedByUser,
+                  userId: notification.invitedBy,
+                  notificationId: notification.id,
+                });
                 setInvitedToBubble({ ...bubble });
               } else {
                 return null;
@@ -45,6 +52,11 @@ export default function Details() {
     });
   }, []);
 
+  const acceptBubbleInvitation = (id) => {
+    console.log(invitedByUser);
+  };
+
+  const refuseBubbleInvitation = () => {};
   // const userId = userData.notifications.map(() => {});
   //const invitedBy = users.find((user)=>user.id===userData.notifications.)
   console.log(invitedByUser, invitedToBubble);
@@ -68,8 +80,14 @@ export default function Details() {
                 Congratulations, you are invited by {invitedByUser}!
               </p>
               <div className="text-black flex justify-end gap-3">
-                <VscChromeClose></VscChromeClose>
-                <VscCheck></VscCheck>
+                <VscChromeClose
+                  onClick={() => refuseBubbleInvitation()}
+                  className="cursor-pointer"
+                ></VscChromeClose>
+                <VscCheck
+                  onClick={() => acceptBubbleInvitation(invitedToBubble.id)}
+                  className="cursor-pointer"
+                ></VscCheck>
               </div>
             </div>
           </div>
