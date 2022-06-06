@@ -1,33 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
-import { v1 as uuidv1 } from "uuid";
-const UserDataContext = createContext({
-  id: uuidv1(),
-  username: "",
-  email: "",
-  password: "",
-  passwordConfirm: "",
-  notifications: [],
-  memberSince: 0,
-  stayLoggedIn: false,
-  isLoggedIn: false,
-  avatarUrl: "",
-  friends: [],
-  bubbles: [],
-  invitedFriends: [],
-  invitedBy: "",
-  recos: [
-    {
-      private: [],
-      public: [],
-      specified: [
-        {
-          to: [],
-          reco: {},
-        },
-      ],
-    },
-  ],
-});
+const UserDataContext = createContext(null);
 
 export const useUserData = () => {
   return useContext(UserDataContext);
@@ -35,9 +7,18 @@ export const useUserData = () => {
 const initialValue = JSON.parse(localStorage.getItem("currUser"));
 
 export function UserDataContextProvider({ children }) {
+  function userLogin(user){
+    setUserData({...user, isLoggedIn:true, lastLogin: Date.now()});
+    localStorage.setItem("currUser", JSON.stringify(userData));
+  }
+  function userLogout(user){
+    setUserData({...user, isLoggedIn:false});
+    localStorage.setItem("currUser", JSON.stringify(userData))
+  }
+
   const [userData, setUserData] = useState(
     initialValue || {
-      id: uuidv1(),
+      id: null,
       username: "",
       email: "",
       password: "",
@@ -66,10 +47,14 @@ export function UserDataContextProvider({ children }) {
     }
   );
 
-  const contextValue = { userData: userData, setUserData: setUserData };
+  const contextValue = { userData: userData, setUserData: setUserData, userLogin: userLogin, userLogout: userLogout };
   return (
     <UserDataContext.Provider value={contextValue}>
       {children}
     </UserDataContext.Provider>
   );
+
+
 }
+
+

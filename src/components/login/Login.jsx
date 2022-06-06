@@ -1,16 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
 import { useTheme } from "../../contexts/ThemeContext";
 import { useUserData } from "../../contexts/UserDataContext";
 import { useUsers } from "../../contexts/UsersContext";
 
 export default function Login() {
-  const { userData, setUserData } = useUserData();
+  const { userLogin } = useUserData();
   const { theme } = useTheme();
-  const { users, setUsers } = useUsers();
-  const [validUser, setValidUser] = useState(true);
+  const { users } = useUsers();
+
+  const [error, setError] = useState(null)
   const [loginData, setLoginData] = useState({});
-  const [validPassword, setValidPassword] = useState(true);
+
+
   const navigate = useNavigate();
 
   function handleChange(event) {
@@ -24,27 +26,24 @@ export default function Login() {
   function handleSubmit(event) {
     event.preventDefault();
     const knownUser = users.find((user) => user.email === loginData.email);
-    if (knownUser) {
-      const loginSuccess = users.find(
-        (user) =>
-          user.password === loginData.password && user.email === loginData.email
-      );
-      if (loginSuccess) {
-        setUserData({ ...knownUser, isLoggedIn: true, lastLogin: Date.now() });
-        navigate("/");
-      } else {
-        setValidPassword(false);
-      }
-    } else {
-      setValidUser(false);
-    }
+  
+    if(!knownUser){
+        setError('please register first')
+        return
+    } 
+    if(knownUser.password !== loginData.password){
+      setError('wrong password, try again')
+      return
+    }  
+    userLogin({ ...knownUser});
+    navigate("/"); 
   }
 
-  useEffect(() => {
-    localStorage.setItem("currUser", JSON.stringify(userData));
-    setUsers(users.map((user) => (user.id === userData.id ? userData : user)));
-    localStorage.setItem("users", JSON.stringify(users));
-  }, []); // eslint-disable-line
+  // useEffect(() => {
+  //   localStorage.setItem("currUser", JSON.stringify(userData));
+  //   setUsers(users.map((user) => (user.id === userData.id ? userData : user)));
+  //   localStorage.setItem("users", JSON.stringify(users));
+  // }, []); // eslint-disable-line
 
   return (
     <div className="flex justify-center flex-col">
@@ -96,12 +95,7 @@ export default function Login() {
               I want to stay logged in
             </label>
           </div>
-          {!validUser ? (
-            <p className="text-fuchsia-600">please register first</p>
-          ) : null}
-          {!validPassword ? (
-            <p className="text-fuchsia-600">wrong password, try again</p>
-          ) : null}
+          {!!error && ( <p className="text-fuchsia-600">{error}</p>)}
           <button
             className={
               theme
