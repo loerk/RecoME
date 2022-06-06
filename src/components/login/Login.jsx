@@ -1,13 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
 import { useTheme } from "../../contexts/ThemeContext";
-import { useUserData } from "../../contexts/UserDataContext";
 import { useUsers } from "../../contexts/UsersContext";
 
 export default function Login() {
-  const { userLogin } = useUserData();
   const { theme } = useTheme();
-  const { users } = useUsers();
+  const { users, loginUser } = useUsers();
 
   const [error, setError] = useState(null);
   const [loginData, setLoginData] = useState({});
@@ -34,15 +32,9 @@ export default function Login() {
       setError("wrong password, try again");
       return;
     }
-    userLogin({ ...knownUser });
+    loginUser({ ...knownUser });
     navigate("/");
   }
-
-  // useEffect(() => {
-  //   localStorage.setItem("currUser", JSON.stringify(userData));
-  //   setUsers(users.map((user) => (user.id === userData.id ? userData : user)));
-  //   localStorage.setItem("users", JSON.stringify(users));
-  // }, []); // eslint-disable-line
 
   return (
     <div className="flex justify-center flex-col">

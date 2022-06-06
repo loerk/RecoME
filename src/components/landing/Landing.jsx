@@ -2,33 +2,31 @@ import { v1 as uuidv1 } from "uuid";
 import React, { useEffect } from "react";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
-import { useUserData } from "../../contexts/UserDataContext";
 import { useUsers } from "../../contexts/UsersContext";
 
 export default function Landing() {
-  const { users } = useUsers();
-  const { userData } = useUserData();
+  const { currentUser } = useUsers();
   const navigate = useNavigate();
   window.scrollTo(0, 0);
-  useEffect(() => {
-    localStorage.setItem("users", JSON.stringify(users));
-  }, [users]);
+  // useEffect(() => {
+  //   localStorage.setItem("users", JSON.stringify(users));
+  // }, [users]);
 
-  useEffect(() => {
-    if (userData) {
-      localStorage.setItem("currUser", JSON.stringify(userData));
-    }
-  }, [userData]);
+  // useEffect(() => {
+  //   if (currentUser) {
+  //     localStorage.setItem("currUser", JSON.stringify(currentUser));
+  //   }
+  // }, [currentUser]);
 
-  console.log("landing", userData);
+  console.log("landing", currentUser);
   return (
     <div>
       <div className="flex items-center m-auto gap-7 my-7 p-10 flex-col bg-gradient-to-r from-purple-500 to-pink-500 rounded shadow-2xl ">
         <div className="text-center">
           <h1 className="pb-6">Your bubbles</h1>
           <ul className="flex gap-6 flex-wrap justify-center">
-            {userData.bubbles.length !== 0 ? (
-              userData.bubbles.map((bubble) => (
+            {currentUser.bubbles.length !== 0 ? (
+              currentUser.bubbles.map((bubble) => (
                 <li key={uuidv1()}>
                   <div className="text-center">
                     <img
@@ -58,8 +56,8 @@ export default function Landing() {
         <div>
           <h1>Your friends</h1>
           <ul>
-            {userData.friends.length !== 0 ? (
-              userData.friends.map((friend) => (
+            {currentUser.friends.length !== 0 ? (
+              currentUser.friends.map((friend) => (
                 <li key={uuidv1()}>
                   <button onClick={() => navigate("/friends")}>
                     {friend.name}
@@ -83,8 +81,8 @@ export default function Landing() {
         <div>
           <h1>Latest Recos</h1>
           <ul>
-            {!userData.recos ? (
-              userData.recos.map((type) =>
+            {!currentUser.recos ? (
+              currentUser.recos.map((type) =>
                 type.map((reco) => (
                   <li key={uuidv1()}>
                     <button onClick={() => navigate("/bubbles")}>

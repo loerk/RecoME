@@ -1,28 +1,32 @@
-import React from "react";
-import { useUserData } from "../../contexts/UserDataContext";
+import React, { useState } from "react";
+
 import { useParams, useNavigate } from "react-router-dom";
 import { AddButton } from "../../utilities/Buttons";
 import { v1 as uuidv1 } from "uuid";
 import { useTheme } from "../../contexts/ThemeContext";
+import { useUsers } from "../../contexts/UsersContext";
 
 export default function Bubble() {
   const navigate = useNavigate();
   let params = useParams();
   const theme = useTheme();
 
-  const { userData, setUserData } = useUserData();
+  const { currentUser } = useUsers();
+  const [updatedUser, setUpdatedUser] = useState();
 
-  let currBubble = userData.bubbles.find(
+  let currBubble = currentUser.bubbles.find(
     (bubble) => bubble.id === params.bubbleId
   );
 
   const deleteBubble = () => {
-    const deletedItemsArr = userData.bubbles.filter(
+    const deletedItemsArr = currentUser.bubbles.filter(
       (bubble) => bubble.id !== currBubble.id
     );
     navigate("/bubbles");
-    setUserData({ ...userData, bubbles: [...deletedItemsArr] });
+    setUpdatedUser({ ...currentUser, bubbles: [...deletedItemsArr] });
+    updatedUser(updatedUser);
   };
+
   const addFriends = () => {
     navigate("/friends/addFriend");
   };

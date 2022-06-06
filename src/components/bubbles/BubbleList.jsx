@@ -1,11 +1,12 @@
 import React from "react";
-import { useUserData } from "../../contexts/UserDataContext";
+
 import { useNavigate, useParams } from "react-router-dom";
+import { useUsers } from "../../contexts/UsersContext";
 
 export default function BubbleList({ searchParams }) {
-  const { userData } = useUserData();
+  const { currentUser } = useUsers();
   const navigate = useNavigate();
-  const bubbles = userData.bubbles;
+  const bubbles = currentUser.bubbles;
   const params = useParams();
 
   return (

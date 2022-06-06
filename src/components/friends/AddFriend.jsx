@@ -1,25 +1,25 @@
 import { v1 as uuidv1 } from "uuid";
-import React, { useEffect, useState } from "react";
-import { useUserData } from "../../contexts/UserDataContext";
+import React, { useState } from "react";
 import { useUsers } from "../../contexts/UsersContext";
 
 export default function AddFriend() {
-  const { userData, setUserData } = useUserData();
-  const { users, setUsers } = useUsers();
-  const [successfulInvited, setSuccessfulInvited] = useState("");
+  const { users, setUsers, currentUser, updateUser } = useUsers();
+  const [invitiationStatus, setInvitationStatus] = useState(null);
 
   const [addFriendData, setAddFriendData] = useState({
     email: "",
     toBubble: "",
   });
-  console.log("currUser", userData);
+  const [updatedUser, setUpdatedUser] = useState();
+  console.log("currUser", currentUser);
+
   const handleBubble = (e) => {
     setAddFriendData({
       ...addFriendData,
       type: "invitedToBubble",
       toBubble: e.target.value,
-      invitedBy: userData.id,
-      invitedByUser: userData.username,
+      invitedBy: currentUser.id,
+      invitedByUser: currentUser.username,
     });
   };
   const handleEmail = (e) => {
@@ -29,18 +29,21 @@ export default function AddFriend() {
 
   const sendNotification = () => {
     if (addFriendData.email === "") {
-      setSuccessfulInvited("no");
+      setInvitationStatus("Ooops, an email is missing :/ try again!");
       return;
     }
+
     const addFriend = users.find((user) => user.email === addFriendData.email);
-    if (userData.invitedFriends.length === 0) {
-      setUserData({ ...userData, invitedFriends: [addFriendData.id] });
+
+    if (currentUser.invitedFriends.length === 0) {
+      setUpdatedUser({ ...currentUser, invitedFriends: [addFriendData.id] });
     } else {
-      setUserData({
-        ...userData,
-        invitedFriends: [...userData.invitedFriends, addFriend.id],
+      setUpdatedUser({
+        ...currentUser,
+        invitedFriends: [...currentUser.invitedFriends, addFriend.id],
       });
     }
+
     if (addFriend.notifications.length !== 0) {
       setUsers(
         users.map((user) => {
@@ -83,24 +86,25 @@ export default function AddFriend() {
         })
       );
     }
-    if (userData.invitedFriends.length !== 0) {
-      setUserData({
-        ...userData,
-        invitedFriends: [...userData.invitedFriends, { addFriendData }],
+    if (currentUser.invitedFriends.length !== 0) {
+      setUpdatedUser({
+        ...currentUser,
+        invitedFriends: [...currentUser.invitedFriends, { addFriendData }],
       });
     } else {
-      setUserData({ ...userData, invitedFriends: [{ addFriendData }] });
+      setUpdatedUser({ ...currentUser, invitedFriends: [{ addFriendData }] });
     }
-    setSuccessfulInvited("yes");
+    setInvitationStatus(" Great, your friend got invited!");
+    updateUser(updatedUser);
   };
 
-  useEffect(() => {
-    localStorage.setItem("users", JSON.stringify(users));
-  }, [userData, users]);
+  // useEffect(() => {
+  //   localStorage.setItem("users", JSON.stringify(users));
+  // }, [currentUser, users]);
 
   return (
     <div className="flex justify-center text-center">
-      {userData.bubbles ? (
+      {currentUser.bubbles ? (
         <div className="w-72 m-auto mt-8">
           <select
             onChange={handleBubble}
@@ -125,7 +129,7 @@ export default function AddFriend() {
               focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
           >
             <option selected>select a bubble</option>
-            {userData.bubbles.map((bubble) => {
+            {currentUser.bubbles.map((bubble) => {
               return <option value={bubble.id}>{bubble.name}</option>;
             })}
           </select>
@@ -160,15 +164,9 @@ export default function AddFriend() {
           >
             Invite Friend to your Bubble
           </button>
-          {successfulInvited === "yes" ? (
-            <p className="text-fuchsia-600 pt-3">
-              Great, your friend got invited!
-            </p>
-          ) : successfulInvited === "no" ? (
-            <p className="text-fuchsia-600 pt-3">
-              Ooops, an email is missing :/ try again!
-            </p>
-          ) : null}
+          {!!invitiationStatus && (
+            <p className="text-fuchsia-600 pt-3">{invitiationStatus}</p>
+          )}
         </div>
       ) : (
         <p>You dont have any bubbles, please add a bubble first</p>

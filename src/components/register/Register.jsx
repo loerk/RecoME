@@ -1,14 +1,12 @@
 import React, { useState } from "react";
 
 import { useTheme } from "../../contexts/ThemeContext";
-import { useUserData } from "../../contexts/UserDataContext";
 import { useNavigate, NavLink } from "react-router-dom";
 import { useUsers } from "../../contexts/UsersContext";
 
 export default function Register() {
-  const { userData, createNewUser } = useUserData();
   const { theme } = useTheme();
-  const { users, addUser } = useUsers();
+  const { currentUser, users, addUser, createNewUser } = useUsers();
 
   const [error, setError] = useState();
   const [registerData, setRegisterData] = useState({});
@@ -21,7 +19,7 @@ export default function Register() {
       ...prevRegisterData,
       [name]: type === "checkbox" ? checked : value,
     }));
-    console.log("userdataRegister", userData);
+    console.log("userdataRegister", currentUser);
   }
 
   function handleSubmit(event) {
@@ -47,7 +45,7 @@ export default function Register() {
     createNewUser(registerData);
     //might be wrong
     //fix if combinedContext
-    addUser(userData);
+    addUser(currentUser);
     navigate("/");
   }
 

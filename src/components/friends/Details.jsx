@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { useUserData } from "../../contexts/UserDataContext";
+import React, { useState } from "react";
+
 import { useUsers } from "../../contexts/UsersContext";
 import { VscChromeClose, VscCheck } from "react-icons/vsc";
 
 export default function Details() {
-  const { userData } = useUserData();
-  const { users } = useUsers();
+  const { users, currentUser } = useUsers();
   const [invitedByUser, setInvitedByUser] = useState({
     userName: "",
     userId: null,
@@ -13,13 +12,13 @@ export default function Details() {
   });
   const [invitedToBubble, setInvitedToBubble] = useState();
 
-  const currentNotifications = userData.notifications
+  const currentNotifications = currentUser.notifications;
   // const handleNotifications=()=>{
   //   switch () {
   //     case toBubble:
-        
+
   //       break;
-    
+
   //     default:
   //       break;
   //   }
@@ -27,51 +26,50 @@ export default function Details() {
   console.log("hiiiiii");
   console.log(currentNotifications);
 
-    console.log("userData1",userData)
-    //map users Notifications
-    currentNotifications.map((notification) => {
-      console.log("111111", notification);
-      //if Notification hasProperty of toBubble it has a bubble
-      if (notification.toBubble) {
-        //find bubble in UsersArray
-        return users.map((user) => {
-          if (user.bubbles) {
-            console.log("22222", user);
-            //find specific Bubble
-            user.bubbles.map((bubble) => {
-              console.log("bubble", bubble);
-              //if you found the specific Bubble setState
-              console.log("bubbleId", bubble.id);
-              console.log("notifi.toBubble", notification.toBubble);
-              if (bubble.id === notification.toBubble) {
-                console.log("YWEEESSSSAAA");
-                setInvitedByUser({
-                  userName: notification.invitedByUser,
-                  userId: notification.invitedBy,
-                  notificationId: notification.id,
-                });
-                setInvitedToBubble(bubble);
-              } else {
-                return null;
-              }
-            });
-          } else {
-            return null;
-          }
-        });
-      } else {
-        return null;
-      }
-    });
- 
+  console.log("userData1", currentUser);
+  //map users Notifications
+  currentNotifications.map((notification) => {
+    console.log("111111", notification);
+    //if Notification hasProperty of toBubble it has a bubble
+    if (notification.toBubble) {
+      //find bubble in UsersArray
+      return users.map((user) => {
+        if (user.bubbles) {
+          console.log("22222", user);
+          //find specific Bubble
+          user.bubbles.map((bubble) => {
+            console.log("bubble", bubble);
+            //if you found the specific Bubble setState
+            console.log("bubbleId", bubble.id);
+            console.log("notifi.toBubble", notification.toBubble);
+            if (bubble.id === notification.toBubble) {
+              console.log("YWEEESSSSAAA");
+              setInvitedByUser({
+                userName: notification.invitedByUser,
+                userId: notification.invitedBy,
+                notificationId: notification.id,
+              });
+              setInvitedToBubble(bubble);
+            } else {
+              return null;
+            }
+          });
+        } else {
+          return null;
+        }
+      });
+    } else {
+      return null;
+    }
+  });
 
   const acceptBubbleInvitation = (id) => {
     console.log(invitedByUser);
   };
 
   const refuseBubbleInvitation = () => {};
-  // const userId = userData.notifications.map(() => {});
-  //const invitedBy = users.find((user)=>user.id===userData.notifications.)
+  // const userId = currentUser.notifications.map(() => {});
+  //const invitedBy = users.find((user)=>user.id===currentUser.notifications.)
   console.log(invitedByUser, invitedToBubble);
 
   return (
