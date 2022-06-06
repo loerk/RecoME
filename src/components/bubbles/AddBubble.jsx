@@ -1,5 +1,5 @@
 import { v1 as uuidv1 } from "uuid";
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useUsers } from "../../contexts/UsersContext";
@@ -7,7 +7,7 @@ import { useUsers } from "../../contexts/UsersContext";
 export default function AddBubble() {
   const [bubbleData, setBubbleData] = useState([]);
 
-  const { users, setUsers, currentUser, updateUser } = useUsers();
+  const { currentUser, updateUser } = useUsers();
   const [updatedUser, setUpdatedUser] = useState();
   const navigate = useNavigate();
 
@@ -36,13 +36,6 @@ export default function AddBubble() {
     updateUser(updatedUser);
     navigate(-1);
   }
-
-  // useEffect(() => {
-  //   setUsers(
-  //     users.map((user) => (user.id === currentUser.id ? currentUser : user))
-  //   );
-  //   localStorage.setItem("users", JSON.stringify(users));
-  // }, [currentUser]); // eslint-disable-line
 
   return (
     <div className="w-72 m-auto mt-8">

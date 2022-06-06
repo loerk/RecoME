@@ -98,10 +98,6 @@ export default function AddFriend() {
     updateUser(updatedUser);
   };
 
-  // useEffect(() => {
-  //   localStorage.setItem("users", JSON.stringify(users));
-  // }, [currentUser, users]);
-
   return (
     <div className="flex justify-center text-center">
       {currentUser.bubbles ? (

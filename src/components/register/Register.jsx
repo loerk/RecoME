@@ -6,7 +6,7 @@ import { useUsers } from "../../contexts/UsersContext";
 
 export default function Register() {
   const { theme } = useTheme();
-  const { currentUser, users, addUser, createNewUser } = useUsers();
+  const { users, createNewUser } = useUsers();
 
   const [error, setError] = useState();
   const [registerData, setRegisterData] = useState({});
@@ -19,33 +19,26 @@ export default function Register() {
       ...prevRegisterData,
       [name]: type === "checkbox" ? checked : value,
     }));
-    console.log("userdataRegister", currentUser);
   }
 
   function handleSubmit(event) {
     event.preventDefault();
+
+    const knownUser = users.find((user) => user.email === registerData.email);
+    if (knownUser) {
+      setError("This email already has an account. Please sign in");
+      return;
+    }
+
     if (
       registerData.password !== registerData.passwordConfirm ||
-      registerData.password === ""
+      !registerData.password
     ) {
       setError("The passwords have to match");
       return;
     }
-    //check if user already exists
-    if (users.length !== 0) {
-      const knownUser = users.find((user) => user.email === registerData.email);
-      if (knownUser) {
-        if (knownUser.length !== 0) {
-          setError("This email already has an account. Please sign in");
-          return;
-        }
-      }
-    }
 
     createNewUser(registerData);
-    //might be wrong
-    //fix if combinedContext
-    addUser(currentUser);
     navigate("/");
   }
 

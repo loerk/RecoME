@@ -10,7 +10,7 @@ import Notifications from "../notifications/Notifications";
 
 export default function Header() {
   const { theme, setTheme } = useTheme();
-  const { updateUsers, logoutUser, currentUser } = useUsers();
+  const { logoutUser, currentUser } = useUsers();
 
   const navigate = useNavigate();
 
@@ -18,7 +18,6 @@ export default function Header() {
 
   const handleLogout = () => {
     logoutUser(currentUser);
-    updateUsers(currentUser);
     navigate("/login");
   };
 
@@ -32,7 +31,7 @@ export default function Header() {
             <MdOutlineLightMode style={{ color: "white" }} />
           )}
         </button>
-        {currentUser.isLoggedIn ? (
+        {currentUser ? (
           <>
             <Navigation />
             <Notifications />

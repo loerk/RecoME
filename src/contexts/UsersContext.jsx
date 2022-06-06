@@ -6,21 +6,21 @@ const UsersContext = createContext([]);
 export const useUsers = () => {
   return useContext(UsersContext);
 };
+const initialValueCurrentUser = JSON.parse(localStorage.getItem("currentUser"));
+const initialValueUsers = JSON.parse(localStorage.getItem("users"));
 
 export function UsersContextProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(
-    JSON.parse(localStorage.getItem("currUser") || {})
+    initialValueCurrentUser || null
   );
-  const [users, setUsers] = useState(
-    JSON.parse(localStorage.getItem("users")) || []
-  );
+  const [users, setUsers] = useState(initialValueUsers || []);
 
   const loginUser = (user) => {
-    setCurrentUser({ ...user, isLoggedIn: true, lastLogin: Date.now() });
+    setCurrentUser({ ...user, lastLogin: Date.now() });
   };
 
   const logoutUser = (user) => {
-    setCurrentUser({ ...user, isLoggedIn: false });
+    setCurrentUser(null);
   };
 
   const updateUsers = (currUser) => {
@@ -28,23 +28,19 @@ export function UsersContextProvider({ children }) {
   };
 
   const updateUser = (updatedUser) => {
-    setCurrentUser(updatedUser);
+    setCurrentUser({ ...updatedUser });
   };
-  const addUser = (newUser) => {
-    setUsers([...users, newUser]);
-  };
+
   const deleteUser = () => {
-    const deletedArr = users.filter((user) => user.id !== currentUser.id);
-    setUsers(deletedArr);
-    setCurrentUser(0);
+    setUsers(users.filter((user) => user.id !== currentUser.id));
+    setCurrentUser(null);
   };
 
   const createNewUser = (registeredUser) => {
-    setCurrentUser({
+    const newUser = {
       ...registeredUser,
       id: uuidv1(),
       lastLogin: Date.now(),
-      isLoggedIn: true,
       memberSince: Date.now(),
       stayLoggedIn: false,
       friends: [],
@@ -65,16 +61,19 @@ export function UsersContextProvider({ children }) {
           ],
         },
       ],
-    });
+    };
+    setCurrentUser(newUser);
+    setUsers([...users, newUser]);
+    localStorage.setItem("currentUser", JSON.stringify(newUser));
+    localStorage.setItem("users", JSON.stringify([...users, newUser]));
   };
 
   const contextValue = {
-    users: users,
+    users,
     setUsers: setUsers,
     currentUser: currentUser,
     updateUsers: updateUsers,
     updateUser: updateUser,
-    addUser: addUser,
     loginUser: loginUser,
     logoutUser: logoutUser,
     createNewUser: createNewUser,
@@ -82,9 +81,12 @@ export function UsersContextProvider({ children }) {
   };
 
   useEffect(() => {
-    localStorage.setItem("users", JSON.stringify(users));
     localStorage.setItem("currentUser", JSON.stringify(currentUser));
-  }, [users, currentUser]);
+  }, [currentUser]); // eslint-disable-line
+
+  useEffect(() => {
+    localStorage.setItem("users", JSON.stringify(users));
+  }, [users]);
 
   return (
     <UsersContext.Provider value={contextValue}>

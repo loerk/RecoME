@@ -1,5 +1,5 @@
 import { v1 as uuidv1 } from "uuid";
-import React, { useEffect } from "react";
+import React from "react";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import { useUsers } from "../../contexts/UsersContext";
@@ -8,17 +8,12 @@ export default function Landing() {
   const { currentUser } = useUsers();
   const navigate = useNavigate();
   window.scrollTo(0, 0);
-  // useEffect(() => {
-  //   localStorage.setItem("users", JSON.stringify(users));
-  // }, [users]);
 
-  // useEffect(() => {
-  //   if (currentUser) {
-  //     localStorage.setItem("currUser", JSON.stringify(currentUser));
-  //   }
-  // }, [currentUser]);
+  if (!currentUser) {
+    return;
+  }
 
-  console.log("landing", currentUser);
+  // console.log("landing", Object.keys(currentUser).length);
   return (
     <div>
       <div className="flex items-center m-auto gap-7 my-7 p-10 flex-col bg-gradient-to-r from-purple-500 to-pink-500 rounded shadow-2xl ">

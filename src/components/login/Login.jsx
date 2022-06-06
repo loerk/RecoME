@@ -32,7 +32,7 @@ export default function Login() {
       setError("wrong password, try again");
       return;
     }
-    loginUser({ ...knownUser });
+    loginUser(knownUser);
     navigate("/");
   }
 
