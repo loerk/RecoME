@@ -13,10 +13,23 @@ export default function Details() {
   });
   const [invitedToBubble, setInvitedToBubble] = useState();
 
+  const currentNotifications = userData.notifications
+  // const handleNotifications=()=>{
+  //   switch () {
+  //     case toBubble:
+        
+  //       break;
+    
+  //     default:
+  //       break;
+  //   }
+  // }
   console.log("hiiiiii");
-  useEffect(() => {
+  console.log(currentNotifications);
+
+    console.log("userData1",userData)
     //map users Notifications
-    userData.notifications?.map((notification) => {
+    currentNotifications.map((notification) => {
       console.log("111111", notification);
       //if Notification hasProperty of toBubble it has a bubble
       if (notification.toBubble) {
@@ -37,7 +50,7 @@ export default function Details() {
                   userId: notification.invitedBy,
                   notificationId: notification.id,
                 });
-                setInvitedToBubble({ ...bubble });
+                setInvitedToBubble(bubble);
               } else {
                 return null;
               }
@@ -50,7 +63,7 @@ export default function Details() {
         return null;
       }
     });
-  }, []);
+ 
 
   const acceptBubbleInvitation = (id) => {
     console.log(invitedByUser);
@@ -60,6 +73,7 @@ export default function Details() {
   // const userId = userData.notifications.map(() => {});
   //const invitedBy = users.find((user)=>user.id===userData.notifications.)
   console.log(invitedByUser, invitedToBubble);
+
   return (
     <div className="flex items-center flex-col mt-6">
       <h1>WOW WOW WOW</h1>

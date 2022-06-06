@@ -10,30 +10,27 @@ import Notifications from "../notifications/Notifications";
 
 export default function Header() {
   const { theme, setTheme } = useTheme();
-  const { userData, setUserData } = useUserData();
-  const { users, setUsers } = useUsers();
+  const { userData, setUserData, userLogout } = useUserData();
+  const { users, setUsers, updateUsers } = useUsers();
   const [logout, setLogout] = useState(false);
   const navigate = useNavigate();
 
   console.log("headerLevel", userData);
 
   const handleLogout = () => {
-    setLogout(true);
-    setUserData({ ...userData, isLoggedIn: false });
+    // setLogout(true);
+    // setUserData({ ...userData, isLoggedIn: false });
+    //localStorage.setItem("currUser", JSON.stringify(userData));
+    userLogout(userData);
+    updateUsers(userData);
     navigate("/login");
   };
 
-  useEffect(() => {
-    if (userData) {
-      localStorage.setItem("currUser", JSON.stringify(userData));
-    }
-  }, [userData]);
-
-  useEffect(() => {
-    setUsers(users.map((user) => (user.id === userData.id ? userData : user)));
-
-    localStorage.setItem("users", JSON.stringify(users));
-  }, [logout]); // eslint-disable-line
+  // useEffect(() => {
+  //   console.log("logout run");
+  //   setUsers(users.map((user) => (user.id === userData.id ? userData : user)));
+  //   updateUsers();
+  // }, [logout]); // eslint-disable-line
 
   return (
     <div className={theme ? "text-white" : null}>

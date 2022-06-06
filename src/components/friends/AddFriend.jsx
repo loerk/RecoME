@@ -16,6 +16,7 @@ export default function AddFriend() {
   const handleBubble = (e) => {
     setAddFriendData({
       ...addFriendData,
+      type: "invitedToBubble",
       toBubble: e.target.value,
       invitedBy: userData.id,
       invitedByUser: userData.username,

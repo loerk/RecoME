@@ -9,25 +9,24 @@ export default function Register() {
   const { userData, setUserData } = useUserData();
   const { theme } = useTheme();
   const { users, setUsers } = useUsers();
+  const [registerData, setRegisterData] = useState({});
+
   const [confirmed, setConfirmed] = useState(true);
   const [hasAccount, setHasAccount] = useState(false);
-  const [registerData, setRegisterData] = useState({});
-  const navigate = useNavigate();
-  const createID = () => {
-    return uuidv1();
-  };
 
+  const navigate = useNavigate();
+ 
   function handleChange(event) {
     const { name, value, type, checked } = event.target;
     setRegisterData((prevRegisterData) => ({
       ...prevRegisterData,
-      id: createID(),
       [name]: type === "checkbox" ? checked : value,
     }));
     console.log("userdataRegister", userData);
   }
 
   function handleSubmit(event) {
+
     event.preventDefault();
     //check if passwords match
     if (
@@ -50,8 +49,9 @@ export default function Register() {
     }
     setHasAccount(false);
     setConfirmed(true);
-    setUserData({
+    const newUser = {
       ...registerData,
+      id: uuidv1(),
       lastLogin: Date.now(),
       isLoggedIn: true,
       memberSince: Date.now(),
@@ -74,16 +74,13 @@ export default function Register() {
           ],
         },
       ],
-    });
+    }
+    setUserData(newUser);
+
 
     setUsers([
       ...users,
-      {
-        ...userData,
-        ...registerData,
-        isLoggedIn: true,
-        memberSince: Date.now(),
-      },
+       newUser,
     ]);
     navigate("/");
   }
