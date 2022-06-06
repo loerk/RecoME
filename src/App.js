@@ -24,9 +24,8 @@ function App() {
   const { currentUser } = useUsers();
   const navigate = useNavigate();
 
-  console.log("applevel", currentUser);
   useEffect(() => {
-    if (currentUser) {
+    if (!currentUser) {
       navigate("/login");
     }
   }, []); // eslint-disable-line
