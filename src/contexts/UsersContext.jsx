@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useState } from "react";
 import { v1 as uuidv1 } from "uuid";
 
 const UsersContext = createContext([]);
@@ -78,14 +78,6 @@ export function UsersContextProvider({ children }) {
     createNewUser: createNewUser,
     deleteUser: deleteUser,
   };
-
-  useEffect(() => {
-    localStorage.setItem("currentUser", JSON.stringify(currentUser));
-  }, [currentUser]); // eslint-disable-line
-
-  useEffect(() => {
-    localStorage.setItem("users", JSON.stringify(users));
-  }, [users]);
 
   return (
     <UsersContext.Provider value={contextValue}>
