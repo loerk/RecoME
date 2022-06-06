@@ -7,11 +7,17 @@ export const useUsers = () => {
 };
 
 export function UsersContextProvider({ children }) {
+const [currentUser, setCurrentUser] = useState(
+  JSON.parse(localStorage.getItem("currUser")),
+)
   const [users, setUsers] = useState(
     JSON.parse(localStorage.getItem("users")) || []
   );
-
-  const contextValue = { users: users, setUsers: setUsers };
+  const updateUsers = (currUser) =>{
+    setUsers(users.map((user) => (user.id === currUser.id ? currUser : user)));
+    localStorage.setItem("users", JSON.stringify(users));
+  }
+  const contextValue = { users: users, setUsers: setUsers, currentUser: currentUser, updateUsers:updateUsers };
   return (
     <UsersContext.Provider value={contextValue}>
       {children}
