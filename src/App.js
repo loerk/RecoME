@@ -1,7 +1,6 @@
 import "./App.css";
 import { useEffect } from "react";
 import { useTheme } from "./contexts/ThemeContext";
-import { useUserData } from "./contexts/UserDataContext";
 import { Routes, Route, useNavigate } from "react-router-dom";
 
 import Header from "./components/header/Header";
@@ -18,15 +17,16 @@ import Friend from "./components/friends/Friend";
 import AddFriend from "./components/friends/AddFriend";
 import Details from "./components/friends/Details";
 import ScrollContainer from "./utilities/ScrollContainer";
+import { useUsers } from "./contexts/UsersContext";
 
 function App() {
   const { theme } = useTheme();
-  const { userData } = useUserData();
+  const { currentUser } = useUsers();
   const navigate = useNavigate();
 
-  console.log("applevel", userData);
+  console.log("applevel", currentUser);
   useEffect(() => {
-    if (!userData.isLoggedIn) {
+    if (!currentUser.isLoggedIn) {
       navigate("/login");
     }
   }, []); // eslint-disable-line

@@ -33,6 +33,11 @@ export function UsersContextProvider({ children }) {
   const addUser = (newUser) => {
     setUsers([...users, newUser]);
   };
+  const deleteUser = () => {
+    const deletedArr = users.filter((user) => user.id !== currentUser.id);
+    setUsers(deletedArr);
+    setCurrentUser(0);
+  };
 
   const createNewUser = (registeredUser) => {
     setCurrentUser({
@@ -73,6 +78,7 @@ export function UsersContextProvider({ children }) {
     loginUser: loginUser,
     logoutUser: logoutUser,
     createNewUser: createNewUser,
+    deleteUser: deleteUser,
   };
 
   useEffect(() => {
