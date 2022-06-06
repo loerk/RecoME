@@ -31,7 +31,7 @@ export default function Header() {
             <MdOutlineLightMode style={{ color: "white" }} />
           )}
         </button>
-        {currentUser ? (
+        {currentUser && (
           <>
             <Navigation />
             <Notifications />
@@ -40,7 +40,7 @@ export default function Header() {
               <button onClick={handleLogout}>Logout</button>
             </div>
           </>
-        ) : null}
+        )}
       </div>
     </div>
   );

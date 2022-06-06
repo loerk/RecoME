@@ -1,13 +1,14 @@
 import React from "react";
 
 import { useNavigate, useParams } from "react-router-dom";
-import { useUsers } from "../../contexts/UsersContext";
+import { useBubbles } from "../../contexts/BubbleContext";
 
 export default function BubbleList({ searchParams }) {
-  const { currentUser } = useUsers();
+  const { getBubbles } = useBubbles();
   const navigate = useNavigate();
-  const bubbles = currentUser.bubbles;
+
   const params = useParams();
+  const bubbles = getBubbles();
 
   return (
     <div className=" m-auto bg-transparent mt-5">
@@ -21,6 +22,7 @@ export default function BubbleList({ searchParams }) {
               return name.includes(filter.toLowerCase());
             })
             .map((bubble) => {
+              console.log(bubble);
               if (params.bubbleId === undefined) {
                 return (
                   <div

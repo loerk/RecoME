@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useState } from "react";
 import { v1 as uuidv1 } from "uuid";
 
 const UsersContext = createContext([]);
@@ -44,7 +44,6 @@ export function UsersContextProvider({ children }) {
       memberSince: Date.now(),
       stayLoggedIn: false,
       friends: [],
-      bubbles: [],
       invitedFriends: [],
       notifications: [],
       invitedBy: "",
@@ -80,17 +79,16 @@ export function UsersContextProvider({ children }) {
     deleteUser: deleteUser,
   };
 
-  useEffect(() => {
-    localStorage.setItem("currentUser", JSON.stringify(currentUser));
-  }, [currentUser]); // eslint-disable-line
-
-  useEffect(() => {
-    localStorage.setItem("users", JSON.stringify(users));
-  }, [users]);
-
   return (
     <UsersContext.Provider value={contextValue}>
       {children}
     </UsersContext.Provider>
   );
 }
+
+export const useGetCurrentUser = () => {
+  const context = useUsers();
+  return () => {
+    return context.currentUser;
+  };
+};
