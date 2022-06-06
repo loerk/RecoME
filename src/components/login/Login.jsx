@@ -1,4 +1,4 @@
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
 import { useTheme } from "../../contexts/ThemeContext";
 import { useUserData } from "../../contexts/UserDataContext";
@@ -9,9 +9,8 @@ export default function Login() {
   const { theme } = useTheme();
   const { users } = useUsers();
 
-  const [error, setError] = useState(null)
+  const [error, setError] = useState(null);
   const [loginData, setLoginData] = useState({});
-
 
   const navigate = useNavigate();
 
@@ -26,17 +25,17 @@ export default function Login() {
   function handleSubmit(event) {
     event.preventDefault();
     const knownUser = users.find((user) => user.email === loginData.email);
-  
-    if(!knownUser){
-        setError('please register first')
-        return
-    } 
-    if(knownUser.password !== loginData.password){
-      setError('wrong password, try again')
-      return
-    }  
-    userLogin({ ...knownUser});
-    navigate("/"); 
+
+    if (!knownUser) {
+      setError("please register first");
+      return;
+    }
+    if (knownUser.password !== loginData.password) {
+      setError("wrong password, try again");
+      return;
+    }
+    userLogin({ ...knownUser });
+    navigate("/");
   }
 
   // useEffect(() => {
@@ -95,7 +94,7 @@ export default function Login() {
               I want to stay logged in
             </label>
           </div>
-          {!!error && ( <p className="text-fuchsia-600">{error}</p>)}
+          {!!error && <p className="text-fuchsia-600">{error}</p>}
           <button
             className={
               theme

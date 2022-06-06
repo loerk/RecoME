@@ -1,4 +1,6 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { v1 as uuidv1 } from "uuid";
+
 const UserDataContext = createContext(null);
 
 export const useUserData = () => {
@@ -7,31 +9,27 @@ export const useUserData = () => {
 const initialValue = JSON.parse(localStorage.getItem("currUser"));
 
 export function UserDataContextProvider({ children }) {
-  function userLogin(user){
-    setUserData({...user, isLoggedIn:true, lastLogin: Date.now()});
-    localStorage.setItem("currUser", JSON.stringify(userData));
-  }
-  function userLogout(user){
-    setUserData({...user, isLoggedIn:false});
-    localStorage.setItem("currUser", JSON.stringify(userData))
-  }
+  const userLogin = (user) => {
+    setUserData({ ...user, isLoggedIn: true, lastLogin: Date.now() });
+  };
+  const userLogout = (user) => {
+    setUserData({ ...user, isLoggedIn: false });
+  };
 
-  const [userData, setUserData] = useState(
-    initialValue || {
-      id: null,
-      username: "",
-      email: "",
-      password: "",
-      passwordConfirm: "",
-      memberSince: 0,
+  const createNewUser = (registeredUser) => {
+    setUserData({
+      ...registeredUser,
+      id: uuidv1(),
+      lastLogin: Date.now(),
+      isLoggedIn: true,
+      memberSince: Date.now(),
       stayLoggedIn: false,
-      avatarUrl: "",
-      isLoggedIn: false,
-      notifications: [],
       friends: [],
       bubbles: [],
       invitedFriends: [],
+      notifications: [],
       invitedBy: "",
+      avatarUrl: `https://api.multiavatar.com/${registeredUser.username}.png`,
       recos: [
         {
           private: [],
@@ -44,17 +42,25 @@ export function UserDataContextProvider({ children }) {
           ],
         },
       ],
-    }
-  );
+    });
+  };
 
-  const contextValue = { userData: userData, setUserData: setUserData, userLogin: userLogin, userLogout: userLogout };
+  const [userData, setUserData] = useState(initialValue || {});
+
+  const contextValue = {
+    userData: userData,
+    setUserData: setUserData,
+    createNewUser: createNewUser,
+    userLogin: userLogin,
+    userLogout: userLogout,
+  };
+  useEffect(() => {
+    localStorage.setItem("currUser", JSON.stringify(userData));
+  }, [userData]);
+
   return (
     <UserDataContext.Provider value={contextValue}>
       {children}
     </UserDataContext.Provider>
   );
-
-
 }
-
-

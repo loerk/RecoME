@@ -1,21 +1,20 @@
 import React, { useState } from "react";
+
 import { useTheme } from "../../contexts/ThemeContext";
 import { useUserData } from "../../contexts/UserDataContext";
 import { useNavigate, NavLink } from "react-router-dom";
-import { v1 as uuidv1 } from "uuid";
 import { useUsers } from "../../contexts/UsersContext";
 
 export default function Register() {
-  const { userData, setUserData } = useUserData();
+  const { userData, createNewUser } = useUserData();
   const { theme } = useTheme();
-  const { users, setUsers } = useUsers();
+  const { users, addUser } = useUsers();
+
+  const [error, setError] = useState();
   const [registerData, setRegisterData] = useState({});
 
-  const [confirmed, setConfirmed] = useState(true);
-  const [hasAccount, setHasAccount] = useState(false);
-
   const navigate = useNavigate();
- 
+
   function handleChange(event) {
     const { name, value, type, checked } = event.target;
     setRegisterData((prevRegisterData) => ({
@@ -26,15 +25,12 @@ export default function Register() {
   }
 
   function handleSubmit(event) {
-
     event.preventDefault();
-    //check if passwords match
     if (
       registerData.password !== registerData.passwordConfirm ||
-      registerData.password === "" ||
       registerData.password === ""
     ) {
-      setConfirmed(false);
+      setError("The passwords have to match");
       return;
     }
     //check if user already exists
@@ -42,46 +38,16 @@ export default function Register() {
       const knownUser = users.find((user) => user.email === registerData.email);
       if (knownUser) {
         if (knownUser.length !== 0) {
-          setHasAccount(true);
+          setError("This email already has an account. Please sign in");
           return;
         }
       }
     }
-    setHasAccount(false);
-    setConfirmed(true);
-    const newUser = {
-      ...registerData,
-      id: uuidv1(),
-      lastLogin: Date.now(),
-      isLoggedIn: true,
-      memberSince: Date.now(),
-      stayLoggedIn: false,
-      friends: [],
-      bubbles: [],
-      invitedFriends: [],
-      notifications: [],
-      invitedBy: "",
-      avatarUrl: `https://api.multiavatar.com/${registerData.username}.png`,
-      recos: [
-        {
-          private: [],
-          public: [],
-          specified: [
-            {
-              to: [],
-              reco: {},
-            },
-          ],
-        },
-      ],
-    }
-    setUserData(newUser);
 
-
-    setUsers([
-      ...users,
-       newUser,
-    ]);
+    createNewUser(registerData);
+    //might be wrong
+    //fix if combinedContext
+    addUser(userData);
     navigate("/");
   }
 
@@ -151,14 +117,7 @@ export default function Register() {
               I want to stay logged in
             </label>
           </div>
-          {hasAccount ? (
-            <p className="text-fuchsia-600">
-              This email already has an account. Please sign in
-            </p>
-          ) : null}
-          {!confirmed ? (
-            <p className="text-fuchsia-600">passwords do not match</p>
-          ) : null}
+          {!!error && <p className="text-fuchsia-600">{error}</p>}
           <button
             className={
               theme
