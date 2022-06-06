@@ -44,7 +44,6 @@ export function UsersContextProvider({ children }) {
       memberSince: Date.now(),
       stayLoggedIn: false,
       friends: [],
-      bubbles: [],
       invitedFriends: [],
       notifications: [],
       invitedBy: "",
@@ -94,3 +93,10 @@ export function UsersContextProvider({ children }) {
     </UsersContext.Provider>
   );
 }
+
+export const useGetCurrentUser = () => {
+  const context = useUsers();
+  return () => {
+    return context.currentUser;
+  };
+};

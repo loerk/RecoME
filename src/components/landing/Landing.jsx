@@ -3,25 +3,28 @@ import React from "react";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import { useUsers } from "../../contexts/UsersContext";
+import { useBubbles } from "../../contexts/BubbleContext";
 
 export default function Landing() {
   const { currentUser } = useUsers();
+  const { getBubbles } = useBubbles();
   const navigate = useNavigate();
   window.scrollTo(0, 0);
 
   if (!currentUser) {
-    return;
+    return null;
   }
 
-  // console.log("landing", Object.keys(currentUser).length);
+  const bubbles = getBubbles();
+
   return (
     <div>
       <div className="flex items-center m-auto gap-7 my-7 p-10 flex-col bg-gradient-to-r from-purple-500 to-pink-500 rounded shadow-2xl ">
         <div className="text-center">
           <h1 className="pb-6">Your bubbles</h1>
           <ul className="flex gap-6 flex-wrap justify-center">
-            {currentUser.bubbles.length !== 0 ? (
-              currentUser.bubbles.map((bubble) => (
+            {!!bubbles.length ? (
+              bubbles.map((bubble) => (
                 <li key={uuidv1()}>
                   <div className="text-center">
                     <img

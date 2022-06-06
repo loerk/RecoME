@@ -1,30 +1,22 @@
-import React, { useState } from "react";
+import React from "react";
 
 import { useParams, useNavigate } from "react-router-dom";
 import { AddButton } from "../../utilities/Buttons";
 import { v1 as uuidv1 } from "uuid";
 import { useTheme } from "../../contexts/ThemeContext";
-import { useUsers } from "../../contexts/UsersContext";
+import { useBubbles } from "../../contexts/BubbleContext";
 
 export default function Bubble() {
   const navigate = useNavigate();
-  let params = useParams();
+  let { bubbleId } = useParams();
   const theme = useTheme();
+  const { getBubbleById, deleteBubble } = useBubbles();
 
-  const { currentUser } = useUsers();
-  const [updatedUser, setUpdatedUser] = useState();
+  let bubble = getBubbleById(bubbleId);
 
-  let currBubble = currentUser.bubbles.find(
-    (bubble) => bubble.id === params.bubbleId
-  );
-
-  const deleteBubble = () => {
-    const deletedItemsArr = currentUser.bubbles.filter(
-      (bubble) => bubble.id !== currBubble.id
-    );
+  const handleDelete = () => {
+    deleteBubble(bubbleId);
     navigate("/bubbles");
-    setUpdatedUser({ ...currentUser, bubbles: [...deletedItemsArr] });
-    updatedUser(updatedUser);
   };
 
   const addFriends = () => {
@@ -38,16 +30,12 @@ export default function Bubble() {
       <div className="mt-6">
         <div className=" relative w-full">
           <div className="relative overflow-hidden bg-contain">
-            <img
-              src={currBubble.imageUrl}
-              className="block  w-96 m-auto"
-              alt=""
-            />
+            <img src={bubble.imageUrl} className="block  w-96 m-auto" alt="" />
             <div className="absolute top-0 right-0 bottom-0 left-0 w-full h-full overflow-hidden bg-fixed bg-black opacity-50"></div>
           </div>
           <div className="md:block absolute top-6 left-1/3 text-white  uppercase">
-            <h5 className="text-4xl">{currBubble.name}</h5>
-            <p>{currBubble.description}</p>
+            <h5 className="text-4xl">{bubble.name}</h5>
+            <p>{bubble.description}</p>
           </div>
         </div>
       </div>
@@ -55,8 +43,8 @@ export default function Bubble() {
         <div>
           <h1 className="mb-3 uppercase">Members</h1>
           <div>
-            {currBubble.members.length !== 0 ? (
-              <p>{currBubble.members.length}</p>
+            {!!bubble.members.length ? (
+              <p>{bubble.members.length}</p>
             ) : (
               <>
                 <p>Oh your bubble doesn't have any members ..yet</p>
@@ -69,9 +57,9 @@ export default function Bubble() {
         <div>
           <h1 className="mb-3 uppercase">Recommendations</h1>
           <ul>
-            {currBubble.publicRecos ? (
-              currBubble.publicRecos.map((publicReco) => (
-                <li key={uuidv1()}>{publicReco.username}</li>
+            {bubble.publicRecos ? (
+              bubble.publicRecos.map((publicReco) => (
+                <li key={publicReco.id}>{publicReco.username}</li>
               ))
             ) : (
               <>
@@ -87,8 +75,8 @@ export default function Bubble() {
         <div>
           <h1 className="mb-3 uppercase">private save</h1>
           <ul>
-            {currBubble.privateRecos ? (
-              currBubble.privateRecos.recoFrom.map((privateRecos) => (
+            {bubble.privateRecos ? (
+              bubble.privateRecos.recoFrom.map((privateRecos) => (
                 <li key={uuidv1()}>{privateRecos.username}</li>
               ))
             ) : (
@@ -113,7 +101,7 @@ export default function Bubble() {
               ? "w-40 hover:translate-y-1  text-3xl p-3 bg-white  text-black  font-face-tm my-4"
               : "w-40 hover:translate-y-1  text-3xl p-3 bg-black  text-white  font-face-tm my-4"
           }
-          onClick={deleteBubble}
+          onClick={handleDelete}
         >
           DELETE BUBBLE
         </button>

@@ -1,14 +1,11 @@
-import { v1 as uuidv1 } from "uuid";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-import { useUsers } from "../../contexts/UsersContext";
+import { useBubbles } from "../../contexts/BubbleContext";
 
 export default function AddBubble() {
-  const [bubbleData, setBubbleData] = useState([]);
+  const [bubbleData, setBubbleData] = useState({});
+  const { addBubble } = useBubbles();
 
-  const { currentUser, updateUser } = useUsers();
-  const [updatedUser, setUpdatedUser] = useState();
   const navigate = useNavigate();
 
   const handleChange = (event) => {
@@ -16,24 +13,12 @@ export default function AddBubble() {
     setBubbleData((prevBubbleData) => ({
       ...prevBubbleData,
       [name]: value,
-      id: uuidv1(),
-      createdAt: Date.now(),
-      createdBy: currentUser.id,
-      members: [{ userId: currentUser.id, username: currentUser.username }],
     }));
   };
 
   function handleSubmit(event) {
     event.preventDefault();
-    if (!currentUser.bubbles) {
-      setUpdatedUser({ ...currentUser, bubbles: [bubbleData] });
-    } else {
-      setUpdatedUser({
-        ...currentUser,
-        bubbles: [...currentUser.bubbles, bubbleData],
-      });
-    }
-    updateUser(updatedUser);
+    addBubble(bubbleData);
     navigate(-1);
   }
 
