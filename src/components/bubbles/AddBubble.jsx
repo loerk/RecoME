@@ -1,13 +1,14 @@
 import { v1 as uuidv1 } from "uuid";
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useUserData } from "../../contexts/UserDataContext";
+
 import { useUsers } from "../../contexts/UsersContext";
 
 export default function AddBubble() {
   const [bubbleData, setBubbleData] = useState([]);
-  const { userData, setUserData } = useUserData();
-  const { users, setUsers } = useUsers();
+
+  const { currentUser, updateUser } = useUsers();
+  const [updatedUser, setUpdatedUser] = useState();
   const navigate = useNavigate();
 
   const handleChange = (event) => {
@@ -17,25 +18,24 @@ export default function AddBubble() {
       [name]: value,
       id: uuidv1(),
       createdAt: Date.now(),
-      createdBy: userData.id,
-      members: [{ userId: userData.id, username: userData.username }],
+      createdBy: currentUser.id,
+      members: [{ userId: currentUser.id, username: currentUser.username }],
     }));
   };
 
   function handleSubmit(event) {
     event.preventDefault();
-    if (!userData.bubbles) {
-      setUserData({ ...userData, bubbles: [bubbleData] });
+    if (!currentUser.bubbles) {
+      setUpdatedUser({ ...currentUser, bubbles: [bubbleData] });
     } else {
-      setUserData({ ...userData, bubbles: [...userData.bubbles, bubbleData] });
+      setUpdatedUser({
+        ...currentUser,
+        bubbles: [...currentUser.bubbles, bubbleData],
+      });
     }
+    updateUser(updatedUser);
     navigate(-1);
   }
-
-  useEffect(() => {
-    setUsers(users.map((user) => (user.id === userData.id ? userData : user)));
-    localStorage.setItem("users", JSON.stringify(users));
-  }, [userData]); // eslint-disable-line
 
   return (
     <div className="w-72 m-auto mt-8">

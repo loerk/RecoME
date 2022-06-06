@@ -1,11 +1,11 @@
 import { v1 as uuidv1 } from "uuid";
 import React from "react";
 import { useParams, useSearchParams } from "react-router-dom";
-import { useUserData } from "../../contexts/UserDataContext";
+import { useUsers } from "../../contexts/UsersContext";
 
 export default function FriendsList() {
-  const { userData } = useUserData();
-  const friends = userData.friends;
+  const { currentUser } = useUsers();
+  const friends = currentUser.friends;
   const params = useParams();
 
   return (

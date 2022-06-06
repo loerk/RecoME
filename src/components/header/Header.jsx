@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useTheme } from "../../contexts/ThemeContext";
 import { MdLightMode, MdOutlineLightMode } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-import { useUserData } from "../../contexts/UserDataContext";
+
 import { useUsers } from "../../contexts/UsersContext";
 
 import Navigation from "../navigation/Navigation";
@@ -10,30 +10,16 @@ import Notifications from "../notifications/Notifications";
 
 export default function Header() {
   const { theme, setTheme } = useTheme();
-  const { userData, setUserData } = useUserData();
-  const { users, setUsers } = useUsers();
-  const [logout, setLogout] = useState(false);
+  const { logoutUser, currentUser } = useUsers();
+
   const navigate = useNavigate();
 
-  console.log("headerLevel", userData);
+  console.log("headerLevel", currentUser);
 
   const handleLogout = () => {
-    setLogout(true);
-    setUserData({ ...userData, isLoggedIn: false });
+    logoutUser(currentUser);
     navigate("/login");
   };
-
-  useEffect(() => {
-    if (userData) {
-      localStorage.setItem("currUser", JSON.stringify(userData));
-    }
-  }, [userData]);
-
-  useEffect(() => {
-    setUsers(users.map((user) => (user.id === userData.id ? userData : user)));
-
-    localStorage.setItem("users", JSON.stringify(users));
-  }, [logout]); // eslint-disable-line
 
   return (
     <div className={theme ? "text-white" : null}>
@@ -45,12 +31,12 @@ export default function Header() {
             <MdOutlineLightMode style={{ color: "white" }} />
           )}
         </button>
-        {userData.isLoggedIn ? (
+        {currentUser ? (
           <>
             <Navigation />
             <Notifications />
             <div className="absolute right-28 top-7">
-              <p>Hi {userData.username} !</p>
+              <p>Hi {currentUser.username} !</p>
               <button onClick={handleLogout}>Logout</button>
             </div>
           </>
