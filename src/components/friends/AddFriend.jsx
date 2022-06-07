@@ -1,31 +1,33 @@
 import { v1 as uuidv1 } from "uuid";
 import React, { useState } from "react";
 import { useUsers } from "../../contexts/UsersContext";
+import { useBubbles } from "../../contexts/BubbleContext";
 
 export default function AddFriend() {
-  const { users, setUsers, currentUser, updateUser } = useUsers();
-  const [invitiationStatus, setInvitationStatus] = useState(null);
+  const { currentUser, updateUser, updateUsers, findUserByEmail } = useUsers();
+  const { getBubbles } = useBubbles();
 
+  const [invitiationStatus, setInvitationStatus] = useState(null);
   const [addFriendData, setAddFriendData] = useState({
     email: "",
     toBubble: "",
   });
-  const [updatedUser, setUpdatedUser] = useState();
-  console.log("currUser", currentUser);
+
+  const bubbles = getBubbles();
 
   const handleBubble = (e) => {
     setAddFriendData({
       ...addFriendData,
-      type: "invitedToBubble",
+      type: "invitation",
       toBubble: e.target.value,
       invitedBy: currentUser.id,
       invitedByUser: currentUser.username,
     });
   };
+
   const handleEmail = (e) => {
     setAddFriendData({ ...addFriendData, email: e.target.value });
   };
-  console.log(addFriendData);
 
   const sendNotification = () => {
     if (addFriendData.email === "") {
@@ -33,74 +35,29 @@ export default function AddFriend() {
       return;
     }
 
-    const addFriend = users.find((user) => user.email === addFriendData.email);
+    const addFriend = findUserByEmail(addFriendData.email);
+    const updateAddFriend = {
+      ...addFriend,
+      notifications: [
+        ...addFriend.notifications,
+        {
+          ...addFriendData,
+          invitedAt: Date.now(),
+          invitationId: uuidv1(),
+          type: "invitationToBubble",
+        },
+      ],
+    };
 
-    if (currentUser.invitedFriends.length === 0) {
-      setUpdatedUser({ ...currentUser, invitedFriends: [addFriendData.id] });
-    } else {
-      setUpdatedUser({
-        ...currentUser,
-        invitedFriends: [...currentUser.invitedFriends, addFriend.id],
-      });
-    }
+    updateUser(updateAddFriend);
+    updateUsers(updateAddFriend);
 
-    if (addFriend.notifications.length !== 0) {
-      setUsers(
-        users.map((user) => {
-          if (user.id === addFriend.id) {
-            return {
-              ...user,
-              notifications: [
-                ...user.notifications,
-                {
-                  ...addFriendData,
-                  invitedAt: Date.now(),
-                  invitationId: uuidv1(),
-                  type: "invitationToBubble",
-                  status: "new",
-                },
-              ],
-            };
-          }
-          return user;
-        })
-      );
-    } else {
-      setUsers(
-        users.map((user) => {
-          if (user.id === addFriend.id) {
-            return {
-              ...user,
-              notifications: [
-                {
-                  ...addFriendData,
-                  invitedAt: Date.now(),
-                  invitationId: uuidv1(),
-                  type: "invitationToBubble",
-                  status: "new",
-                },
-              ],
-            };
-          }
-          return user;
-        })
-      );
-    }
-    if (currentUser.invitedFriends.length !== 0) {
-      setUpdatedUser({
-        ...currentUser,
-        invitedFriends: [...currentUser.invitedFriends, { addFriendData }],
-      });
-    } else {
-      setUpdatedUser({ ...currentUser, invitedFriends: [{ addFriendData }] });
-    }
     setInvitationStatus(" Great, your friend got invited!");
-    updateUser(updatedUser);
   };
 
   return (
     <div className="flex justify-center text-center">
-      {currentUser.bubbles ? (
+      {bubbles ? (
         <div className="w-72 m-auto mt-8">
           <select
             onChange={handleBubble}
@@ -108,6 +65,7 @@ export default function AddFriend() {
             id="bubble"
             defaultValue={addFriendData.toBubble}
             aria-label="Default select example"
+            required
             className="form-select appearance-none mb-5
               block
               w-full
@@ -125,7 +83,7 @@ export default function AddFriend() {
               focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
           >
             <option selected>select a bubble</option>
-            {currentUser.bubbles.map((bubble) => {
+            {bubbles.map((bubble) => {
               return <option value={bubble.id}>{bubble.name}</option>;
             })}
           </select>
@@ -134,6 +92,7 @@ export default function AddFriend() {
             type="email"
             name="email"
             onChange={handleEmail}
+            required
             className="
                 mb-5
                 form-control
