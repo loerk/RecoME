@@ -7,22 +7,25 @@ const BubbleContext = createContext([]);
 export const useBubbles = () => {
   return useContext(BubbleContext);
 };
-
+const initialValueBubbles = JSON.parse(localStorage.getItem("bubbles"));
 export function BubbleContextProvider({ children }) {
-  const [bubbles, setBubbles] = useState([]);
+  const [bubbles, setBubbles] = useState(initialValueBubbles || []);
   const getCurrentUser = useGetCurrentUser();
+
   const addBubble = (newBubble) => {
     const currentUser = getCurrentUser();
-    setBubbles([
+    const newBubblesArr = [
       ...bubbles,
       {
         ...newBubble,
         id: uuidv1(),
         createdAt: Date.now(),
         createdBy: currentUser.id,
-        members: [{ userId: currentUser.id, username: currentUser.username }],
+        members: [currentUser.id],
       },
-    ]);
+    ];
+    setBubbles(newBubblesArr);
+    localStorage.setItem("bubbles", JSON.stringify(newBubblesArr));
   };
   const getBubbles = () => {
     const currentUser = getCurrentUser();
@@ -32,12 +35,15 @@ export function BubbleContextProvider({ children }) {
         bubble.members.find((member) => member.userId === currentUser.id)
     );
   };
+
   const getBubbleById = (id) => {
     return bubbles.find((bubble) => bubble.id === id);
   };
 
   const deleteBubble = (id) => {
-    setBubbles(bubbles.filter((bubble) => bubble.id !== id));
+    const deletedBubbleArr = bubbles.filter((bubble) => bubble.id !== id);
+    setBubbles(deletedBubbleArr);
+    localStorage.setItem("bubbles", JSON.stringify(deletedBubbleArr));
   };
   const contextValue = { addBubble, getBubbles, getBubbleById, deleteBubble };
   return (

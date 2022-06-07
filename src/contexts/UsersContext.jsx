@@ -16,26 +16,46 @@ export function UsersContextProvider({ children }) {
   const [users, setUsers] = useState(initialValueUsers || []);
 
   const loginUser = (user) => {
-    setCurrentUser({ ...user, lastLogin: Date.now() });
+    const userWithLastLogin = { ...user, lastLogin: Date.now() };
+    setCurrentUser(userWithLastLogin);
+    localStorage.setItem("currentUser", JSON.stringify(userWithLastLogin));
   };
 
-  const logoutUser = (user) => {
+  const logoutUser = () => {
     setCurrentUser(null);
+    localStorage.setItem("currentUser", JSON.stringify(null));
   };
 
   const updateUsers = (currUser) => {
-    setUsers(users.map((user) => (user.id === currUser.id ? currUser : user)));
+    const updatedUsers = users.map((user) =>
+      user.id === currUser.id ? currUser : user
+    );
+    setUsers(updatedUsers);
+    localStorage.setItem("users", JSON.stringify(updatedUsers));
   };
 
   const updateUser = (updatedUser) => {
     setCurrentUser({ ...updatedUser });
+    localStorage.setItem("currentUser", JSON.stringify(updatedUser));
   };
 
   const deleteUser = () => {
     setUsers(users.filter((user) => user.id !== currentUser.id));
     setCurrentUser(null);
+    localStorage.setItem(
+      "users",
+      JSON.stringify(users.filter((user) => user.id !== currentUser.id))
+    );
+    localStorage.setItem("currentUser", JSON.stringify(null));
   };
 
+  const findUserByEmail = (email) => {
+    return users.find((user) => user.email === email);
+  };
+
+  const findUserById = (id) => {
+    return users.find((user) => user.id === id);
+  };
   const createNewUser = (registeredUser) => {
     const newUser = {
       ...registeredUser,
@@ -69,14 +89,16 @@ export function UsersContextProvider({ children }) {
 
   const contextValue = {
     users,
-    setUsers: setUsers,
-    currentUser: currentUser,
-    updateUsers: updateUsers,
-    updateUser: updateUser,
-    loginUser: loginUser,
-    logoutUser: logoutUser,
-    createNewUser: createNewUser,
-    deleteUser: deleteUser,
+    setUsers,
+    currentUser,
+    updateUsers,
+    updateUser,
+    loginUser,
+    logoutUser,
+    createNewUser,
+    deleteUser,
+    findUserByEmail,
+    findUserById,
   };
 
   return (
