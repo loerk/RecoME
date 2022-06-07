@@ -17,7 +17,8 @@ export default function Details() {
   const invitedByUser = findUserById(currentNotifications[0].invitedBy);
 
   const resetInvitationsArr = () => {
-    const updatedUser = { ...currentUser, notifications: [] };
+    const deletedFirst = currentUser.notifications.shift();
+    const updatedUser = { ...currentUser, deletedFirst };
     updateUser(updatedUser);
     updateUsers(updatedUser);
   };
