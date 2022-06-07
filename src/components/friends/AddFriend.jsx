@@ -36,6 +36,7 @@ export default function AddFriend() {
     }
 
     const addFriend = findUserByEmail(addFriendData.email);
+
     const updateAddFriend = {
       ...addFriend,
       notifications: [
@@ -49,7 +50,6 @@ export default function AddFriend() {
       ],
     };
 
-    updateUser(updateAddFriend);
     updateUsers(updateAddFriend);
 
     setInvitationStatus(" Great, your friend got invited!");
@@ -65,7 +65,6 @@ export default function AddFriend() {
             id="bubble"
             defaultValue={addFriendData.toBubble}
             aria-label="Default select example"
-            required
             className="form-select appearance-none mb-5
               block
               w-full
