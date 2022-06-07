@@ -6,7 +6,7 @@ import { useUsers } from "../../contexts/UsersContext";
 import { useBubbles } from "../../contexts/BubbleContext";
 
 export default function Landing() {
-  const { currentUser } = useUsers();
+  const { currentUser, findUserById } = useUsers();
   const { getBubbles } = useBubbles();
   const navigate = useNavigate();
   window.scrollTo(0, 0);
@@ -16,6 +16,10 @@ export default function Landing() {
   }
 
   const bubbles = getBubbles();
+
+  const findFriend = (id) => {
+    return findUserById(id);
+  };
 
   return (
     <div>
@@ -51,21 +55,32 @@ export default function Landing() {
         </div>
       </div>
       <div className="flex items-center m-auto gap-7 my-7 p-10 flex-col bg-gradient-to-r from-violet-500 to-fuchsia-500  rounded shadow-2xl ">
-        <div>
-          <h1>Your friends</h1>
-          <ul>
+        <div className="text-center">
+          <h1 className="pb-6">Your friends</h1>
+          <ul className="flex gap-6 flex-wrap justify-center">
             {currentUser.friends.length !== 0 ? (
-              currentUser.friends.map((friend) => (
-                <li key={uuidv1()}>
-                  <button onClick={() => navigate("/friends")}>
-                    {friend.name}
-                  </button>
-                </li>
-              ))
+              currentUser.friends.map((friendId) => {
+                let currFriend = findFriend(friendId);
+                return (
+                  <li key={uuidv1()}>
+                    <div className="text-center">
+                      <img
+                        onClick={() => navigate("/friends")}
+                        className="w-28 h-28 object-cover object-center opacity-50  hover:opacity-100 rounded-full cursor-pointer"
+                        src={currFriend.avatarUrl}
+                        alt=""
+                      />
+                      <button className="relative">
+                        {currFriend.username}
+                      </button>
+                    </div>
+                  </li>
+                );
+              })
             ) : (
               <div className="flex">
                 <button
-                  onClick={() => navigate("/friends")}
+                  onClick={() => navigate("/bubbles")}
                   className="m-auto mt-8"
                 >
                   <AiOutlinePlusCircle></AiOutlinePlusCircle>
