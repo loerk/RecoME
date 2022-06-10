@@ -1,56 +1,30 @@
-import { v1 as uuidv1 } from "uuid";
 import React, { useState } from "react";
 import { useUsers } from "../../contexts/UsersContext";
 import { useBubbles } from "../../contexts/BubbleContext";
 
 export default function AddFriend() {
-  const { currentUser, updateUser, updateUsers, findUserByEmail } = useUsers();
+  const { findUserByEmail, inviteFriendToBubble } = useUsers();
   const { getBubbles } = useBubbles();
 
   const [invitiationStatus, setInvitationStatus] = useState(null);
-  const [addFriendData, setAddFriendData] = useState({
-    email: "",
-    toBubble: "",
-  });
+  const [bubbleId, setBubbleId] = useState();
+  const [email, setEmail] = useState(null);
 
   const bubbles = getBubbles();
 
-  const handleBubble = (e) => {
-    setAddFriendData({
-      ...addFriendData,
-      type: "invitation",
-      toBubble: e.target.value,
-      invitedBy: currentUser.id,
-      invitedByUser: currentUser.username,
-    });
-  };
-
-  const handleEmail = (e) => {
-    setAddFriendData({ ...addFriendData, email: e.target.value });
-  };
-
-  const sendNotification = () => {
-    if (addFriendData.email === "") {
+  const onSubmit = () => {
+    const addFriend = findUserByEmail(email);
+    if (email === "") {
       setInvitationStatus("Ooops, an email is missing :/ try again!");
       return;
     }
+    if (!addFriend) {
+      setInvitationStatus(
+        "Oh, we dont know your friend,yet... please ask your friend to register first"
+      );
+    }
 
-    const addFriend = findUserByEmail(addFriendData.email);
-
-    const updateAddFriend = {
-      ...addFriend,
-      notifications: [
-        ...addFriend.notifications,
-        {
-          ...addFriendData,
-          invitedAt: Date.now(),
-          invitationId: uuidv1(),
-          type: "invitationToBubble",
-        },
-      ],
-    };
-
-    updateUsers(updateAddFriend);
+    inviteFriendToBubble(email, bubbleId);
 
     setInvitationStatus(" Great, your friend got invited!");
   };
@@ -60,10 +34,11 @@ export default function AddFriend() {
       {bubbles ? (
         <div className="w-72 m-auto mt-8">
           <select
-            onChange={handleBubble}
+            onChange={(e) => {
+              setBubbleId(e.target.value);
+            }}
             name="bubble"
             id="bubble"
-            defaultValue={addFriendData.toBubble}
             aria-label="Default select example"
             className="form-select appearance-none mb-5
               block
@@ -87,10 +62,12 @@ export default function AddFriend() {
             })}
           </select>
           <input
-            value={addFriendData.email}
+            value={email}
             type="email"
             name="email"
-            onChange={handleEmail}
+            onChange={(e) => {
+              setEmail(e.target.value);
+            }}
             required
             className="
                 mb-5
@@ -114,7 +91,7 @@ export default function AddFriend() {
           />
           <button
             className="inline-block leading-tight uppercase  shadow-md hover:bg-gradient-to-r from-cyan-500 to-blue-500 hover:shadow-lg focus:bg-black focus:shadow-lg focus:outline-none focus:ring-0 active:bg-pink-800 active:shadow-lg transition duration-150 ease-in-out bg-black rounded-md  text-white px-2 py-1"
-            onClick={sendNotification}
+            onClick={onSubmit}
           >
             Invite Friend to your Bubble
           </button>

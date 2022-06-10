@@ -39,13 +39,32 @@ export function UsersContextProvider({ children }) {
     localStorage.setItem("currentUser", JSON.stringify(updatedUser));
   };
 
+  const inviteFriendToBubble = (email, bubbleId) => {
+    const addFriend = findUserByEmail(email);
+
+    //TODO check if users are already friends
+    const updateAddedFriend = {
+      ...addFriend,
+      notifications: [
+        ...addFriend.notifications,
+        {
+          toBubble: bubbleId,
+          email: email,
+          invitedAt: Date.now(),
+          invitationId: uuidv1(),
+          type: "invitationToBubble",
+          invitedBy: currentUser.id,
+          invitedByUser: currentUser.username,
+        },
+      ],
+    };
+    updateUsers(updateAddedFriend);
+  };
   const deleteUser = () => {
-    setUsers(users.filter((user) => user.id !== currentUser.id));
+    const filteredUser = users.filter((user) => user.id !== currentUser.id);
+    setUsers(filteredUser);
     setCurrentUser(null);
-    localStorage.setItem(
-      "users",
-      JSON.stringify(users.filter((user) => user.id !== currentUser.id))
-    );
+    localStorage.setItem("users", JSON.stringify(filteredUser));
     localStorage.setItem("currentUser", JSON.stringify(null));
   };
 
@@ -99,6 +118,7 @@ export function UsersContextProvider({ children }) {
     deleteUser,
     findUserByEmail,
     findUserById,
+    inviteFriendToBubble,
   };
 
   return (
