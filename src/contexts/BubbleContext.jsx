@@ -33,7 +33,7 @@ export function BubbleContextProvider({ children }) {
     return bubbles.filter(
       (bubble) =>
         bubble.createdBy === currentUser.id ||
-        bubble.members.find((member) => member.userId === currentUser.id)
+        bubble.members.find((member) => member === currentUser.id)
     );
   };
 
