@@ -17,7 +17,7 @@ export default function Bubbles() {
   const addBubble = () => {
     navigate("/bubbles/addBubble");
   };
-  // console.log("bubblesparams", params);
+
   return (
     <div className="mt-10">
       {!params.bubbleId ? (
