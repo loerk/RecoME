@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { useUsers } from "../../contexts/UsersContext";
 import { useBubbles } from "../../contexts/BubbleContext";
@@ -9,7 +9,9 @@ export default function Details() {
   const navigate = useNavigate();
 
   const { currentUser, updateUser, updateUsers, findUserById } = useUsers();
-  const { getBubbleById } = useBubbles();
+  const { getBubbleById, updateBubble } = useBubbles();
+
+  const [updatedBubble, setUpdatedBubble] = useState();
 
   let currentNotifications = currentUser.notifications;
 
@@ -17,8 +19,9 @@ export default function Details() {
   const invitedByUser = findUserById(currentNotifications[0].invitedBy);
 
   const resetInvitationsArr = () => {
-    const deletedFirst = currentUser.notifications.shift();
-    const updatedUser = { ...currentUser, deletedFirst };
+    //deletes latest notification
+    currentUser.notifications.shift();
+    const updatedUser = { ...currentUser };
     updateUser(updatedUser);
     updateUsers(updatedUser);
   };
@@ -31,11 +34,13 @@ export default function Details() {
     ];
     invitedByUser.friends = [...invitedByUser.friends, currentUser.id];
     resetInvitationsArr();
+    updateBubble(currentBubble);
     navigate(`/bubbles/${currentBubble.id}`);
   };
 
   const refuseBubbleInvitation = () => {
     resetInvitationsArr();
+    navigate("/bubbles");
   };
 
   return (
