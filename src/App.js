@@ -28,7 +28,6 @@ function App() {
     if (!currentUser) {
       navigate("/login");
     }
-    navigate("/");
   }, []); // eslint-disable-line
 
   return (
