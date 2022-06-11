@@ -1,17 +1,12 @@
-import React from "react";
-import {
-  Outlet,
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { AddButton } from "../../utilities/Buttons";
-import FriendsList from "./FriendsList";
+
+import React, { useState } from "react";
 
 export default function Friends() {
-  const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
-  const params = useParams();
+
+  const [searchFor, setSearchFor] = useState("");
 
   const addFriend = () => {
     navigate("/friends/addFriend");
@@ -19,22 +14,13 @@ export default function Friends() {
 
   return (
     <div className="mt-10">
-      {!params.friendId === "details" ? (
-        <>
-          <div className="flex justify-center">
-            <div className="mb-3 xl:w-96">
-              <input
-                value={searchParams.get("filter") || ""}
-                onChange={(e) => {
-                  let filter = e.target.value;
-                  if (filter) {
-                    setSearchParams({ filter });
-                  } else {
-                    setSearchParams({ filter: "" });
-                  }
-                }}
-                type="search"
-                className="
+      <>
+        <div className="flex justify-center">
+          <div className="mb-3 xl:w-96">
+            <input
+              onChange={(e) => setSearchFor(e.target.value)}
+              type="search"
+              className="
                     text-center
                     form-control
                     block
@@ -52,17 +38,15 @@ export default function Friends() {
                     m-0
                     focus:text-gray-700 focus:bg-white focus:border-slate-600 focus:outline-none
                   "
-                id="exampleSearch"
-                placeholder="Search Friend"
-              />
-            </div>
+              id="exampleSearch"
+              placeholder="Search Friend"
+            />
           </div>
-          <AddButton action={addFriend} />
-        </>
-      ) : null}
+        </div>
+        <AddButton action={addFriend} />
+      </>
       <div>
         <Outlet />
-        <FriendsList searchParams={searchParams} />
       </div>
     </div>
   );
