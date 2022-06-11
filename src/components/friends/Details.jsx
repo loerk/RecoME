@@ -11,15 +11,13 @@ export default function Details() {
   const { currentUser, updateUser, updateUsers, findUserById } = useUsers();
   const { getBubbleById, updateBubble } = useBubbles();
 
-  const [updatedBubble, setUpdatedBubble] = useState();
-
   let currentNotifications = currentUser.notifications;
 
   const currentBubble = getBubbleById(currentNotifications[0].toBubble);
   const invitedByUser = findUserById(currentNotifications[0].invitedBy);
 
   const resetInvitationsArr = () => {
-    //deletes latest notification
+    //delete latest notification
     currentUser.notifications.shift();
     const updatedUser = { ...currentUser };
     updateUser(updatedUser);
@@ -27,12 +25,18 @@ export default function Details() {
   };
 
   const acceptBubbleInvitation = () => {
+    const alreadyFriends = currentUser.friends.find(
+      (friend) => friend === invitedByUser.id
+    );
+
+    if (!alreadyFriends) {
+      currentUser.friends = [
+        ...currentUser.friends,
+        currentNotifications[0].invitedBy,
+      ];
+      invitedByUser.friends = [...invitedByUser.friends, currentUser.id];
+    }
     currentBubble.members = [...currentBubble.members, currentUser.id];
-    currentUser.friends = [
-      ...currentUser.friends,
-      currentNotifications[0].invitedBy,
-    ];
-    invitedByUser.friends = [...invitedByUser.friends, currentUser.id];
     resetInvitationsArr();
     updateBubble(currentBubble);
     navigate(`/bubbles/${currentBubble.id}`);

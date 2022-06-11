@@ -3,8 +3,8 @@ import { useUsers } from "../../contexts/UsersContext";
 import { useBubbles } from "../../contexts/BubbleContext";
 
 export default function AddFriend() {
-  const { findUserByEmail, inviteFriendToBubble } = useUsers();
-  const { getBubbles } = useBubbles();
+  const { findUserByEmail, inviteFriendToBubble, currentUser } = useUsers();
+  const { getBubbles, getBubbleById } = useBubbles();
 
   const [invitiationStatus, setInvitationStatus] = useState(null);
   const [bubbleId, setBubbleId] = useState();
@@ -13,7 +13,17 @@ export default function AddFriend() {
   const bubbles = getBubbles();
 
   const onSubmit = () => {
+    const selectedBubble = getBubbleById(bubbleId);
     const addFriend = findUserByEmail(email);
+
+    const alreadyMember = selectedBubble.members.find(
+      (member) => member === addFriend.id
+    );
+
+    if (alreadyMember) {
+      setInvitationStatus("Your friend is already member of this group!");
+      return;
+    }
     if (email === "") {
       setInvitationStatus("Ooops, an email is missing :/ try again!");
       return;
@@ -25,7 +35,6 @@ export default function AddFriend() {
     }
 
     inviteFriendToBubble(email, bubbleId);
-
     setInvitationStatus(" Great, your friend got invited!");
   };
 
