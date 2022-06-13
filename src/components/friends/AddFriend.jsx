@@ -62,7 +62,7 @@ export default function AddFriend() {
         return false;
       }
     );
-    console.log(filteredInvitedFriendsList);
+
     filteredInvitedFriendsList.forEach((friendId) => {
       const addFriend = findUserById(friendId);
       inviteFriendToBubble(addFriend.email, bubbleId);
@@ -207,49 +207,51 @@ export default function AddFriend() {
 
       <div className="w-72 m-auto my-10">
         {friends.length !== 0 ? (
-          <ul className="pt-6 flex-wrap ">
+          <ul className="pt-6 ">
             <h1 className=" pb-5 ">...or choose from your friends:</h1>
-            {friends.map((friendId) => {
-              let currFriend = findFriend(friendId);
-              if (params.friendId === undefined) {
-                return (
-                  <li key={uuidv1()}>
-                    <div className=" flex justify-between mb-2  w-56  text-center">
-                      {location.pathname !== "/friends/addFriend" ? (
-                        <img
-                          onClick={() => navigate(`/friends/${currFriend.id}`)}
-                          className="w-28 h-28 object-cover object-center opacity-50  hover:opacity-100 rounded-full cursor-pointer"
-                          src={currFriend.avatarUrl}
-                          alt=""
-                        />
-                      ) : (
-                        <img
-                          onClick={() =>
-                            toggleFriendToInvitationsList(currFriend.id)
-                          }
-                          className="w-14 h-10  object-cover object-center rounded-full cursor-pointer"
-                          src={currFriend.avatarUrl}
-                          alt=""
-                        />
-                      )}
-                      {isInvitedFriend(currFriend.id) ? (
-                        <>
-                          <p className="relative">{currFriend.username} </p>
-                          <p className="w-4">✅</p>
-                        </>
-                      ) : (
-                        <>
-                          <p className="relative">{currFriend.username}</p>
-                          <p className="w-4">☑️</p>
-                        </>
-                      )}
-                    </div>
-                  </li>
-                );
-              } else {
-                return null;
-              }
-            })}
+            <div className="flex  gap-4 flex-wrap mb-2  w-56  text-center">
+              {friends.map((friendId) => {
+                let currFriend = findFriend(friendId);
+                if (params.friendId === undefined) {
+                  return (
+                    <li key={uuidv1()}>
+                      <div className="">
+                        {location.pathname !== "/friends/addFriend" ? (
+                          <img
+                            onClick={() =>
+                              navigate(`/friends/${currFriend.id}`)
+                            }
+                            className="w-28 h-28 object-cover object-center opacity-50  hover:opacity-100 rounded-full cursor-pointer"
+                            src={currFriend.avatarUrl}
+                            alt=""
+                          />
+                        ) : (
+                          <div
+                            className={
+                              isInvitedFriend(currFriend.id)
+                                ? "bg-green-400"
+                                : null
+                            }
+                          >
+                            <img
+                              onClick={() =>
+                                toggleFriendToInvitationsList(currFriend.id)
+                              }
+                              className="w-14 h-14 p-1 object-cover object-center  rounded-full cursor-pointer"
+                              src={currFriend.avatarUrl}
+                              alt=""
+                            />
+                            <p className="relative">{currFriend.username}</p>
+                          </div>
+                        )}
+                      </div>
+                    </li>
+                  );
+                } else {
+                  return null;
+                }
+              })}
+            </div>
             <div className="mt-8 ">
               <button
                 className="inline-block leading-tight uppercase  shadow-md hover:bg-gradient-to-r from-cyan-500 to-blue-500 hover:shadow-lg focus:bg-black focus:shadow-lg focus:outline-none focus:ring-0 active:bg-pink-800 active:shadow-lg transition duration-150 ease-in-out bg-black rounded-md  text-white px-2 py-1"
