@@ -3,6 +3,7 @@ import { useUsers } from "../../contexts/UsersContext";
 import { useBubbles } from "../../contexts/BubbleContext";
 import { useLocation, useParams, useNavigate } from "react-router-dom";
 import { v1 as uuidv1 } from "uuid";
+
 export default function AddFriend() {
   const { findUserById, currentUser, findUserByEmail, inviteFriendToBubble } =
     useUsers();
@@ -37,16 +38,15 @@ export default function AddFriend() {
       setInviteFromFriendsList([...inviteFromFriendsList, id]);
     }
   };
-
+  const selectedBubble = getBubbleById(bubbleId);
   const inviteFriends = () => {
-    const selectedBubble = getBubbleById(bubbleId);
     inviteFromFriendsList.map((friendId) => {
       let addFriend = findUserById(friendId);
       const alreadyMember = selectedBubble.members.find(
         (member) => member === addFriend.id
       );
-      if (alreadyMember) {
-        return null;
+
+      if (alreadyMember === undefined) {
       } else {
         inviteFriendToBubble(addFriend.email, bubbleId);
         setInvitationStatusGroup(
@@ -91,9 +91,10 @@ export default function AddFriend() {
   };
 
   return (
-    <div className="justify-center text-center">
+    <div className="">
       {bubbles ? (
         <div className="w-72 m-auto mt-8">
+          <p>1. select the bubble you want your friends to join</p>
           <select
             onChange={(e) => {
               setBubbleId(e.target.value);
@@ -122,6 +123,7 @@ export default function AddFriend() {
               return <option value={bubble.id}>{bubble.name}</option>;
             })}
           </select>
+          <p>2. add your friends email here :</p>
           <input
             value={email}
             type="email"
@@ -164,15 +166,16 @@ export default function AddFriend() {
         <p>You dont have any bubbles, please add a bubble first</p>
       )}
 
-      <div>
+      <div className="w-72 m-auto my-10">
         {friends.length !== 0 ? (
-          <ul className="pt-6 flex flex-wrap gap-4 justify-around">
+          <ul className="pt-6 flex-wrap ">
+            <h1 className=" pb-5 ">...or choose from your friends:</h1>
             {friends.map((friendId) => {
               let currFriend = findFriend(friendId);
               if (params.friendId === undefined) {
                 return (
                   <li key={uuidv1()}>
-                    <div className="text-center">
+                    <div className=" flex justify-between mb-2  w-56  text-center">
                       {location.pathname !== "/friends/addFriend" ? (
                         <img
                           onClick={() => navigate(`/friends/${currFriend.id}`)}
@@ -185,15 +188,21 @@ export default function AddFriend() {
                           onClick={() =>
                             toggleFriendToInvitationsList(currFriend.id)
                           }
-                          className="w-28 h-28 object-cover object-center opacity-50  hover:opacity-100 rounded-full cursor-pointer"
+                          className="w-14 h-10  object-cover object-center rounded-full cursor-pointer"
                           src={currFriend.avatarUrl}
                           alt=""
                         />
                       )}
                       {isInvitedFriend(currFriend.id) ? (
-                        <p className="relative">{currFriend.username} ✅</p>
+                        <>
+                          <p className="relative">{currFriend.username} </p>
+                          <p className="w-4">✅</p>
+                        </>
                       ) : (
-                        <p className="relative">{currFriend.username}</p>
+                        <>
+                          <p className="relative">{currFriend.username}</p>
+                          <p className="w-4">☑️</p>
+                        </>
                       )}
                     </div>
                   </li>
@@ -202,23 +211,21 @@ export default function AddFriend() {
                 return null;
               }
             })}
+            <div className="mt-8 ">
+              <button
+                className="inline-block leading-tight uppercase  shadow-md hover:bg-gradient-to-r from-cyan-500 to-blue-500 hover:shadow-lg focus:bg-black focus:shadow-lg focus:outline-none focus:ring-0 active:bg-pink-800 active:shadow-lg transition duration-150 ease-in-out bg-black rounded-md  text-white px-2 py-1"
+                onClick={inviteFriends}
+              >
+                invite selected Friends
+              </button>
+              {!!invitationStatusGroup && (
+                <p className="text-fuchsia-600 pt-3">{invitationStatusGroup}</p>
+              )}
+            </div>
           </ul>
         ) : (
           <p className="text-center pt-5">:/ you dont have any friends...yet</p>
         )}
-        {location.pathname === "/friends/addFriend" ? (
-          <div className="bg-fuchsia-200 mt-8 p-3 flex justify-center">
-            <button
-              className="inline-block leading-tight uppercase  shadow-md hover:bg-gradient-to-r from-cyan-500 to-blue-500 hover:shadow-lg focus:bg-black focus:shadow-lg focus:outline-none focus:ring-0 active:bg-pink-800 active:shadow-lg transition duration-150 ease-in-out bg-black rounded-md  text-white px-2 py-1"
-              onClick={inviteFriends}
-            >
-              invite selected Friends
-            </button>
-            {!!invitationStatusGroup && (
-              <p className="text-fuchsia-600 pt-3">{invitationStatusGroup}</p>
-            )}
-          </div>
-        ) : null}
       </div>
     </div>
   );
