@@ -79,11 +79,28 @@ export default function AddFriend() {
   };
 
   const inviteFriend = () => {
-    const selectedBubble = getBubbleById(bubbleId);
-    const addFriend = findUserByEmail(email);
-    const alreadyMember = selectedBubble.members.find(
-      (member) => member === addFriend.id
-    );
+    let selectedBubble;
+    let addFriend;
+    let alreadyMember;
+    if (bubbleId) {
+      selectedBubble = getBubbleById(bubbleId);
+    } else {
+      setInvitationStatus("please select a bubble");
+      return;
+    }
+    if (email) {
+      if (!findUserByEmail(email)) {
+        setInvitationStatus(
+          "Oh, we dont know your friend,yet... please ask your friend to register first"
+        );
+        return;
+      } else {
+        addFriend = findUserByEmail(email);
+      }
+    } else {
+      setInvitationStatus("Ooops, an email is missing :/ try again!");
+      return;
+    }
 
     if (selectedBubble) {
       alreadyMember = selectedBubble.members.find(
