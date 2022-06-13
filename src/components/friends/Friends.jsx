@@ -1,4 +1,4 @@
-import { useNavigate, Outlet, useParams, useLocation } from "react-router-dom";
+import { useNavigate, Outlet, useLocation } from "react-router-dom";
 import { AddButton } from "../../utilities/Buttons";
 import { useUsers } from "../../contexts/UsersContext";
 import React, { useState } from "react";
@@ -6,7 +6,6 @@ import { v1 as uuidv1 } from "uuid";
 
 export default function Friends() {
   const navigate = useNavigate();
-  const params = useParams();
   const location = useLocation();
 
   const { findUserById, currentUser } = useUsers();
@@ -55,22 +54,31 @@ export default function Friends() {
           <div>
             {friends.length !== 0 ? (
               <ul className="pt-6 flex flex-wrap gap-4 justify-around">
-                {friends.map((friendId) => {
-                  let currFriend = findUserById(friendId);
-                  return (
-                    <li key={uuidv1()}>
-                      <div className="text-center">
-                        <img
-                          onClick={() => navigate(`/friends/${currFriend.id}`)}
-                          className="w-28 h-28 object-cover object-center opacity-50  hover:opacity-100 rounded-full cursor-pointer"
-                          src={currFriend.avatarUrl}
-                          alt=""
-                        />
-                        <p className="relative">{currFriend.username}</p>
-                      </div>
-                    </li>
-                  );
-                })}
+                {friends
+                  .filter((friendId) => {
+                    let currFriend = findUserById(friendId);
+                    return currFriend.username
+                      .toLowerCase()
+                      .includes(searchFor.toLowerCase());
+                  })
+                  .map((friendId) => {
+                    let currFriend = findUserById(friendId);
+                    return (
+                      <li key={uuidv1()}>
+                        <div className="text-center">
+                          <img
+                            onClick={() =>
+                              navigate(`/friends/${currFriend.id}`)
+                            }
+                            className="w-28 h-28 object-cover object-center opacity-50  hover:opacity-100 rounded-full cursor-pointer"
+                            src={currFriend.avatarUrl}
+                            alt=""
+                          />
+                          <p className="relative">{currFriend.username}</p>
+                        </div>
+                      </li>
+                    );
+                  })}
               </ul>
             ) : (
               <p className="text-center pt-5">
