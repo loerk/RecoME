@@ -26,11 +26,12 @@ export function UsersContextProvider({ children }) {
     localStorage.setItem("currentUser", JSON.stringify(null));
   };
 
-  const updateUsers = (currUser) => {
-    const updatedUsers = users.map((user) =>
-      user.id === currUser.id ? currUser : user
+  const updateUsers = (updatedUser) => {
+    const updatedUsers = users.map((currUser) =>
+      currUser.id === updatedUser.id ? updatedUser : currUser
     );
     setUsers(updatedUsers);
+    console.log("updatedUsers", updatedUsers);
     localStorage.setItem("users", JSON.stringify(updatedUsers));
   };
 
@@ -42,7 +43,6 @@ export function UsersContextProvider({ children }) {
   const inviteFriendToBubble = (email, bubbleId) => {
     const addFriend = findUserByEmail(email);
 
-    //TODO check if users are already friends
     const updateAddedFriend = {
       ...addFriend,
       notifications: [

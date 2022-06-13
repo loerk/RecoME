@@ -39,27 +39,34 @@ export default function AddFriend() {
     }
   };
   const selectedBubble = getBubbleById(bubbleId);
-  const inviteFriends = () => {
-    inviteFromFriendsList.map((friendId) => {
-      let addFriend = findUserById(friendId);
-      const alreadyMember = selectedBubble.members.find(
-        (member) => member === addFriend.id
-      );
 
-      if (alreadyMember === undefined) {
-      } else {
-        inviteFriendToBubble(addFriend.email, bubbleId);
-        setInvitationStatusGroup(
-          "the friends who are not yet members got invited"
+  const inviteFriends = () => {
+    const filteredInvitedFriendsList = inviteFromFriendsList.filter(
+      (friendId) => {
+        const addFriend = findUserById(friendId);
+        let alreadyMember = selectedBubble.members.find(
+          (member) => member === addFriend.id
         );
+        if (!alreadyMember) {
+          return true;
+        }
+        return false;
       }
-      setInvitationStatusGroup("all your friends got invited");
+    );
+    console.log(filteredInvitedFriendsList);
+    filteredInvitedFriendsList.forEach((friendId) => {
+      const addFriend = findUserById(friendId);
+      inviteFriendToBubble(addFriend.email, bubbleId);
     });
 
+    if (filteredInvitedFriendsList.length === inviteFromFriendsList.length) {
+      setInvitationStatusGroup("all your friends got invited");
+    } else {
+      setInvitationStatusGroup(
+        "the friends who are not yet members got invited"
+      );
+    }
     setInviteFromFriendsList([]);
-    setInvitationStatusGroup(
-      "all your friends got invited, if they aren't already part of the bubble"
-    );
   };
 
   const inviteFriend = () => {
@@ -94,6 +101,9 @@ export default function AddFriend() {
     <div className="">
       {bubbles ? (
         <div className="w-72 m-auto mt-8">
+          <h1 className=" my-10 uppercase">
+            YEJ - invite your friends to your bubble
+          </h1>
           <p>1. select the bubble you want your friends to join</p>
           <select
             onChange={(e) => {
