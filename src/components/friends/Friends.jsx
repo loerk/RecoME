@@ -19,7 +19,7 @@ export default function Friends() {
 
   return (
     <div className="mt-10">
-      {!params.friendId && location.pathname !== "/friends/addFriend" ? (
+      {location.pathname === "/friends" ? (
         <div>
           <div className="flex justify-center">
             <div className="mb-3 xl:w-96">
