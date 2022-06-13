@@ -41,9 +41,18 @@ export default function AddFriend() {
   const selectedBubble = getBubbleById(bubbleId);
 
   const inviteFriends = () => {
+    if (!bubbleId) {
+      setInvitationStatusGroup("please select a bubble first");
+      return;
+    }
+    if (inviteFromFriendsList.length === 0) {
+      setInvitationStatusGroup("please select at least one friend");
+      return;
+    }
     const filteredInvitedFriendsList = inviteFromFriendsList.filter(
       (friendId) => {
         const addFriend = findUserById(friendId);
+
         let alreadyMember = selectedBubble.members.find(
           (member) => member === addFriend.id
         );
@@ -76,10 +85,12 @@ export default function AddFriend() {
       (member) => member === addFriend.id
     );
 
-    if (!addFriend) {
-      setInvitationStatus(
-        "Oh, we dont know your friend,yet... please ask your friend to register first"
+    if (selectedBubble) {
+      alreadyMember = selectedBubble.members.find(
+        (member) => member === addFriend.id
       );
+    } else {
+      setInvitationStatus("please select a bubble");
       return;
     }
 
@@ -88,11 +99,12 @@ export default function AddFriend() {
       return;
     }
 
-    if (email === "") {
-      setInvitationStatus("Ooops, an email is missing :/ try again!");
+    if (!addFriend) {
+      setInvitationStatus(
+        "Oh, we dont know your friend,yet... please ask your friend to register first"
+      );
       return;
     }
-
     inviteFriendToBubble(email, bubbleId);
     setInvitationStatus(" Great, your friend got invited!");
   };
