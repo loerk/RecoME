@@ -5,7 +5,7 @@ import { useLocation, useParams, useNavigate } from "react-router-dom";
 import { v1 as uuidv1 } from "uuid";
 
 export default function AddFriend() {
-  const { findUserById, currentUser, findUserByEmail, inviteFriendToBubble } =
+  const { findUserById, currentUser, findUserByEmail, inviteFriendsToBubble } =
     useUsers();
   const { getBubbles, getBubbleById } = useBubbles();
 
@@ -32,8 +32,6 @@ export default function AddFriend() {
     }
   };
 
-  // think you can just fetch the bubble in the functions where you need the actual bubble
-
   const inviteFriends = () => {
     if (!bubbleId) {
       setInvitationStatusGroup("please select a bubble first");
@@ -45,13 +43,20 @@ export default function AddFriend() {
     }
     const selectedBubble = getBubbleById(bubbleId);
     const filteredInvitedFriendsList = friendsList.filter((friendId) => {
-      let isAlreadyMember = selectedBubble.members.some(
+      const friend = findUserById(friendId);
+      const isAlreadyMember = selectedBubble.members.some(
         (member) => member === friendId
       );
-      return !isAlreadyMember;
+      const isAlreadyInvited = friend.notifications.some(
+        (notification) => notification.toBubble === bubbleId
+      );
+
+      if (isAlreadyInvited || isAlreadyMember) return false;
+      return true;
+      // return !isAlreadyMember && !isAlreadyInvited;
     });
 
-    inviteFriendToBubble(bubbleId, filteredInvitedFriendsList);
+    inviteFriendsToBubble(bubbleId, filteredInvitedFriendsList);
 
     if (filteredInvitedFriendsList.length === friendsList.length) {
       setInvitationStatusGroup("all your friends got invited");
@@ -91,6 +96,11 @@ export default function AddFriend() {
       setInvitationStatus("Your friend is already member of this group!");
       return;
     }
+    const isAlreadyInvited = friend.notifications.some(
+      (notification) => notification.toBubble === bubbleId
+    );
+
+    if (isAlreadyInvited) return;
 
     if (!friend) {
       setInvitationStatus(
@@ -98,7 +108,7 @@ export default function AddFriend() {
       );
       return;
     }
-    inviteFriendToBubble(bubbleId, [friend.id]);
+    inviteFriendsToBubble(bubbleId, [friend.id]);
     setInvitationStatus(" Great, your friend got invited!");
   };
 
