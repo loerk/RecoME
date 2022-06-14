@@ -1,38 +1,29 @@
-import React from "react";
-import {
-  Outlet,
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from "react-router-dom";
+import { useNavigate, Outlet, useLocation } from "react-router-dom";
 import { AddButton } from "../../utilities/Buttons";
-import FriendsList from "./FriendsList";
+import { useUsers } from "../../contexts/UsersContext";
+import React, { useState } from "react";
+import { v1 as uuidv1 } from "uuid";
 
 export default function Friends() {
-  const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
-  const params = useParams();
+  const location = useLocation();
 
+  const { findUserById, currentUser } = useUsers();
+  const [searchFor, setSearchFor] = useState("");
+
+  const friends = currentUser.friends;
   const addFriend = () => {
     navigate("/friends/addFriend");
   };
 
   return (
     <div className="mt-10">
-      {!params.friendId === "details" ? (
-        <>
+      {location.pathname === "/friends" ? (
+        <div>
           <div className="flex justify-center">
             <div className="mb-3 xl:w-96">
               <input
-                value={searchParams.get("filter") || ""}
-                onChange={(e) => {
-                  let filter = e.target.value;
-                  if (filter) {
-                    setSearchParams({ filter });
-                  } else {
-                    setSearchParams({ filter: "" });
-                  }
-                }}
+                onChange={(e) => setSearchFor(e.target.value)}
                 type="search"
                 className="
                     text-center
@@ -57,13 +48,47 @@ export default function Friends() {
               />
             </div>
           </div>
+
           <AddButton action={addFriend} />
-        </>
+
+          <div>
+            {friends.length !== 0 ? (
+              <ul className="pt-6 flex flex-wrap gap-4 justify-around">
+                {friends
+                  .filter((friendId) => {
+                    let currFriend = findUserById(friendId);
+                    return currFriend.username
+                      .toLowerCase()
+                      .includes(searchFor.toLowerCase());
+                  })
+                  .map((friendId) => {
+                    let currFriend = findUserById(friendId);
+                    return (
+                      <li key={uuidv1()}>
+                        <div className="text-center">
+                          <img
+                            onClick={() =>
+                              navigate(`/friends/${currFriend.id}`)
+                            }
+                            className="w-28 h-28 object-cover object-center opacity-50  hover:opacity-100 rounded-full cursor-pointer"
+                            src={currFriend.avatarUrl}
+                            alt=""
+                          />
+                          <p className="relative">{currFriend.username}</p>
+                        </div>
+                      </li>
+                    );
+                  })}
+              </ul>
+            ) : (
+              <p className="text-center pt-5">
+                :/ you dont have any friends...yet
+              </p>
+            )}
+          </div>
+        </div>
       ) : null}
-      <div>
-        <Outlet />
-        <FriendsList searchParams={searchParams} />
-      </div>
+      <Outlet />
     </div>
   );
 }

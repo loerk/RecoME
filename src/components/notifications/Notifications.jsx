@@ -1,17 +1,25 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import { useUsers } from "../../contexts/UsersContext";
 
 export default function Notifications() {
-  const { currentUser } = useUsers();
-  const navigate = useNavigate();
   const [showNotificationsList, setShowNotificationsList] = useState(false);
-  const hasNewNotifications = currentUser.notifications.length !== 0;
+  const navigate = useNavigate();
+
+  const { currentUser } = useUsers();
+
+  const notifications = currentUser.notifications;
+  const hasNewNotifications = notifications.length !== 0;
 
   return (
     <div className="p-2">
-      <img src={currentUser.avatarUrl} alt="" className="w-10" />
-      {hasNewNotifications ? (
+      <img
+        src={currentUser.avatarUrl}
+        alt=""
+        className="w-10 shadow-lg rounded-full"
+      />
+      {hasNewNotifications && (
         <div className="relative">
           <button
             onClick={() => setShowNotificationsList(!showNotificationsList)}
@@ -19,11 +27,12 @@ export default function Notifications() {
           >
             {currentUser.notifications.length} NEWS
           </button>
-          {showNotificationsList ? (
+          {showNotificationsList && (
             <ul>
               {currentUser.notifications.map((note) => {
                 return (
                   <li
+                    key={note.id}
                     onClick={() => navigate("/friends/details")}
                     className="
                         absolute      
@@ -45,9 +54,9 @@ export default function Notifications() {
                 );
               })}
             </ul>
-          ) : null}
+          )}
         </div>
-      ) : null}
+      )}
     </div>
   );
 }

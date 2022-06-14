@@ -32,6 +32,7 @@ export default function AddBubble() {
           name="name"
           onChange={handleChange}
           value={bubbleData.name}
+          required
         />
         <input
           type="text"
@@ -40,6 +41,7 @@ export default function AddBubble() {
           name="description"
           onChange={handleChange}
           value={bubbleData.description}
+          required
         />
         <input
           type="text"
@@ -48,6 +50,7 @@ export default function AddBubble() {
           name="categories"
           onChange={handleChange}
           value={bubbleData.categories}
+          required
         />
         <input
           id="url"
@@ -57,6 +60,7 @@ export default function AddBubble() {
           name="imageUrl"
           onChange={handleChange}
           value={bubbleData.imageUrl}
+          required
         />
         <button className="w-full hover:translate-y-1  text-3xl p-3 bg-white  text-black  font-face-tm my-4">
           create

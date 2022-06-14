@@ -119,7 +119,7 @@ export default function Register() {
             Register
           </button>
           <NavLink
-            to="login"
+            to="/login"
             className={
               theme
                 ? "w-full text-2xl p-1 bg-black  hover:translate-y-1 text-center text-white border-2 border-white-900 font-face-tm"

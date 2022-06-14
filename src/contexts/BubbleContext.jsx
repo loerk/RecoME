@@ -7,39 +7,60 @@ const BubbleContext = createContext([]);
 export const useBubbles = () => {
   return useContext(BubbleContext);
 };
+const initialValueBubbles = JSON.parse(localStorage.getItem("bubbles"));
 
 export function BubbleContextProvider({ children }) {
-  const [bubbles, setBubbles] = useState([]);
+  const [bubbles, setBubbles] = useState(initialValueBubbles || []);
   const getCurrentUser = useGetCurrentUser();
+
   const addBubble = (newBubble) => {
     const currentUser = getCurrentUser();
-    setBubbles([
+    const newBubblesArr = [
       ...bubbles,
       {
         ...newBubble,
         id: uuidv1(),
         createdAt: Date.now(),
         createdBy: currentUser.id,
-        members: [{ userId: currentUser.id, username: currentUser.username }],
+        members: [currentUser.id],
       },
-    ]);
+    ];
+    setBubbles(newBubblesArr);
+    localStorage.setItem("bubbles", JSON.stringify(newBubblesArr));
   };
   const getBubbles = () => {
     const currentUser = getCurrentUser();
     return bubbles.filter(
       (bubble) =>
         bubble.createdBy === currentUser.id ||
-        bubble.members.find((member) => member.userId === currentUser.id)
+        bubble.members.find((member) => member === currentUser.id)
     );
   };
+
   const getBubbleById = (id) => {
     return bubbles.find((bubble) => bubble.id === id);
   };
+  const updateBubble = (updatedBubble) => {
+    const updatedBubblesArray = bubbles.map((bubble) =>
+      bubble.id === updatedBubble.id ? updatedBubble : bubble
+    );
 
-  const deleteBubble = (id) => {
-    setBubbles(bubbles.filter((bubble) => bubble.id !== id));
+    setBubbles(updatedBubblesArray);
+    localStorage.setItem("bubbles", JSON.stringify(updatedBubblesArray));
   };
-  const contextValue = { addBubble, getBubbles, getBubbleById, deleteBubble };
+  const deleteBubble = (id) => {
+    const deletedBubbleArr = bubbles.filter((bubble) => bubble.id !== id);
+    setBubbles(deletedBubbleArr);
+    localStorage.setItem("bubbles", JSON.stringify(deletedBubbleArr));
+  };
+
+  const contextValue = {
+    addBubble,
+    getBubbles,
+    getBubbleById,
+    updateBubble,
+    deleteBubble,
+  };
   return (
     <BubbleContext.Provider value={contextValue}>
       {children}

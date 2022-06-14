@@ -6,7 +6,6 @@ import { useBubbles } from "../../contexts/BubbleContext";
 export default function BubbleList({ searchParams }) {
   const { getBubbles } = useBubbles();
   const navigate = useNavigate();
-
   const params = useParams();
   const bubbles = getBubbles();
 
@@ -22,7 +21,6 @@ export default function BubbleList({ searchParams }) {
               return name.includes(filter.toLowerCase());
             })
             .map((bubble) => {
-              console.log(bubble);
               if (params.bubbleId === undefined) {
                 return (
                   <div

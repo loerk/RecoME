@@ -1,95 +1,71 @@
 import React, { useState } from "react";
 
 import { useUsers } from "../../contexts/UsersContext";
+import { useBubbles } from "../../contexts/BubbleContext";
 import { VscChromeClose, VscCheck } from "react-icons/vsc";
+import { useNavigate } from "react-router-dom";
 
 export default function Details() {
-  const { users, currentUser } = useUsers();
-  const [invitedByUser, setInvitedByUser] = useState({
-    userName: "",
-    userId: null,
-    notificationId: null,
-  });
-  const [invitedToBubble, setInvitedToBubble] = useState();
+  const navigate = useNavigate();
 
-  const currentNotifications = currentUser.notifications;
-  // const handleNotifications=()=>{
-  //   switch () {
-  //     case toBubble:
+  const { currentUser, updateUser, updateUsers, findUserById } = useUsers();
+  const { getBubbleById, updateBubble } = useBubbles();
 
-  //       break;
+  let currentNotifications = currentUser.notifications;
 
-  //     default:
-  //       break;
-  //   }
-  // }
-  console.log("hiiiiii");
-  console.log(currentNotifications);
+  const currentBubble = getBubbleById(currentNotifications[0].toBubble);
+  const invitedByUser = findUserById(currentNotifications[0].invitedBy);
 
-  console.log("userData1", currentUser);
-  //map users Notifications
-  currentNotifications.map((notification) => {
-    console.log("111111", notification);
-    //if Notification hasProperty of toBubble it has a bubble
-    if (notification.toBubble) {
-      //find bubble in UsersArray
-      return users.map((user) => {
-        if (user.bubbles) {
-          console.log("22222", user);
-          //find specific Bubble
-          user.bubbles.map((bubble) => {
-            console.log("bubble", bubble);
-            //if you found the specific Bubble setState
-            console.log("bubbleId", bubble.id);
-            console.log("notifi.toBubble", notification.toBubble);
-            if (bubble.id === notification.toBubble) {
-              console.log("YWEEESSSSAAA");
-              setInvitedByUser({
-                userName: notification.invitedByUser,
-                userId: notification.invitedBy,
-                notificationId: notification.id,
-              });
-              setInvitedToBubble(bubble);
-            } else {
-              return null;
-            }
-          });
-        } else {
-          return null;
-        }
-      });
-    } else {
-      return null;
-    }
-  });
-
-  const acceptBubbleInvitation = (id) => {
-    console.log(invitedByUser);
+  const resetInvitationsArr = () => {
+    //delete latest notification
+    currentUser.notifications.shift();
+    const updatedUser = { ...currentUser };
+    updateUser(updatedUser);
+    updateUsers(updatedUser);
   };
 
-  const refuseBubbleInvitation = () => {};
-  // const userId = currentUser.notifications.map(() => {});
-  //const invitedBy = users.find((user)=>user.id===currentUser.notifications.)
-  console.log(invitedByUser, invitedToBubble);
+  const acceptBubbleInvitation = () => {
+    const alreadyFriends = currentUser.friends.find(
+      (friend) => friend === invitedByUser.id
+    );
+
+    if (!alreadyFriends) {
+      currentUser.friends = [
+        ...currentUser.friends,
+        currentNotifications[0].invitedBy,
+      ];
+      invitedByUser.friends = [...invitedByUser.friends, currentUser.id];
+    }
+    currentBubble.members = [...currentBubble.members, currentUser.id];
+    resetInvitationsArr();
+    updateBubble(currentBubble);
+    navigate(`/bubbles/${currentBubble.id}`);
+  };
+
+  const refuseBubbleInvitation = () => {
+    resetInvitationsArr();
+    navigate("/bubbles");
+  };
 
   return (
     <div className="flex items-center flex-col mt-6">
       <h1>WOW WOW WOW</h1>
       <p>here are your news</p>
-      {invitedByUser && (
+      {currentBubble && (
         <div className="flex mt-8 justify-center">
           <div className="flex flex-col md:flex-row md:max-w-xl rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 shadow-lg">
             <img
               className="h-28 md:h-auto opacity-60 object-cover md:w-48 rounded-t-lg md:rounded-none md:rounded-l-lg"
-              src={invitedToBubble.imageUrl}
+              src={currentBubble.imageUrl}
               alt=""
             />
             <div className="p-6 flex flex-col bg- justify-start">
               <h5 className="text-gray-900 uppercase text-xl font-medium mb-2">
-                Invitation to {invitedToBubble.name}
+                Invitation to {currentBubble.name}
               </h5>
               <p className="text-gray-900 text-base mb-4">
-                Congratulations, you are invited by {invitedByUser}!
+                Congratulations, you are invited by{" "}
+                {currentNotifications[0].invitedByUser}!
               </p>
               <div className="text-black flex justify-end gap-3">
                 <VscChromeClose
@@ -97,7 +73,7 @@ export default function Details() {
                   className="cursor-pointer"
                 ></VscChromeClose>
                 <VscCheck
-                  onClick={() => acceptBubbleInvitation(invitedToBubble.id)}
+                  onClick={() => acceptBubbleInvitation()}
                   className="cursor-pointer"
                 ></VscCheck>
               </div>

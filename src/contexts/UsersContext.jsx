@@ -16,26 +16,69 @@ export function UsersContextProvider({ children }) {
   const [users, setUsers] = useState(initialValueUsers || []);
 
   const loginUser = (user) => {
-    setCurrentUser({ ...user, lastLogin: Date.now() });
+    const userWithLastLogin = { ...user, lastLogin: Date.now() };
+    setCurrentUser(userWithLastLogin);
+    localStorage.setItem("currentUser", JSON.stringify(userWithLastLogin));
   };
 
-  const logoutUser = (user) => {
+  const logoutUser = () => {
     setCurrentUser(null);
+    localStorage.setItem("currentUser", JSON.stringify(null));
   };
 
-  const updateUsers = (currUser) => {
-    setUsers(users.map((user) => (user.id === currUser.id ? currUser : user)));
+  const updateUsers = (updatedUserList) => {
+    const updatedUsers = users.map((user) => {
+      const foundUser = updatedUserList.find(
+        (findUser) => findUser.id === user.id
+      );
+      return foundUser ? foundUser : user;
+    });
+    setUsers(updatedUsers);
+    console.log("updatedUsers", updatedUsers);
+    localStorage.setItem("users", JSON.stringify(updatedUsers));
   };
 
-  const updateUser = (updatedUser) => {
+  const updateCurrentUser = (updatedUser) => {
     setCurrentUser({ ...updatedUser });
+    localStorage.setItem("currentUser", JSON.stringify(updatedUser));
   };
 
+  const inviteFriendsToBubble = (bubbleId, friendList) => {
+    const updatedFriendList = friendList.map((friendId) => {
+      const friend = findUserById(friendId);
+      return {
+        ...friend,
+        notifications: [
+          ...friend.notifications,
+          {
+            toBubble: bubbleId,
+            invitedAt: Date.now(),
+            invitationId: uuidv1(),
+            type: "invitationToBubble",
+            invitedBy: currentUser.id,
+            invitedByUser: currentUser.username,
+          },
+        ],
+      };
+    });
+
+    updateUsers(updatedFriendList);
+  };
   const deleteUser = () => {
-    setUsers(users.filter((user) => user.id !== currentUser.id));
+    const filteredUser = users.filter((user) => user.id !== currentUser.id);
+    setUsers(filteredUser);
     setCurrentUser(null);
+    localStorage.setItem("users", JSON.stringify(filteredUser));
+    localStorage.setItem("currentUser", JSON.stringify(null));
   };
 
+  const findUserByEmail = (email) => {
+    return users.find((user) => user.email === email);
+  };
+
+  const findUserById = (id) => {
+    return users.find((user) => user.id === id);
+  };
   const createNewUser = (registeredUser) => {
     const newUser = {
       ...registeredUser,
@@ -69,14 +112,17 @@ export function UsersContextProvider({ children }) {
 
   const contextValue = {
     users,
-    setUsers: setUsers,
-    currentUser: currentUser,
-    updateUsers: updateUsers,
-    updateUser: updateUser,
-    loginUser: loginUser,
-    logoutUser: logoutUser,
-    createNewUser: createNewUser,
-    deleteUser: deleteUser,
+    setUsers,
+    currentUser,
+    updateUsers,
+    updateCurrentUser,
+    loginUser,
+    logoutUser,
+    createNewUser,
+    deleteUser,
+    findUserByEmail,
+    findUserById,
+    inviteFriendsToBubble,
   };
 
   return (
