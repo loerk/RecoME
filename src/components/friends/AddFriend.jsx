@@ -13,116 +13,92 @@ export default function AddFriend() {
   const [invitationStatusGroup, setInvitationStatusGroup] = useState(null);
   const [bubbleId, setBubbleId] = useState();
   const [email, setEmail] = useState(null);
-  const [inviteFromFriendsList, setInviteFromFriendsList] = useState([]);
+  const [friendsList, setFriendsList] = useState([]);
 
   const params = useParams();
   const location = useLocation();
   const bubbles = getBubbles();
   const navigate = useNavigate();
 
-  const friends = currentUser.friends;
+  const { friends } = currentUser;
 
-  const findFriend = (id) => {
-    return findUserById(id);
-  };
-  const isInvitedFriend = (id) => {
-    return inviteFromFriendsList.includes(id);
-  };
+  const isFriendInvited = (id) => friendsList.includes(id);
 
-  const toggleFriendToInvitationsList = (id) => {
-    if (isInvitedFriend(id)) {
-      setInviteFromFriendsList(
-        inviteFromFriendsList.filter((friendId) => friendId !== id)
-      );
+  const toggleFriend = (id) => {
+    if (isFriendInvited(id)) {
+      setFriendsList(friendsList.filter((friendId) => friendId !== id));
     } else {
-      setInviteFromFriendsList([...inviteFromFriendsList, id]);
+      setFriendsList([...friendsList, id]);
     }
   };
-  const selectedBubble = getBubbleById(bubbleId);
+
+  // think you can just fetch the bubble in the functions where you need the actual bubble
 
   const inviteFriends = () => {
     if (!bubbleId) {
       setInvitationStatusGroup("please select a bubble first");
       return;
     }
-    if (inviteFromFriendsList.length === 0) {
+    if (!friendsList.length) {
       setInvitationStatusGroup("please select at least one friend");
       return;
     }
-    const filteredInvitedFriendsList = inviteFromFriendsList.filter(
-      (friendId) => {
-        const addFriend = findUserById(friendId);
-
-        let alreadyMember = selectedBubble.members.find(
-          (member) => member === addFriend.id
-        );
-        if (!alreadyMember) {
-          return true;
-        }
-        return false;
-      }
-    );
-
-    filteredInvitedFriendsList.forEach((friendId) => {
-      const addFriend = findUserById(friendId);
-      inviteFriendToBubble(addFriend.email, bubbleId);
+    const selectedBubble = getBubbleById(bubbleId);
+    const filteredInvitedFriendsList = friendsList.filter((friendId) => {
+      let isAlreadyMember = selectedBubble.members.some(
+        (member) => member === friendId
+      );
+      return !isAlreadyMember;
     });
 
-    if (filteredInvitedFriendsList.length === inviteFromFriendsList.length) {
+    inviteFriendToBubble(bubbleId, filteredInvitedFriendsList);
+
+    if (filteredInvitedFriendsList.length === friendsList.length) {
       setInvitationStatusGroup("all your friends got invited");
     } else {
       setInvitationStatusGroup(
         "the friends who are not yet members got invited"
       );
     }
-    setInviteFromFriendsList([]);
+    setFriendsList([]);
   };
 
   const inviteFriend = () => {
-    let selectedBubble;
-    let addFriend;
-    let alreadyMember;
-    if (bubbleId) {
-      selectedBubble = getBubbleById(bubbleId);
-    } else {
+    if (!bubbleId) {
       setInvitationStatus("please select a bubble");
       return;
     }
-    if (email) {
-      if (!findUserByEmail(email)) {
-        setInvitationStatus(
-          "Oh, we dont know your friend,yet... please ask your friend to register first"
-        );
-        return;
-      } else {
-        addFriend = findUserByEmail(email);
-      }
-    } else {
+
+    if (!email) {
       setInvitationStatus("Ooops, an email is missing :/ try again!");
       return;
     }
 
-    if (selectedBubble) {
-      alreadyMember = selectedBubble.members.find(
-        (member) => member === addFriend.id
-      );
-    } else {
-      setInvitationStatus("please select a bubble");
-      return;
-    }
-
-    if (alreadyMember) {
-      setInvitationStatus("Your friend is already member of this group!");
-      return;
-    }
-
-    if (!addFriend) {
+    if (email && !findUserByEmail(email)) {
       setInvitationStatus(
         "Oh, we dont know your friend,yet... please ask your friend to register first"
       );
       return;
     }
-    inviteFriendToBubble(email, bubbleId);
+
+    const selectedBubble = getBubbleById(bubbleId);
+    const friend = findUserByEmail(email);
+    const isAlreadyMember =
+      selectedBubble &&
+      selectedBubble.members.some((memberId) => memberId === friend.id);
+
+    if (isAlreadyMember) {
+      setInvitationStatus("Your friend is already member of this group!");
+      return;
+    }
+
+    if (!friend) {
+      setInvitationStatus(
+        "Oh, we dont know your friend, yet... please ask your friend to register first"
+      );
+      return;
+    }
+    inviteFriendToBubble(bubbleId, [friend.id]);
     setInvitationStatus(" Great, your friend got invited!");
   };
 
@@ -157,7 +133,7 @@ export default function AddFriend() {
               m-0      
               focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
           >
-            <option selected>select a bubble</option>
+            <option value="">select a bubble</option>
             {bubbles.map((bubble) => {
               return <option value={bubble.id}>{bubble.name}</option>;
             })}
@@ -211,7 +187,7 @@ export default function AddFriend() {
             <h1 className=" pb-5 ">...or choose from your friends:</h1>
             <div className="flex  gap-4 flex-wrap mb-2  w-56  text-center">
               {friends.map((friendId) => {
-                let currFriend = findFriend(friendId);
+                let currFriend = findUserById(friendId);
                 if (params.friendId === undefined) {
                   return (
                     <li key={uuidv1()}>
@@ -228,16 +204,14 @@ export default function AddFriend() {
                         ) : (
                           <div
                             className={
-                              isInvitedFriend(currFriend.id)
-                                ? "bg-green-400"
+                              isFriendInvited(currFriend.id)
+                                ? "bg-gradient-to-r from-cyan-500 to-blue-500 shadow-lg "
                                 : null
                             }
                           >
                             <img
-                              onClick={() =>
-                                toggleFriendToInvitationsList(currFriend.id)
-                              }
-                              className="w-14 h-14 p-1 object-cover object-center  rounded-full cursor-pointer"
+                              onClick={() => toggleFriend(currFriend.id)}
+                              className="w-14 h-14 p-1 object-cover object-center shadow-lg  rounded-full cursor-pointer"
                               src={currFriend.avatarUrl}
                               alt=""
                             />
@@ -254,7 +228,7 @@ export default function AddFriend() {
             </div>
             <div className="mt-8 ">
               <button
-                className="inline-block leading-tight uppercase  shadow-md hover:bg-gradient-to-r from-cyan-500 to-blue-500 hover:shadow-lg focus:bg-black focus:shadow-lg focus:outline-none focus:ring-0 active:bg-pink-800 active:shadow-lg transition duration-150 ease-in-out bg-black rounded-md  text-white px-2 py-1"
+                className="inline-block leading-tight uppercase shadow-md hover:bg-gradient-to-r from-cyan-500 to-blue-500 hover:shadow-lg focus:bg-black focus:shadow-lg focus:outline-none focus:ring-0 active:bg-pink-800 active:shadow-lg transition duration-150 ease-in-out bg-black rounded-md  text-white px-2 py-1"
                 onClick={inviteFriends}
               >
                 invite selected Friends

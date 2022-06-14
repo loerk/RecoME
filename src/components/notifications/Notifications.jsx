@@ -14,7 +14,11 @@ export default function Notifications() {
 
   return (
     <div className="p-2">
-      <img src={currentUser.avatarUrl} alt="" className="w-10" />
+      <img
+        src={currentUser.avatarUrl}
+        alt=""
+        className="w-10 shadow-lg rounded-full"
+      />
       {hasNewNotifications && (
         <div className="relative">
           <button

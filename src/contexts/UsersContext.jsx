@@ -26,39 +26,43 @@ export function UsersContextProvider({ children }) {
     localStorage.setItem("currentUser", JSON.stringify(null));
   };
 
-  const updateUsers = (updatedUser) => {
-    const updatedUsers = users.map((currUser) =>
-      currUser.id === updatedUser.id ? updatedUser : currUser
-    );
+  const updateUsers = (updatedUserList) => {
+    const updatedUsers = users.map((user) => {
+      const foundUser = updatedUserList.find(
+        (findUser) => findUser.id === user.id
+      );
+      return foundUser ? foundUser : user;
+    });
     setUsers(updatedUsers);
     console.log("updatedUsers", updatedUsers);
     localStorage.setItem("users", JSON.stringify(updatedUsers));
   };
 
-  const updateUser = (updatedUser) => {
+  const updateCurrentUser = (updatedUser) => {
     setCurrentUser({ ...updatedUser });
     localStorage.setItem("currentUser", JSON.stringify(updatedUser));
   };
 
-  const inviteFriendToBubble = (email, bubbleId) => {
-    const addFriend = findUserByEmail(email);
+  const inviteFriendsToBubble = (bubbleId, friendList) => {
+    const updatedFriendList = friendList.map((friendId) => {
+      const friend = findUserById(friendId);
+      return {
+        ...friend,
+        notifications: [
+          ...friend.notifications,
+          {
+            toBubble: bubbleId,
+            invitedAt: Date.now(),
+            invitationId: uuidv1(),
+            type: "invitationToBubble",
+            invitedBy: currentUser.id,
+            invitedByUser: currentUser.username,
+          },
+        ],
+      };
+    });
 
-    const updateAddedFriend = {
-      ...addFriend,
-      notifications: [
-        ...addFriend.notifications,
-        {
-          toBubble: bubbleId,
-          email: email,
-          invitedAt: Date.now(),
-          invitationId: uuidv1(),
-          type: "invitationToBubble",
-          invitedBy: currentUser.id,
-          invitedByUser: currentUser.username,
-        },
-      ],
-    };
-    updateUsers(updateAddedFriend);
+    updateUsers(updatedFriendList);
   };
   const deleteUser = () => {
     const filteredUser = users.filter((user) => user.id !== currentUser.id);
@@ -111,14 +115,14 @@ export function UsersContextProvider({ children }) {
     setUsers,
     currentUser,
     updateUsers,
-    updateUser,
+    updateCurrentUser,
     loginUser,
     logoutUser,
     createNewUser,
     deleteUser,
     findUserByEmail,
     findUserById,
-    inviteFriendToBubble,
+    inviteFriendsToBubble,
   };
 
   return (

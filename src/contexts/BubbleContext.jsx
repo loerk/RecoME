@@ -53,6 +53,7 @@ export function BubbleContextProvider({ children }) {
     setBubbles(deletedBubbleArr);
     localStorage.setItem("bubbles", JSON.stringify(deletedBubbleArr));
   };
+
   const contextValue = {
     addBubble,
     getBubbles,
