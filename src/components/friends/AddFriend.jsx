@@ -145,7 +145,11 @@ export default function AddFriend() {
           >
             <option value="">select a bubble</option>
             {bubbles.map((bubble) => {
-              return <option value={bubble.id}>{bubble.name}</option>;
+              return (
+                <option key={bubble.id} value={bubble.id}>
+                  {bubble.name}
+                </option>
+              );
             })}
           </select>
           <p>2. add your friends email here :</p>
