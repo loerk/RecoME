@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 import { useUsers } from "../../contexts/UsersContext";
 import { useBubbles } from "../../contexts/BubbleContext";
@@ -8,7 +8,12 @@ import { useNavigate } from "react-router-dom";
 export default function Details() {
   const navigate = useNavigate();
 
-  const { currentUser, updateUser, updateUsers, findUserById } = useUsers();
+  const {
+    currentUser,
+    updateUser: updateCurrentUser,
+    updateUsers,
+    findUserById,
+  } = useUsers();
   const { getBubbleById, updateBubble } = useBubbles();
 
   let currentNotifications = currentUser.notifications;
@@ -20,8 +25,8 @@ export default function Details() {
     //delete latest notification
     currentUser.notifications.shift();
     const updatedUser = { ...currentUser };
-    updateUser(updatedUser);
-    updateUsers(updatedUser);
+    updateCurrentUser(updatedUser);
+    updateUsers([updatedUser]);
   };
 
   const acceptBubbleInvitation = () => {

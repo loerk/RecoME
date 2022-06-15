@@ -2,17 +2,16 @@ import React, { useState } from "react";
 import { useUsers } from "../../contexts/UsersContext";
 import { useBubbles } from "../../contexts/BubbleContext";
 import { useLocation, useParams, useNavigate } from "react-router-dom";
-import { v1 as uuidv1 } from "uuid";
 
 export default function AddFriend() {
   const { findUserById, currentUser, findUserByEmail, inviteFriendsToBubble } =
     useUsers();
   const { getBubbles, getBubbleById } = useBubbles();
 
-  const [invitationStatus, setInvitationStatus] = useState(null);
-  const [invitationStatusGroup, setInvitationStatusGroup] = useState(null);
+  const [invitationStatus, setInvitationStatus] = useState(undefined);
+  const [invitationStatusGroup, setInvitationStatusGroup] = useState(undefined);
   const [bubbleId, setBubbleId] = useState();
-  const [email, setEmail] = useState(null);
+  const [email, setEmail] = useState(undefined);
   const [friendsList, setFriendsList] = useState([]);
 
   const params = useParams();
