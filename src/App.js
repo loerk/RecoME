@@ -34,24 +34,26 @@ function App() {
   return (
     <div className={theme ? "bg-black min-h-screen h-full" : "h-screen"}>
       <Header />
-      <ScrollContainer>
-        <Routes>
-          <Route path="/register" element={<Register />} />
-          <Route path="login" element={<Login />} />
-          <Route path="/" element={<Landing />} />
-          <Route path="settings" element={<Settings />} />
-          <Route path="*" element={<PageNotFound />} />
-          <Route path="bubbles" element={<Bubbles />}>
-            <Route path=":bubbleId" element={<Bubble />} />
-            <Route path="addBubble" element={<AddBubble />} />
-          </Route>
-          <Route path="friends" element={<Friends />}>
-            <Route path=":friendId" element={<Friend />} />
-            <Route path="addFriend" element={<AddFriend />} />
-            <Route path="details" element={<Details />} />
-          </Route>
-        </Routes>
-      </ScrollContainer>
+      <Routes>
+        <Route path="/register" element={<Register />} />
+        <Route path="login" element={<Login />} />
+        <Route path="/" element={<Landing />} />
+        <Route path="settings" element={<Settings />} />
+        <Route path="*" element={<PageNotFound />} />
+        <Route path="bubbles" element={<Bubbles />}>
+          <Route path=":bubbleId" element={<Bubble />} />
+          <Route path="addBubble" element={<AddBubble />} />
+        </Route>
+        <Route path="friends" element={<Friends />}>
+          <Route path=":friendId" element={<Friend />} />
+          <Route path="addFriend" element={<AddFriend />} />
+          <Route path="details" element={<Details />} />
+        </Route>
+        <Route path="recos" element={<Recos />}>
+          <Route path=":recoId" element={<Reco />} />
+          <Route path="addReco" element={<AddReco />} />
+        </Route>
+      </Routes>
     </div>
   );
 }
