@@ -203,7 +203,7 @@ export default function AddFriend() {
                 let currFriend = findUserById(friendId);
                 if (params.friendId === undefined) {
                   return (
-                    <li key={uuidv1()}>
+                    <li key={friendId}>
                       <div className="">
                         {location.pathname !== "/friends/addFriend" ? (
                           <img
