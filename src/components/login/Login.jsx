@@ -8,7 +8,11 @@ export default function Login() {
   const { users, loginUser } = useUsers();
 
   const [error, setError] = useState(null);
-  const [loginData, setLoginData] = useState({});
+  const [loginData, setLoginData] = useState({
+    email: "",
+    password: "",
+    stayLoggedIn: false,
+  });
 
   const navigate = useNavigate();
 

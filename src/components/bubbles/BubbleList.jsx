@@ -12,7 +12,7 @@ export default function BubbleList({ searchParams }) {
   return (
     <div className=" m-auto bg-transparent mt-5">
       {bubbles.length !== 0 ? (
-        <div className="grid xl:grid-cols-4 md:m-10 md:grid-cols-3 md:gap-4">
+        <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 md:m-10 md:grid-cols-2 md:gap-4">
           {bubbles
             .filter((bubble) => {
               let filter = searchParams.get("filter");
@@ -49,7 +49,10 @@ export default function BubbleList({ searchParams }) {
                             .map((category, index) => {
                               if (index < 3) {
                                 return (
-                                  <span className="text-xs tracking-widest mt-2 font-face-tl inline-block py-1 px-2.5 leading-none whitespace-nowrap  font-bold  text-black border border-black bg-white opacity-70   rounded-md">
+                                  <span
+                                    key={index}
+                                    className="text-xs tracking-widest mt-2 font-face-tl inline-block py-1 px-2.5 leading-none whitespace-nowrap  font-bold  text-black border border-black bg-white opacity-70   rounded-md"
+                                  >
                                     {category}
                                   </span>
                                 );

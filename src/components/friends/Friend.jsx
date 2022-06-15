@@ -1,10 +1,9 @@
 import React from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useUsers } from "../../contexts/UsersContext";
 
 export default function Friend() {
   const params = useParams();
-  const navigate = useNavigate();
 
   const { findUserById } = useUsers();
 

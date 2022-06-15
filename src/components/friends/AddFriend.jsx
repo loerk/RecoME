@@ -2,17 +2,16 @@ import React, { useState } from "react";
 import { useUsers } from "../../contexts/UsersContext";
 import { useBubbles } from "../../contexts/BubbleContext";
 import { useLocation, useParams, useNavigate } from "react-router-dom";
-import { v1 as uuidv1 } from "uuid";
 
 export default function AddFriend() {
   const { findUserById, currentUser, findUserByEmail, inviteFriendsToBubble } =
     useUsers();
   const { getBubbles, getBubbleById } = useBubbles();
 
-  const [invitationStatus, setInvitationStatus] = useState(null);
-  const [invitationStatusGroup, setInvitationStatusGroup] = useState(null);
+  const [invitationStatus, setInvitationStatus] = useState(undefined);
+  const [invitationStatusGroup, setInvitationStatusGroup] = useState(undefined);
   const [bubbleId, setBubbleId] = useState();
-  const [email, setEmail] = useState(null);
+  const [email, setEmail] = useState(undefined);
   const [friendsList, setFriendsList] = useState([]);
 
   const params = useParams();
@@ -145,7 +144,11 @@ export default function AddFriend() {
           >
             <option value="">select a bubble</option>
             {bubbles.map((bubble) => {
-              return <option value={bubble.id}>{bubble.name}</option>;
+              return (
+                <option key={bubble.id} value={bubble.id}>
+                  {bubble.name}
+                </option>
+              );
             })}
           </select>
           <p>2. add your friends email here :</p>
@@ -200,7 +203,7 @@ export default function AddFriend() {
                 let currFriend = findUserById(friendId);
                 if (params.friendId === undefined) {
                   return (
-                    <li key={uuidv1()}>
+                    <li key={friendId}>
                       <div className="">
                         {location.pathname !== "/friends/addFriend" ? (
                           <img

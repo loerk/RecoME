@@ -1,4 +1,3 @@
-import "./App.css";
 import { useEffect } from "react";
 import { useTheme } from "./contexts/ThemeContext";
 import { Routes, Route, useNavigate } from "react-router-dom";
@@ -16,8 +15,10 @@ import Friends from "./components/friends/Friends";
 import Friend from "./components/friends/Friend";
 import AddFriend from "./components/friends/AddFriend";
 import Details from "./components/friends/Details";
-import ScrollContainer from "./utilities/ScrollContainer";
 import { useUsers } from "./contexts/UsersContext";
+import Recos from "./components/recommendations/Recos";
+import AddReco from "./components/recommendations/AddReco";
+import Reco from "./components/recommendations/Reco";
 
 function App() {
   const { theme } = useTheme();

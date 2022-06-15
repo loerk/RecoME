@@ -3,7 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { useBubbles } from "../../contexts/BubbleContext";
 
 export default function AddBubble() {
-  const [bubbleData, setBubbleData] = useState({});
+  const [bubbleData, setBubbleData] = useState({
+    name: "",
+    description: "",
+    categories: "",
+    imageUrl: "",
+  });
   const { addBubble } = useBubbles();
 
   const navigate = useNavigate();

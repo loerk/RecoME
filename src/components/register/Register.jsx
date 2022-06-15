@@ -9,7 +9,13 @@ export default function Register() {
   const { users, createNewUser } = useUsers();
 
   const [error, setError] = useState();
-  const [registerData, setRegisterData] = useState({});
+  const [registerData, setRegisterData] = useState({
+    username: "",
+    email: "",
+    password: "",
+    passwordConfirm: "",
+    stayLoggedIn: false,
+  });
 
   const navigate = useNavigate();
 
