@@ -62,7 +62,7 @@ export default function Landing() {
               currentUser.friends.map((friendId) => {
                 let currFriend = findFriend(friendId);
                 return (
-                  <li key={uuidv1()}>
+                  <li key={friendId}>
                     <div className="text-center">
                       <img
                         onClick={() => navigate("/friends")}

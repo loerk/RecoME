@@ -32,7 +32,7 @@ export default function Notifications() {
               {currentUser.notifications.map((note) => {
                 return (
                   <li
-                    key={note.id}
+                    key={note.invitationId}
                     onClick={() => navigate("/friends/details")}
                     className="
                         absolute      
