@@ -34,7 +34,6 @@ export function UsersContextProvider({ children }) {
       return foundUser ? foundUser : user;
     });
     setUsers(updatedUsers);
-    console.log("updatedUsers", updatedUsers);
     localStorage.setItem("users", JSON.stringify(updatedUsers));
   };
 

@@ -14,8 +14,6 @@ export default function Header() {
 
   const navigate = useNavigate();
 
-  console.log("headerLevel", currentUser);
-
   const handleLogout = () => {
     logoutUser(currentUser);
     navigate("/login");
