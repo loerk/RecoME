@@ -90,18 +90,7 @@ export function UsersContextProvider({ children }) {
       notifications: [],
       invitedBy: "",
       avatarUrl: `https://api.multiavatar.com/${registeredUser.username}.png`,
-      recos: [
-        {
-          private: [],
-          public: [],
-          specified: [
-            {
-              to: [],
-              reco: {},
-            },
-          ],
-        },
-      ],
+      recos: [],
     };
     setCurrentUser(newUser);
     setUsers([...users, newUser]);
