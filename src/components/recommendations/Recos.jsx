@@ -8,13 +8,11 @@ export default function Recos() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { findUserById, currentUser, getRecosByUsers } = useUsers();
+  const { currentUser } = useUsers();
   const { getRecosByBubbles } = useBubbles();
   const [searchFor, setSearchFor] = useState("");
 
-  //const recosByUser = getRecosByUsers();
   const recosByUserFromBubbles = getRecosByBubbles(currentUser);
-  //console.log(recosByUser);
 
   const addReco = () => {
     navigate("/recos/addReco");
@@ -58,12 +56,11 @@ export default function Recos() {
             {recosByUserFromBubbles.length !== 0 ? (
               <ul className="pt-6 flex flex-wrap gap-4 justify-around">
                 {recosByUserFromBubbles
-                  // .filter((friendId) => {
-                  //   let currFriend = findUserById(friendId);
-                  //   return currFriend.username
-                  //     .toLowerCase()
-                  //     .includes(searchFor.toLowerCase());
-                  // })
+                  .filter((reco) => {
+                    return reco.title
+                      .toLowerCase()
+                      .includes(searchFor.toLowerCase());
+                  })
                   .map((reco) => {
                     return (
                       <li key={reco.id}>
