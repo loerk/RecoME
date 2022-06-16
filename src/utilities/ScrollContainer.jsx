@@ -5,7 +5,7 @@ export default function ScrollContainer({ children }) {
   return (
     <div
       className="scrollbar-hidden"
-      style={{ overflowY: "scroll", height: "600px" }}
+      style={{ overflowY: "scroll", height: "900px" }}
     >
       {children}
     </div>
