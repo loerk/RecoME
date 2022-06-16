@@ -94,9 +94,10 @@ export default function Login() {
           <button
             className={
               theme
-                ? "w-full hover:translate-y-1  text-3xl p-3 bg-white  text-black  font-face-tm my-4"
-                : "w-full hover:translate-y-1  text-3xl p-3 bg-black  text-white  font-face-tm my-4"
+                ? "w-full active:translate-y-1  text-3xl p-3 bg-white  text-black  font-face-tm my-4"
+                : "w-full active:translate-y-1  text-3xl p-3 bg-black  text-white  font-face-tm my-4"
             }
+            disabled={!loginData.email || !loginData.password}
           >
             Sign in
           </button>

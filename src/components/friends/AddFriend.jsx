@@ -180,12 +180,22 @@ export default function AddFriend() {
             id="exampleSearch"
             placeholder="Add your Friends Email"
           />
-          <button
-            className="inline-block leading-tight uppercase  shadow-md hover:bg-gradient-to-r from-cyan-500 to-blue-500 hover:shadow-lg focus:bg-black focus:shadow-lg focus:outline-none focus:ring-0 active:bg-pink-800 active:shadow-lg transition duration-150 ease-in-out bg-black rounded-md  text-white px-2 py-1"
-            onClick={inviteFriend}
-          >
-            Invite Friend to your Bubble
-          </button>
+          {email ? (
+            <button
+              className="inline-block leading-tight uppercase  shadow-md hover:bg-gradient-to-r from-cyan-500 to-blue-500 hover:shadow-lg focus:bg-black focus:shadow-lg focus:outline-none focus:ring-0 active:bg-pink-800 active:shadow-lg transition duration-150 ease-in-out bg-black rounded-md  text-white px-2 py-1"
+              onClick={inviteFriend}
+            >
+              Invite Friend to your Bubble
+            </button>
+          ) : (
+            <button
+              className="inline-block leading-tight uppercase  shadow-md  focus:bg-black  disabled:bg-slate-400 disabled:opacity-50 rounded-md  text-white px-2 py-1"
+              onClick={inviteFriend}
+              disabled
+            >
+              Invite Friend to your Bubble
+            </button>
+          )}
           {!!invitationStatus && (
             <p className="text-fuchsia-600 pt-3">{invitationStatus}</p>
           )}
@@ -240,12 +250,22 @@ export default function AddFriend() {
               })}
             </div>
             <div className="mt-8 ">
-              <button
-                className="inline-block leading-tight uppercase shadow-md hover:bg-gradient-to-r from-cyan-500 to-blue-500 hover:shadow-lg focus:bg-black focus:shadow-lg focus:outline-none focus:ring-0 active:bg-pink-800 active:shadow-lg transition duration-150 ease-in-out bg-black rounded-md  text-white px-2 py-1"
-                onClick={inviteFriends}
-              >
-                invite selected Friends
-              </button>
+              {friendsList.length !== 0 ? (
+                <button
+                  className="inline-block leading-tight uppercase shadow-md hover:bg-gradient-to-r from-cyan-500 to-blue-500 hover:shadow-lg focus:bg-black focus:shadow-lg focus:outline-none focus:ring-0 active:bg-pink-800 active:shadow-lg transition duration-150 ease-in-out bg-black rounded-md  text-white px-2 py-1"
+                  onClick={inviteFriends}
+                >
+                  Invite selected Friends
+                </button>
+              ) : (
+                <button
+                  className="inline-block leading-tight uppercase  shadow-md  focus:bg-black  disabled:bg-slate-400 disabled:opacity-50 rounded-md  text-white px-2 py-1"
+                  onClick={inviteFriends}
+                  disabled
+                >
+                  Invite selected Friends
+                </button>
+              )}
               {!!invitationStatusGroup && (
                 <p className="text-fuchsia-600 pt-3">{invitationStatusGroup}</p>
               )}

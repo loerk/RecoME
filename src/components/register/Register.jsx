@@ -121,6 +121,12 @@ export default function Register() {
                 ? "w-full hover:translate-y-1  text-3xl p-3 bg-white  text-black  font-face-tm my-4"
                 : "w-full hover:translate-y-1  text-3xl p-3 bg-black  text-white  font-face-tm my-4"
             }
+            disabled={
+              !registerData.email ||
+              !registerData.password ||
+              !registerData.username ||
+              !registerData.passwordConfirm
+            }
           >
             Register
           </button>
