@@ -8,12 +8,8 @@ import { useNavigate } from "react-router-dom";
 export default function Details() {
   const navigate = useNavigate();
 
-  const {
-    currentUser,
-    updateUser: updateCurrentUser,
-    updateUsers,
-    findUserById,
-  } = useUsers();
+  const { currentUser, updateCurrentUser, updateUsers, findUserById } =
+    useUsers();
   const { getBubbleById, updateBubble } = useBubbles();
 
   let currentNotifications = currentUser.notifications;
@@ -53,7 +49,7 @@ export default function Details() {
   };
 
   return (
-    <div className="flex items-center flex-col mt-6">
+    <div className="flex items-center flex-col pt-28">
       <h1>WOW WOW WOW</h1>
       <p>here are your news</p>
       {currentBubble && (
