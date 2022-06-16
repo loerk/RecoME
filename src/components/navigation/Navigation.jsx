@@ -7,7 +7,7 @@ export default function Navigation() {
       <NavLink to="/">home</NavLink>
       <NavLink to="/bubbles">bubbles</NavLink>
       <NavLink to="/friends">friends</NavLink>
-      <NavLink to="/recs">recs</NavLink>
+      <NavLink to="/recos">recs</NavLink>
       <NavLink to="/settings">settings</NavLink>
     </div>
   );

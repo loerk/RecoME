@@ -22,12 +22,14 @@ export default function Bubble() {
   const addFriends = () => {
     navigate("/friends/addFriend");
   };
-  const addPrivateRecos = () => {};
+  const addPrivateRecos = () => {
+    navigate("/recos/addReco");
+  };
   const addPublicRecos = () => {};
 
   return (
     <div>
-      <div className="mt-6">
+      <div className="mt-20">
         <div className=" relative w-full">
           <div className="relative overflow-hidden bg-contain">
             <img src={bubble.imageUrl} className="block  w-96 m-auto" alt="" />

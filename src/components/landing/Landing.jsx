@@ -65,7 +65,7 @@ export default function Landing() {
                   <li key={friendId}>
                     <div className="text-center">
                       <img
-                        onClick={() => navigate("/friends")}
+                        onClick={() => navigate(`/friends/${currFriend.id}`)}
                         className="w-28 h-28 object-cover object-center opacity-50  hover:opacity-100 rounded-full cursor-pointer"
                         src={currFriend.avatarUrl}
                         alt=""
@@ -80,7 +80,7 @@ export default function Landing() {
             ) : (
               <div className="flex">
                 <button
-                  onClick={() => navigate("/bubbles")}
+                  onClick={() => navigate("/friends")}
                   className="m-auto mt-8"
                 >
                   <AiOutlinePlusCircle></AiOutlinePlusCircle>
@@ -98,7 +98,7 @@ export default function Landing() {
               currentUser.recos.map((type) =>
                 type.map((reco) => (
                   <li key={uuidv1()}>
-                    <button onClick={() => navigate("/bubbles")}>
+                    <button onClick={() => navigate(`/recos/${reco.id}`)}>
                       {reco.title}
                     </button>
                   </li>
@@ -107,7 +107,7 @@ export default function Landing() {
             ) : (
               <div className="flex">
                 <button
-                  onClick={() => navigate("/friends")}
+                  onClick={() => navigate("/recos")}
                   className="m-auto mt-8"
                 >
                   <AiOutlinePlusCircle></AiOutlinePlusCircle>
