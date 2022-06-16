@@ -1,6 +1,6 @@
 import React from "react";
 
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { AddButton } from "../../utilities/Buttons";
 import { v1 as uuidv1 } from "uuid";
 import { useTheme } from "../../contexts/ThemeContext";
@@ -58,10 +58,8 @@ export default function Bubble() {
         <div>
           <h1 className="mb-3 uppercase">Recommendations</h1>
           <ul>
-            {bubble.publicRecos ? (
-              bubble.publicRecos.map((publicReco) => (
-                <li key={publicReco.id}>{publicReco.username}</li>
-              ))
+            {bubble.recos ? (
+              bubble.recos.map((reco) => <p key={reco.id}>{reco.title}</p>)
             ) : (
               <>
                 <p>
@@ -76,10 +74,8 @@ export default function Bubble() {
         <div>
           <h1 className="mb-3 uppercase">private save</h1>
           <ul>
-            {bubble.privateRecos ? (
-              bubble.privateRecos.recoFrom.map((privateRecos) => (
-                <li key={uuidv1()}>{privateRecos.username}</li>
-              ))
+            {bubble.recos ? (
+              bubble.recos.map((reco) => <li key={reco.id}>{reco.title}</li>)
             ) : (
               <>
                 <p>Oh you don't have any private Recommendations ..yet</p>

@@ -7,7 +7,7 @@ import { useBubbles } from "../../contexts/BubbleContext";
 
 export default function Landing() {
   const { currentUser, findUserById } = useUsers();
-  const { getBubbles } = useBubbles();
+  const { getBubbles, getRecosByBubbles } = useBubbles();
   const navigate = useNavigate();
   window.scrollTo(0, 0);
 
@@ -16,7 +16,7 @@ export default function Landing() {
   }
 
   const bubbles = getBubbles();
-
+  const recosFromBubbles = getRecosByBubbles(currentUser);
   const findFriend = (id) => {
     return findUserById(id);
   };
@@ -94,16 +94,14 @@ export default function Landing() {
         <div>
           <h1>Latest Recos</h1>
           <ul>
-            {!currentUser.recos ? (
-              currentUser.recos.map((type) =>
-                type.map((reco) => (
-                  <li key={uuidv1()}>
-                    <button onClick={() => navigate(`/recos/${reco.id}`)}>
-                      {reco.title}
-                    </button>
-                  </li>
-                ))
-              )
+            {recosFromBubbles ? (
+              recosFromBubbles.map((reco) => (
+                <li key={reco.id}>
+                  <button onClick={() => navigate("/recos")}>
+                    {reco.title}
+                  </button>
+                </li>
+              ))
             ) : (
               <div className="flex">
                 <button
