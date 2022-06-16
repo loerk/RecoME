@@ -22,10 +22,9 @@ export default function Bubble() {
   const addFriends = () => {
     navigate("/friends/addFriend");
   };
-  const addPrivateRecos = () => {
+  const addReco = () => {
     navigate("/recos/addReco");
   };
-  const addPublicRecos = () => {};
 
   return (
     <div>
@@ -72,7 +71,7 @@ export default function Bubble() {
               </>
             )}
           </ul>
-          <AddButton action={addPublicRecos} />
+          <AddButton action={addReco} />
         </div>
         <div>
           <h1 className="mb-3 uppercase">private save</h1>
@@ -88,7 +87,7 @@ export default function Bubble() {
               </>
             )}
           </ul>
-          <AddButton action={addPrivateRecos} />
+          <AddButton action={addReco} />
         </div>
       </div>
       <div className="text-center mt-40 p-4">
@@ -96,7 +95,7 @@ export default function Bubble() {
           It's always hard to say goodbye, but sometimes there is no other
           option
         </p>
-        {/* TODO:theme funktioniert nicht */}
+        {/* TODO:theme doesnt work */}
         <button
           className={
             theme
