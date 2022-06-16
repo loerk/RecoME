@@ -34,7 +34,7 @@ export default function AddReco() {
     console.log(currentBubble);
     const updatedBubble = {
       ...currentBubble,
-      recos: [...currentBubble.recos, { recoData }],
+      recos: [...currentBubble.recos, { ...recoData }],
     };
     updateBubble(updatedBubble);
   };
