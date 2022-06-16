@@ -2,8 +2,11 @@ import React, { useState } from "react";
 import { useBubbles } from "../../contexts/BubbleContext";
 import { useTheme } from "../../contexts/ThemeContext";
 import { useUsers } from "../../contexts/UsersContext";
+import { v1 as uuidv1 } from "uuid";
+import { useNavigate } from "react-router-dom";
 export default function AddReco() {
   const theme = useTheme();
+  const navigate = useNavigate();
   const { findUserById, currentUser } = useUsers();
   const { getBubbles, getBubbleById, updateBubble } = useBubbles();
   const [shareWithId, setShareWithId] = useState("");
@@ -18,6 +21,7 @@ export default function AddReco() {
     comment: "",
     createdAt: Date.now(),
     createdBy: currentUser.id,
+    id: uuidv1(),
   });
   const bubbles = getBubbles();
 
@@ -28,15 +32,15 @@ export default function AddReco() {
       [name]: type === "checkbox" ? checked : value,
     }));
   };
-  console.log(shareWithId);
+
   const handleSubmit = () => {
     const currentBubble = getBubbleById(shareWithId);
-    console.log(currentBubble);
     const updatedBubble = {
       ...currentBubble,
       recos: [...currentBubble.recos, { ...recoData }],
     };
     updateBubble(updatedBubble);
+    navigate("/recos");
   };
 
   return (

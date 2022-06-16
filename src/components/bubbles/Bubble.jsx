@@ -1,8 +1,8 @@
 import React from "react";
 
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { AddButton } from "../../utilities/Buttons";
-import { v1 as uuidv1 } from "uuid";
+
 import { useTheme } from "../../contexts/ThemeContext";
 import { useBubbles } from "../../contexts/BubbleContext";
 
