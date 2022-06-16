@@ -22,8 +22,14 @@ export default function Header() {
   };
 
   return (
-    <div className={theme ? "text-white" : null}>
-      <div className=" flex justify-between py-4 px-4">
+    <div
+      className={
+        theme
+          ? "text-white bg-black z-20 w-full fixed top-0"
+          : " top-0 bg-white z-20 w-full fixed"
+      }
+    >
+      <div className=" flex flex-wrap justify-between py-4 px-4">
         <button onClick={() => setTheme(!theme)}>
           {!theme ? (
             <MdLightMode />
