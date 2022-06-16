@@ -23,6 +23,7 @@ export function BubbleContextProvider({ children }) {
         createdAt: Date.now(),
         createdBy: currentUser.id,
         members: [currentUser.id],
+        recos: [],
       },
     ];
     setBubbles(newBubblesArr);
