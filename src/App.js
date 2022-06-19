@@ -44,6 +44,7 @@ function App() {
         <Route path="bubbles" element={<Bubbles />}>
           <Route path=":bubbleId" element={<Bubble />} />
           <Route path="addBubble" element={<AddBubble />} />
+          <Route path=":bubbleId/addReco" element={<AddReco />} />
         </Route>
         <Route path="friends" element={<Friends />}>
           <Route path=":friendId" element={<Friend />} />

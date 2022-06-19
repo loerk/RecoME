@@ -1,6 +1,6 @@
 import React from "react";
 
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { AddButton } from "../../utilities/Buttons";
 
 import { useTheme } from "../../contexts/ThemeContext";
@@ -21,9 +21,6 @@ export default function Bubble() {
 
   const addFriends = () => {
     navigate("/friends/addFriend");
-  };
-  const addReco = () => {
-    navigate("/recos/addReco");
   };
 
   return (
@@ -69,7 +66,9 @@ export default function Bubble() {
               </>
             )}
           </ul>
-          <AddButton action={addReco} />
+          <Link to={`/bubbles/${bubbleId}/addReco`}>
+            <AddButton />
+          </Link>
         </div>
         <div>
           <h1 className="mb-3 uppercase">private save</h1>
@@ -83,7 +82,7 @@ export default function Bubble() {
               </>
             )}
           </ul>
-          <AddButton action={addReco} />
+          <AddButton />
         </div>
       </div>
       <div className="text-center mt-40 p-4">
