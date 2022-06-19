@@ -1,11 +1,11 @@
-import { useNavigate, Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation, Link } from "react-router-dom";
 import { AddButton } from "../../utilities/Buttons";
 import { useUsers } from "../../contexts/UsersContext";
 import React, { useState } from "react";
 import { useBubbles } from "../../contexts/BubbleContext";
+import { LinkPreview } from "../../utilities/LinkPreview";
 
 export default function Recos() {
-  const navigate = useNavigate();
   const location = useLocation();
 
   const { currentUser } = useUsers();
@@ -14,9 +14,6 @@ export default function Recos() {
 
   const recosByUserFromBubbles = getRecosByBubbles(currentUser);
 
-  const addReco = () => {
-    navigate("/recos/addReco");
-  };
   return (
     <div className="mt-28">
       {location.pathname === "/recos" ? (
@@ -50,9 +47,11 @@ export default function Recos() {
             </div>
           </div>
 
-          <AddButton action={addReco} />
+          <Link to="/recos/addReco">
+            <AddButton />
+          </Link>
 
-          <div>
+          <div className="bg-slate-600 p-10 my-10">
             {recosByUserFromBubbles.length !== 0 ? (
               <ul className="pt-6 flex flex-wrap gap-4 justify-around">
                 {recosByUserFromBubbles
@@ -62,12 +61,41 @@ export default function Recos() {
                       .includes(searchFor.toLowerCase());
                   })
                   .map((reco) => {
+                    const date = new Date(reco.createdAt);
+
                     return (
-                      <li key={reco.id}>
-                        <div className="text-center">
-                          <p className="relative">{reco.title}</p>
+                      <div>
+                        <div className="flex flex-col hover:shadow-inner md:flex-row  rounded-lg bg-white shadow-lg">
+                          <div className="p-6 flex flex-col justify-start">
+                            <div className="flex justify-between">
+                              <h5 className="text-gray-900 text-xl font-medium mb-2">
+                                {reco.title}
+                              </h5>
+                              <img
+                                src={currentUser.avatarUrl}
+                                alt=""
+                                className="w-7 h-7 shadow-lg rounded-full"
+                              />
+                            </div>
+                            <p className="text-gray-700 text-base mb-4">
+                              {reco.comment}
+                            </p>
+                            <p className="text-gray-600 tracking-widest text-xs">
+                              {date.toLocaleString("en-GB")}
+                            </p>
+                            <LinkPreview url={reco.url} />
+                            <div className="flex flex-wrap  gap-2 justify-center mt-auto">
+                              {reco.categories.split(",").map((category) => {
+                                return (
+                                  <span className="text-xs tracking-widest font-face-tl inline-block py-1 px-2.5 leading-none text-center whitespace-nowrap align-baseline font-bold bg-lime-400 text-black rounded-full">
+                                    {category}
+                                  </span>
+                                );
+                              })}
+                            </div>
+                          </div>
                         </div>
-                      </li>
+                      </div>
                     );
                   })}
               </ul>
