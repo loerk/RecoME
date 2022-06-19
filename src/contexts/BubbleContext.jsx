@@ -56,12 +56,9 @@ export function BubbleContextProvider({ children }) {
   };
   const getRecosByBubbles = (currentUser) => {
     const usersBubbles = getBubbles();
-    return usersBubbles.flatMap((bubble) => {
-      if (bubble.recos) {
-        return bubble.recos.filter((reco) => reco.createdBy === currentUser.id);
-      }
-      return null;
-    });
+    return usersBubbles.flatMap((bubble) =>
+      (bubble.recos || []).filter((reco) => reco.createdBy === currentUser.id)
+    );
   };
 
   const contextValue = {
