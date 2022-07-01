@@ -53,7 +53,7 @@ export function UsersContextProvider({ children }) {
             toBubble: bubbleId,
             invitedAt: Date.now(),
             invitationId: uuidv1(),
-            type: "invitationToBubble",
+            type: "Invitation to Bubble",
             invitedBy: currentUser.id,
             invitedByUser: currentUser.username,
           },
@@ -61,6 +61,28 @@ export function UsersContextProvider({ children }) {
       };
     });
 
+    updateUsers(updatedFriendList);
+  };
+
+  const addRecoToUsers = (recoData, friendList) => {
+    const updatedFriendList = friendList.map((friendId) => {
+      const friend = findUserById(friendId);
+      return {
+        ...friend,
+        recos: [...friend.recos, recoData],
+        notifications: [
+          ...friend.notifications,
+          {
+            reco: recoData.id,
+            invitedAt: Date.now(),
+            invitationId: uuidv1(),
+            type: "Reco for you",
+            invitedBy: currentUser.id,
+            invitedByUser: currentUser.username,
+          },
+        ],
+      };
+    });
     updateUsers(updatedFriendList);
   };
   const deleteUser = () => {
@@ -78,6 +100,13 @@ export function UsersContextProvider({ children }) {
   const findUserById = (id) => {
     return users.find((user) => user.id === id);
   };
+
+  const getRecosByUsers = () => {
+    return users.map((user) => {
+      return user.recos.filter((reco) => reco.createdBy === currentUser.id);
+    });
+  };
+
   const createNewUser = (registeredUser) => {
     const newUser = {
       ...registeredUser,
@@ -111,6 +140,8 @@ export function UsersContextProvider({ children }) {
     findUserByEmail,
     findUserById,
     inviteFriendsToBubble,
+    getRecosByUsers,
+    addRecoToUsers,
   };
 
   return (

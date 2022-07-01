@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+
 import { useBubbles } from "../../contexts/BubbleContext";
 import { useTheme } from "../../contexts/ThemeContext";
 import { useUsers } from "../../contexts/UsersContext";
@@ -10,11 +11,11 @@ export default function AddReco() {
   const theme = useTheme();
   const navigate = useNavigate();
 
-  const params = useParams();
+  const { bubbleId } = useParams();
 
-  const { findUserById, currentUser } = useUsers();
+  const { findUserById, currentUser, addRecoToUsers } = useUsers();
   const { getBubbles, getBubbleById, updateBubble } = useBubbles();
-  const [preselected, setPreselected] = useState({
+  const [selected, setSelected] = useState({
     bubble: undefined,
     user: undefined,
   });
@@ -35,12 +36,21 @@ export default function AddReco() {
   const bubbles = getBubbles();
 
   useEffect(() => {
-    if (params.bubbleId) {
-      const currentBubble = getBubbleById(params.bubbleId);
-      setPreselected({ bubble: currentBubble });
+    if (bubbleId) {
+      const invitedToBubble = getBubbleById(bubbleId);
+      setSelected({ bubble: invitedToBubble });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (recoData.sharedWithFriends && shareWithId) {
+      const invitedUser = findUserById(shareWithId);
+      console.log("shared");
+      setSelected({ user: invitedUser });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shareWithId]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -49,9 +59,9 @@ export default function AddReco() {
       [name]: type === "checkbox" ? checked : value,
     }));
   };
-
+  console.log(currentUser);
   const handleSubmit = () => {
-    if (!preselected.bubble) {
+    if (!selected.bubble && recoData.sharedWithBubbles) {
       const currentBubble = getBubbleById(shareWithId);
       const updatedBubble = {
         ...currentBubble,
@@ -67,28 +77,33 @@ export default function AddReco() {
       updateBubble(updatedBubble);
       navigate("/recos");
     }
-
-    const updatedBubble = {
-      ...preselected.bubble,
-      recos: [
-        ...preselected.bubble.recos,
-        {
-          ...recoData,
-          sharedWithBubbles: true,
-          sharedWith: preselected.bubble.id,
-        },
-      ],
-    };
-    updateBubble(updatedBubble);
-    navigate("/recos");
+    if (selected.bubble) {
+      const updatedBubble = {
+        ...selected.bubble,
+        recos: [
+          ...selected.bubble.recos,
+          {
+            ...recoData,
+            sharedWithBubbles: true,
+            sharedWith: selected.bubble.id,
+          },
+        ],
+      };
+      updateBubble(updatedBubble);
+      navigate("/recos");
+    }
+    if (recoData.sharedWithFriends && selected.user) {
+      addRecoToUsers(recoData, [shareWithId]);
+      navigate("/recos");
+    }
   };
-  console.log(recoData);
+  console.log("updated", selected.user);
   return (
     <div className="w-72 m-auto pt-10">
       <h1 className="uppercase tracking-wider text-3xl mb-8">
         create a Recommendation
       </h1>
-      {!preselected.bubble ? (
+      {!selected.bubble ? (
         <div className="flex flex-wrap gap-2">
           <div className="flex flex-col gap-3 mb-8">
             <label className="pl-3 font-face-tm text-2xl" htmlFor="isPrivate">
@@ -162,10 +177,7 @@ export default function AddReco() {
           {recoData.sharedWithFriends && (
             <select
               onChange={(e) => {
-                setRecoData({
-                  ...recoData,
-                  sharedWidth: e.target.value,
-                });
+                setShareWithId(e.target.value);
               }}
               name="friends"
               id="friends"
@@ -245,7 +257,7 @@ export default function AddReco() {
       ) : (
         <div className="flex flex-col gap-3 mb-8">
           <h2 className="my-5">
-            to the bubbel {preselected.bubble.name.toUpperCase()}
+            to the bubble {selected.bubble.name.toUpperCase()}
           </h2>
           <input
             type="text"
