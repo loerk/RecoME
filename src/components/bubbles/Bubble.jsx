@@ -50,7 +50,9 @@ export default function Bubble() {
               </>
             )}
           </div>
-          <AddButton action={addFriends} />
+          <Link to={`/bubbles/${bubbleId}/addFriend`}>
+            <AddButton />
+          </Link>
         </div>
         <div>
           <h1 className="mb-3 uppercase">Recommendations</h1>
