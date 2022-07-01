@@ -9,11 +9,11 @@ export default function Recos() {
   const location = useLocation();
 
   const { currentUser } = useUsers();
-  const { getRecosByBubbles } = useBubbles();
+  const { getRecosByBubbles, getBubbleById } = useBubbles();
   const [searchFor, setSearchFor] = useState("");
 
   const recosByUserFromBubbles = getRecosByBubbles(currentUser);
-
+  console.log(recosByUserFromBubbles);
   return (
     <div className="mt-28">
       {location.pathname === "/recos" ? (
@@ -62,13 +62,17 @@ export default function Recos() {
                   })
                   .map((reco) => {
                     const date = new Date(reco.createdAt);
-
+                    const { imageUrl } = getBubbleById(reco.sharedWith);
+                    console.log(imageUrl);
                     return (
-                      <div>
-                        <div className="flex flex-col hover:shadow-inner md:flex-row  rounded-lg bg-white shadow-lg">
-                          <div className="p-6 flex flex-col justify-start">
-                            <div className="flex justify-between">
-                              <h5 className="text-gray-900 text-xl font-medium mb-2">
+                      <div key={reco.id}>
+                        <div
+                          style={{ backgroundImage: `url(${imageUrl})` }}
+                          className="flex flex-col hover:shadow-inner md:flex-row  rounded-lg shadow-lg"
+                        >
+                          <div className="p-4 m-5 backdrop-blur-xl relative rounded flex flex-col justify-start">
+                            <div className="z-2 flex justify-between">
+                              <h5 className=" text-xl font-medium mb-2">
                                 {reco.title}
                               </h5>
                               <img
@@ -77,10 +81,8 @@ export default function Recos() {
                                 className="w-7 h-7 shadow-lg rounded-full"
                               />
                             </div>
-                            <p className="text-gray-700 text-base mb-4">
-                              {reco.comment}
-                            </p>
-                            <p className="text-gray-600 tracking-widest text-xs">
+                            <p className=" text-base mb-4">{reco.comment}</p>
+                            <p className="tracking-widest text-xs">
                               {date.toLocaleString("en-GB")}
                             </p>
                             <LinkPreview url={reco.url} />

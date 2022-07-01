@@ -26,20 +26,19 @@ export default function BubbleList({ searchParams }) {
                   <div
                     key={bubble.id}
                     onClick={() => navigate(`/bubbles/${bubble.id}`)}
-                    className="mb-10 md:m-auto cursor-pointer md:w-72 w-full flex justify-center"
+                    className="mb-10  md:m-auto cursor-pointer md:w-72 w-full flex justify-center"
                   >
                     <div className="flex text-white flex-col w-full relative md:flex-row  hover:shadow-inner md:rounded-lg shadow-lg max-w-xl">
-                      {/* flex w-full md:relative flex-col hover:shadow-inner md:flex-row md:max-w-xl rounded-lg bg-transparent shadow-lg  */}
                       <img
                         className=" -z-1 absolute w-full shadow-lg  h-full object-cover  bg-white opacity-80  md:rounded md:rounded-l-lg"
                         src={bubble.imageUrl}
                         alt=""
                       />
-                      <div className="p-6  flex flex-col justify-start px-3">
-                        <h5 className="text-gray-900 uppercase z-10 text-xl font-medium mb-2">
+                      <div className="p-6 backdrop-blur-sm flex flex-col m-auto px-3">
+                        <h5 className="text-gray-900 uppercase text-xl font-medium mb-2">
                           {bubble.name}
                         </h5>
-                        <p className="text-gray-900 z-10 md:w-28 text-base mb-4 md:truncate ">
+                        <p className="text-gray-900 md:w-28 text-base mb-4 md:truncate ">
                           {bubble.description}
                         </p>
 
