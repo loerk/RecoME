@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useUsers } from "../../contexts/UsersContext";
 import { useBubbles } from "../../contexts/BubbleContext";
 import { useLocation, useParams, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 export default function AddFriend() {
   const { findUserById, currentUser, findUserByEmail, inviteFriendsToBubble } =
@@ -22,8 +23,14 @@ export default function AddFriend() {
   const navigate = useNavigate();
 
   const { friends } = currentUser;
+  const selectedBubble = getBubbleById(selectedBubbleId);
 
   const isFriendInvited = (id) => friendsList.includes(id);
+  useEffect(() => {
+    if (params.bubbleId) setSelectedBubbleId(params.bubbleId);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const toggleFriend = (id) => {
     if (isFriendInvited(id)) {
@@ -34,8 +41,6 @@ export default function AddFriend() {
   };
 
   const inviteFriends = () => {
-    if (!bubbleId) {
-      setInvitationStatusGroup("please select a bubble first");
     if (!selectedBubbleId) {
       setStatus({ group: "please select a bubble first" });
       return;
@@ -157,26 +162,36 @@ export default function AddFriend() {
               ease-in-out
               m-0      
               focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
-          >
-            <option value="">select a bubble</option>
-            {bubbles.map((bubble) => {
-              return (
-                <option key={bubble.id} value={bubble.id}>
-                  {bubble.name}
-                </option>
-              );
-            })}
-          </select>
-          <p>2. add your friends email here :</p>
-          <input
-            value={email}
-            type="email"
-            name="email"
-            onChange={(e) => {
-              setEmail(e.target.value);
-            }}
-            required
-            className="
+              >
+                <option value="">select a bubble</option>
+                {bubbles.map((bubble) => {
+                  return (
+                    <option key={bubble.id} value={bubble.id}>
+                      {bubble.name}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
+          )}
+          {params.bubbleId && (
+            <div className="w-72 m-auto mt-8">
+              <h1 className=" my-10 uppercase">
+                YEJ - invite your friends to {selectedBubble.name}
+              </h1>
+            </div>
+          )}
+          <div className="w-72 m-auto mt-8">
+            <p>Add your friends email here :</p>
+            <input
+              value={email}
+              type="email"
+              name="email"
+              onChange={(e) => {
+                setEmail(e.target.value);
+              }}
+              required
+              className="
                 mb-5
                 form-control
                 block
@@ -193,28 +208,29 @@ export default function AddFriend() {
                 ease-in-out
                 m-0
                 focus:text-gray-700 focus:bg-white focus:border-slate-600 focus:outline-none"
-            id="exampleSearch"
-            placeholder="Add your Friends Email"
-          />
-          {email ? (
-            <button
-              className="inline-block leading-tight uppercase  shadow-md hover:bg-gradient-to-r from-cyan-500 to-blue-500 hover:shadow-lg focus:bg-black focus:shadow-lg focus:outline-none focus:ring-0 active:bg-pink-800 active:shadow-lg transition duration-150 ease-in-out bg-black rounded-md  text-white px-2 py-1"
-              onClick={inviteFriend}
-            >
-              Invite Friend to your Bubble
-            </button>
-          ) : (
-            <button
-              className="inline-block leading-tight uppercase  shadow-md  focus:bg-black  disabled:bg-slate-400 disabled:opacity-50 rounded-md  text-white px-2 py-1"
-              onClick={inviteFriend}
-              disabled
-            >
-              Invite Friend to your Bubble
-            </button>
-          )}
-          {!!invitationStatus && (
-            <p className="text-fuchsia-600 pt-3">{invitationStatus}</p>
-          )}
+              id="exampleSearch"
+              placeholder="Add your Friends Email"
+            />
+            {email ? (
+              <button
+                className="inline-block leading-tight uppercase  shadow-md hover:bg-gradient-to-r from-cyan-500 to-blue-500 hover:shadow-lg focus:bg-black focus:shadow-lg focus:outline-none focus:ring-0 active:bg-pink-800 active:shadow-lg transition duration-150 ease-in-out bg-black rounded-md  text-white px-2 py-1"
+                onClick={inviteFriend}
+              >
+                Invite Friend to your Bubble
+              </button>
+            ) : (
+              <button
+                className="inline-block leading-tight uppercase  shadow-md  focus:bg-black  disabled:bg-slate-400 disabled:opacity-50 rounded-md  text-white px-2 py-1"
+                onClick={inviteFriend}
+                disabled
+              >
+                Invite Friend to your Bubble
+              </button>
+            )}
+            {!!invitationStatus.single && (
+              <p className="text-fuchsia-600 pt-3">{invitationStatus.single}</p>
+            )}
+          </div>
         </div>
       ) : (
         <p>You dont have any bubbles, please add a bubble first</p>
@@ -231,32 +247,21 @@ export default function AddFriend() {
                   return (
                     <li key={friendId}>
                       <div className="">
-                        {location.pathname !== "/friends/addFriend" ? (
+                        <div
+                          className={
+                            isFriendInvited(currFriend.id)
+                              ? "bg-gradient-to-r from-cyan-500 to-blue-500 shadow-lg "
+                              : null
+                          }
+                        >
                           <img
-                            onClick={() =>
-                              navigate(`/friends/${currFriend.id}`)
-                            }
-                            className="w-28 h-28 object-cover object-center opacity-50  hover:opacity-100 rounded-full cursor-pointer"
+                            onClick={() => toggleFriend(currFriend.id)}
+                            className="w-14 h-14 p-1 object-cover object-center shadow-lg  rounded-full cursor-pointer"
                             src={currFriend.avatarUrl}
                             alt=""
                           />
-                        ) : (
-                          <div
-                            className={
-                              isFriendInvited(currFriend.id)
-                                ? "bg-gradient-to-r from-cyan-500 to-blue-500 shadow-lg "
-                                : null
-                            }
-                          >
-                            <img
-                              onClick={() => toggleFriend(currFriend.id)}
-                              className="w-14 h-14 p-1 object-cover object-center shadow-lg  rounded-full cursor-pointer"
-                              src={currFriend.avatarUrl}
-                              alt=""
-                            />
-                            <p className="relative">{currFriend.username}</p>
-                          </div>
-                        )}
+                          <p className="relative">{currFriend.username}</p>
+                        </div>
                       </div>
                     </li>
                   );
