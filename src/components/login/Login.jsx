@@ -28,14 +28,11 @@ export default function Login() {
     event.preventDefault();
     const knownUser = users.find((user) => user.email === loginData.email);
 
-    if (!knownUser) {
-      setError("please register first");
+    if (!knownUser || knownUser.password !== loginData.password) {
+      setError("password or email are not correct");
       return;
     }
-    if (knownUser.password !== loginData.password) {
-      setError("wrong password, try again");
-      return;
-    }
+
     loginUser(knownUser);
     navigate("/");
   }
