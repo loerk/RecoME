@@ -8,10 +8,12 @@ export default function AddFriend() {
     useUsers();
   const { getBubbles, getBubbleById } = useBubbles();
 
-  const [invitationStatus, setInvitationStatus] = useState(undefined);
-  const [invitationStatusGroup, setInvitationStatusGroup] = useState(undefined);
-  const [bubbleId, setBubbleId] = useState();
-  const [email, setEmail] = useState(undefined);
+  const [invitationStatus, setInvitationStatus] = useState({
+    single: "",
+    group: "",
+  });
+  const [selectedBubbleId, setSelectedBubbleId] = useState(null);
+  const [email, setEmail] = useState("");
   const [friendsList, setFriendsList] = useState([]);
 
   const params = useParams();
@@ -34,20 +36,22 @@ export default function AddFriend() {
   const inviteFriends = () => {
     if (!bubbleId) {
       setInvitationStatusGroup("please select a bubble first");
+    if (!selectedBubbleId) {
+      setStatus({ group: "please select a bubble first" });
       return;
     }
     if (!friendsList.length) {
-      setInvitationStatusGroup("please select at least one friend");
+      setStatus({ group: "please select at least one friend" });
       return;
     }
-    const selectedBubble = getBubbleById(bubbleId);
+
     const filteredInvitedFriendsList = friendsList.filter((friendId) => {
       const friend = findUserById(friendId);
       const isAlreadyMember = selectedBubble.members.some(
         (member) => member === friendId
       );
       const isAlreadyInvited = friend.notifications.some(
-        (notification) => notification.toBubble === bubbleId
+        (notification) => notification.toBubble === selectedBubbleId
       );
 
       if (isAlreadyInvited || isAlreadyMember) return false;
@@ -55,78 +59,90 @@ export default function AddFriend() {
       // return !isAlreadyMember && !isAlreadyInvited;
     });
 
-    inviteFriendsToBubble(bubbleId, filteredInvitedFriendsList);
+    inviteFriendsToBubble(selectedBubbleId, filteredInvitedFriendsList);
 
     if (filteredInvitedFriendsList.length === friendsList.length) {
-      setInvitationStatusGroup("all your friends got invited");
+      setStatus({ group: "all your friends got invited" });
     } else {
-      setInvitationStatusGroup(
-        "the friends who are not yet members got invited"
-      );
+      setStatus({ group: "the friends who are not yet members got invited" });
     }
     setFriendsList([]);
   };
 
+  function setStatus(message) {
+    setInvitationStatus(message);
+    setTimeout(() => {
+      setInvitationStatus("");
+    }, 4000);
+  }
+
   const inviteFriend = () => {
-    if (!bubbleId) {
-      setInvitationStatus("please select a bubble");
+    if (!selectedBubbleId) {
+      setStatus({ single: "please select a bubble" });
       return;
     }
 
     if (!email) {
-      setInvitationStatus("Ooops, an email is missing :/ try again!");
+      setStatus({ single: "Ooops, an email is missing :/ try again!" });
       return;
     }
 
     if (email && !findUserByEmail(email)) {
-      setInvitationStatus(
-        "Oh, we dont know your friend,yet... please ask your friend to register first"
-      );
+      setStatus({
+        single:
+          "Oh, we dont know your friend,yet... please ask your friend to register first",
+      });
       return;
     }
 
-    const selectedBubble = getBubbleById(bubbleId);
+    const selectedBubble = getBubbleById(selectedBubbleId);
     const friend = findUserByEmail(email);
     const isAlreadyMember =
       selectedBubble &&
       selectedBubble.members.some((memberId) => memberId === friend.id);
 
     if (isAlreadyMember) {
-      setInvitationStatus("Your friend is already member of this group!");
+      setStatus({ single: "Your friend is already member of this group!" });
       return;
     }
     const isAlreadyInvited = friend.notifications.some(
-      (notification) => notification.toBubble === bubbleId
+      (notification) => notification.toBubble === selectedBubbleId
     );
 
     if (isAlreadyInvited) return;
 
     if (!friend) {
-      setInvitationStatus(
-        "Oh, we dont know your friend, yet... please ask your friend to register first"
-      );
+      setStatus({
+        single:
+          "Oh, we dont know your friend, yet... please ask your friend to register first",
+      });
       return;
     }
-    inviteFriendsToBubble(bubbleId, [friend.id]);
-    setInvitationStatus(" Great, your friend got invited!");
+    inviteFriendsToBubble(selectedBubbleId, [friend.id]);
+    setStatus({ single: "Great, your friend got invited!" });
   };
+  if (!selectedBubble && params.bubbleId) {
+    return;
+  }
 
   return (
-    <div className="">
+    <div className="py-16">
       {bubbles ? (
-        <div className="w-72 m-auto mt-8">
-          <h1 className=" my-10 uppercase">
-            YEJ - invite your friends to your bubble
-          </h1>
-          <p>1. select the bubble you want your friends to join</p>
-          <select
-            onChange={(e) => {
-              setBubbleId(e.target.value);
-            }}
-            name="bubble"
-            id="bubble"
-            aria-label="Default select example"
-            className="form-select appearance-none mb-5
+        <div>
+          {!params.bubbleId && (
+            <div className="w-72 m-auto mt-8">
+              <h1 className="my-10 uppercase">
+                YEJ - invite your friends to your bubble
+              </h1>
+              <p>Select the bubble you want your friends to join</p>
+              <select
+                onChange={(e) => {
+                  setSelectedBubbleId(e.target.value);
+                }}
+                name="bubble"
+                id="bubble"
+                aria-label="Default select example"
+                className="form-select appearance-none mb-5
               block
               w-full
               px-3
@@ -266,8 +282,10 @@ export default function AddFriend() {
                   Invite selected Friends
                 </button>
               )}
-              {!!invitationStatusGroup && (
-                <p className="text-fuchsia-600 pt-3">{invitationStatusGroup}</p>
+              {!!invitationStatus.group && (
+                <p className="text-fuchsia-600 pt-3">
+                  {invitationStatus.group}
+                </p>
               )}
             </div>
           </ul>
