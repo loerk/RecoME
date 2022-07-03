@@ -54,12 +54,6 @@ export function BubbleContextProvider({ children }) {
     setBubbles(deletedBubbleArr);
     localStorage.setItem("bubbles", JSON.stringify(deletedBubbleArr));
   };
-  const getRecosByBubbles = (currentUser) => {
-    const usersBubbles = getBubbles();
-    return usersBubbles.flatMap((bubble) =>
-      (bubble.recos || []).filter((reco) => reco.createdBy === currentUser.id)
-    );
-  };
 
   const contextValue = {
     addBubble,
@@ -67,7 +61,6 @@ export function BubbleContextProvider({ children }) {
     getBubbleById,
     updateBubble,
     deleteBubble,
-    getRecosByBubbles,
   };
   return (
     <BubbleContext.Provider value={contextValue}>
