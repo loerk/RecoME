@@ -16,7 +16,7 @@ export function RecoContextProvider({ children }) {
 
   const addReco = (newReco) => {
     const currentUser = getCurrentUser();
-    const newRecosArr = [
+    const newRecos = [
       ...recos,
       {
         ...newReco,
@@ -25,8 +25,8 @@ export function RecoContextProvider({ children }) {
       },
     ];
 
-    setRecos(newRecosArr);
-    localStorage.setItem("recos", JSON.stringify(newRecosArr));
+    setRecos(newRecos);
+    localStorage.setItem("recos", JSON.stringify(newRecos));
   };
 
   const getRecosByCurrentUser = () => {
@@ -51,10 +51,13 @@ export function RecoContextProvider({ children }) {
       getRecosFromBubble(bubble.id)
     );
     const allRecos = [...recosByUser, ...recosForUser, ...userBubbleRecos];
-    const getUniqueList = (arr, key) => {
-      return [...new Map(arr.map((item) => [item[key], item])).values()];
-    };
-    return getUniqueList(allRecos, "id");
+
+    return allRecos.reduce((acc, curr) => {
+      if (acc.some((user) => user.id === curr.id)) return acc;
+      return [...acc, curr];
+    }, []);
+
+    //   return [...new Map(arr.map((item) => [item[key], item])).values()];
   };
 
   const deleteReco = (id) => {
@@ -63,9 +66,7 @@ export function RecoContextProvider({ children }) {
     localStorage.setItem("recos", JSON.stringify(filteredRecos));
   };
 
-  const findRecoById = (id) => {
-    return recos.find((reco) => reco.id === id);
-  };
+  const findRecoById = (id) => recos.find((reco) => reco.id === id);
 
   const contextValue = {
     addReco,
