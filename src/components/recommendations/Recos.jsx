@@ -4,16 +4,18 @@ import { useUsers } from "../../contexts/UsersContext";
 import React, { useState } from "react";
 import { useBubbles } from "../../contexts/BubbleContext";
 import { LinkPreview } from "../../utilities/LinkPreview";
+import { useRecos } from "../../contexts/RecoContext";
 
 export default function Recos() {
   const location = useLocation();
 
-  const { currentUser } = useUsers();
-  const { getRecosByBubbles, getBubbleById } = useBubbles();
+  const { findUserById } = useUsers();
+  const { getAllRecos } = useRecos();
+  const { getBubbleById } = useBubbles();
   const [searchFor, setSearchFor] = useState("");
 
-  const recosByUserFromBubbles = getRecosByBubbles(currentUser);
-  console.log(recosByUserFromBubbles);
+  const allRecos = getAllRecos();
+
   return (
     <div className="mt-28">
       {location.pathname === "/recos" ? (
@@ -51,10 +53,10 @@ export default function Recos() {
             <AddButton />
           </Link>
 
-          <div className="bg-slate-600 p-10 my-10">
-            {recosByUserFromBubbles.length !== 0 ? (
+          <div className=" p-10 my-10">
+            {allRecos.length ? (
               <ul className="pt-6 flex flex-wrap gap-4 justify-around">
-                {recosByUserFromBubbles
+                {allRecos
                   .filter((reco) => {
                     return reco.title
                       .toLowerCase()
@@ -62,24 +64,31 @@ export default function Recos() {
                   })
                   .map((reco) => {
                     const date = new Date(reco.createdAt);
-                    const { imageUrl } = getBubbleById(reco.sharedWith);
-                    console.log(imageUrl);
+
                     return (
                       <div key={reco.id}>
-                        <div
-                          style={{ backgroundImage: `url(${imageUrl})` }}
-                          className="flex flex-col hover:shadow-inner md:flex-row  rounded-lg shadow-lg"
-                        >
+                        <div className="flex bg-white flex-col hover:shadow-inner md:flex-row  rounded-lg shadow-lg  ">
                           <div className="p-4 m-5 backdrop-blur-xl relative rounded flex flex-col justify-start">
                             <div className="z-2 flex justify-between">
                               <h5 className=" text-xl font-medium mb-2">
                                 {reco.title}
                               </h5>
-                              <img
-                                src={currentUser.avatarUrl}
-                                alt=""
-                                className="w-7 h-7 shadow-lg rounded-full"
-                              />
+                              <div className="relative flex">
+                                <img
+                                  src={findUserById(reco.createdBy).avatarUrl}
+                                  alt=""
+                                  className="w-9 z-3 relative left-3 aspect-square shadow-lg rounded-full"
+                                />
+
+                                <img
+                                  src={
+                                    getBubbleById(reco.sharedWith)?.imageUrl ||
+                                    findUserById(reco.sharedWith)?.avatarUrl
+                                  }
+                                  alt=""
+                                  className="w-9 aspect-square shadow-lg rounded-full"
+                                />
+                              </div>
                             </div>
                             <p className=" text-base mb-4">{reco.comment}</p>
                             <p className="tracking-widest text-xs">
