@@ -1,7 +1,10 @@
-import { Outlet, useLocation, Link } from "react-router-dom";
-import { AddButton } from "../../utilities/Buttons";
-import { useUsers } from "../../contexts/UsersContext";
 import React, { useState } from "react";
+import { Outlet, useLocation, Link } from "react-router-dom";
+import { RiDeleteBinLine } from "react-icons/ri";
+import { v1 as uuidv1 } from "uuid";
+
+import { useUsers } from "../../contexts/UsersContext";
+import { AddButton } from "../../utilities/Buttons";
 import { useBubbles } from "../../contexts/BubbleContext";
 import { LinkPreview } from "../../utilities/LinkPreview";
 import { useRecos } from "../../contexts/RecoContext";
@@ -10,7 +13,7 @@ export default function Recos() {
   const location = useLocation();
 
   const { findUserById } = useUsers();
-  const { getAllRecos } = useRecos();
+  const { getAllRecos, deleteReco } = useRecos();
   const { getBubbleById } = useBubbles();
   const [searchFor, setSearchFor] = useState("");
 
@@ -53,7 +56,7 @@ export default function Recos() {
             <AddButton />
           </Link>
 
-          <div className=" p-10 my-10">
+          <div className=" p-10">
             {allRecos.length ? (
               <ul className="pt-6 flex flex-wrap gap-4 justify-around">
                 {allRecos
@@ -68,12 +71,12 @@ export default function Recos() {
                     return (
                       <div key={reco.id}>
                         <div className="flex bg-white flex-col hover:shadow-inner md:flex-row  rounded-lg shadow-lg  ">
-                          <div className="p-4 m-5 backdrop-blur-xl relative rounded flex flex-col justify-start">
+                          <div className="p-4 backdrop-blur-xl relative rounded flex flex-col justify-start">
                             <div className="z-2 flex justify-between">
                               <h5 className=" text-xl font-medium mb-2">
                                 {reco.title}
                               </h5>
-                              <div className="relative flex">
+                              <div className="relative flex pb-3">
                                 <img
                                   src={findUserById(reco.createdBy).avatarUrl}
                                   alt=""
@@ -98,12 +101,19 @@ export default function Recos() {
                             <div className="flex flex-wrap  gap-2 justify-center mt-auto">
                               {reco.categories.split(",").map((category) => {
                                 return (
-                                  <span className="text-xs tracking-widest font-face-tl inline-block py-1 px-2.5 leading-none text-center whitespace-nowrap align-baseline font-bold bg-lime-400 text-black rounded-full">
+                                  <span
+                                    key={uuidv1()}
+                                    className="text-xs tracking-widest font-face-tl inline-block py-1 px-2.5 leading-none text-center whitespace-nowrap align-baseline font-bold bg-lime-400 text-black rounded-full"
+                                  >
                                     {category}
                                   </span>
                                 );
                               })}
                             </div>
+                            <RiDeleteBinLine
+                              className="m-auto mt-5 cursor-pointer"
+                              onClick={() => deleteReco(reco.id)}
+                            ></RiDeleteBinLine>
                           </div>
                         </div>
                       </div>
