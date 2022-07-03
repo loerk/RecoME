@@ -4,6 +4,8 @@ import { useUsers } from "../../contexts/UsersContext";
 import { useBubbles } from "../../contexts/BubbleContext";
 import { VscChromeClose, VscCheck } from "react-icons/vsc";
 import { useNavigate } from "react-router-dom";
+import { useRecos } from "../../contexts/RecoContext";
+import { FiExternalLink } from "react-icons/fi";
 
 export default function Details() {
   const navigate = useNavigate();
@@ -11,17 +13,15 @@ export default function Details() {
   const { currentUser, updateCurrentUser, updateUsers, findUserById } =
     useUsers();
   const { getBubbleById, updateBubble } = useBubbles();
+  const { findRecoById } = useRecos();
 
   let currentNotifications = currentUser.notifications;
-  console.log(currentNotifications);
 
   const currentBubble = getBubbleById(currentNotifications[0].toBubble);
   const invitedByUser = findUserById(currentNotifications[0].invitedBy);
-  const newReco = currentUser.recos.find(
-    (reco) => reco.id === currentNotifications[0].recoId
-  );
+  const newReco = findRecoById(currentNotifications[0].recoId);
+
   const resetInvitationsArr = () => {
-    //delete latest notification
     currentUser.notifications.shift();
     const updatedUser = { ...currentUser };
     updateCurrentUser(updatedUser);
@@ -50,7 +50,15 @@ export default function Details() {
     resetInvitationsArr();
     navigate("/bubbles");
   };
-
+  const acceptReco = () => {
+    currentUser.recos = [...currentUser.recos, newReco.id];
+    resetInvitationsArr();
+    navigate("/recos");
+  };
+  const refuseReco = () => {
+    resetInvitationsArr();
+    navigate("/recos");
+  };
   return (
     <div className="flex items-center flex-col pt-28">
       <h1>WOW WOW WOW</h1>
@@ -69,15 +77,19 @@ export default function Details() {
               </h5>
               <p className="text-gray-900 text-base mb-4">
                 Congratulations, you got a Reco by{" "}
-                {currentNotifications[0].invitedByUser}!
+                {currentNotifications[0].invitedByUser.toUpperCase()}!
               </p>
+              <p>{newReco.comment}</p>
+              <a href={newReco.url}>
+                <FiExternalLink></FiExternalLink>
+              </a>
               <div className="text-black flex justify-end gap-3">
                 <VscChromeClose
-                  onClick={() => refuseBubbleInvitation()}
+                  onClick={() => refuseReco()}
                   className="cursor-pointer"
                 ></VscChromeClose>
                 <VscCheck
-                  onClick={() => {}}
+                  onClick={() => acceptReco()}
                   className="cursor-pointer"
                 ></VscCheck>
               </div>
