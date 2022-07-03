@@ -5,22 +5,23 @@ import { AddButton } from "../../utilities/Buttons";
 
 import { useTheme } from "../../contexts/ThemeContext";
 import { useBubbles } from "../../contexts/BubbleContext";
+import { useRecos } from "../../contexts/RecoContext";
+import { useUsers } from "../../contexts/UsersContext";
 
 export default function Bubble() {
   const navigate = useNavigate();
   let { bubbleId } = useParams();
   const theme = useTheme();
   const { getBubbleById, deleteBubble } = useBubbles();
+  const { getRecosFromBubble } = useRecos();
+  const { findUserById } = useUsers();
 
-  let bubble = getBubbleById(bubbleId);
+  const bubble = getBubbleById(bubbleId);
+  const bubbleRecos = getRecosFromBubble(bubbleId);
 
   const handleDelete = () => {
     deleteBubble(bubbleId);
     navigate("/bubbles");
-  };
-
-  const addFriends = () => {
-    navigate("/friends/addFriend");
   };
 
   return (
@@ -37,12 +38,26 @@ export default function Bubble() {
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 my-4 gap-4 text-center">
+      <div className="w-2/3  m-auto text-center">
         <div>
-          <h1 className="mb-3 uppercase">Members</h1>
+          <h1 className="py-10 uppercase">Members</h1>
           <div>
             {!!bubble.members.length ? (
-              <p>{bubble.members.length}</p>
+              <div className="flex gap-2">
+                {bubble.members.map((memberId) => {
+                  const member = findUserById(memberId);
+                  return (
+                    <div className="m-auto" key={memberId}>
+                      <img
+                        src={member.avatarUrl}
+                        alt=""
+                        className="w-16 aspect-square shadow-lg rounded-full"
+                      />
+                      <p>{member.username}</p>
+                    </div>
+                  );
+                })}
+              </div>
             ) : (
               <>
                 <p>Oh your bubble doesn't have any members ..yet</p>
@@ -55,10 +70,23 @@ export default function Bubble() {
           </Link>
         </div>
         <div>
-          <h1 className="mb-3 uppercase">Recommendations</h1>
+          <h1 className="mt-20 mb-5 uppercase">Recommendations</h1>
           <ul>
-            {bubble.recos ? (
-              bubble.recos.map((reco) => <p key={reco.id}>{reco.title}</p>)
+            {bubbleRecos ? (
+              bubbleRecos.map((reco) => {
+                const date = new Date(reco.createdAt);
+                return (
+                  <a
+                    href={reco.url}
+                    key={reco.id}
+                    className="grid border border-b-2 border-l-2 border-black  p-4 grid-cols-1 md:grid-cols-3 m-6 text-center"
+                  >
+                    <p>{reco.title}</p>
+                    <p>{reco.comment}</p>
+                    <p>{date.toLocaleDateString("en-GB")}</p>
+                  </a>
+                );
+              })
             ) : (
               <>
                 <p>
@@ -71,20 +99,6 @@ export default function Bubble() {
           <Link to={`/bubbles/${bubbleId}/addReco`}>
             <AddButton />
           </Link>
-        </div>
-        <div>
-          <h1 className="mb-3 uppercase">private save</h1>
-          <ul>
-            {bubble.recos ? (
-              bubble.recos.map((reco) => <li key={reco.id}>{reco.title}</li>)
-            ) : (
-              <>
-                <p>Oh you don't have any private Recommendations ..yet</p>
-                <p>add some</p>
-              </>
-            )}
-          </ul>
-          <AddButton />
         </div>
       </div>
       <div className="text-center mt-40 p-4">
