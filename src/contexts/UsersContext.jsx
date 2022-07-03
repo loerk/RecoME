@@ -64,16 +64,15 @@ export function UsersContextProvider({ children }) {
     updateUsers(updatedFriendList);
   };
 
-  const addRecoToUsers = (recoData, friendList) => {
+  const addRecoToUsers = (id, friendList) => {
     const updatedFriendList = friendList.map((friendId) => {
       const friend = findUserById(friendId);
       return {
         ...friend,
-        recos: [...friend.recos, recoData],
         notifications: [
           ...friend.notifications,
           {
-            reco: recoData.id,
+            recoId: id,
             invitedAt: Date.now(),
             invitationId: uuidv1(),
             type: "Reco for you",
