@@ -6,18 +6,21 @@ import { ThemeContextProvider } from "./contexts/ThemeContext";
 import { BrowserRouter } from "react-router-dom";
 import { UsersContextProvider } from "./contexts/UsersContext";
 import { BubbleContextProvider } from "./contexts/BubbleContext";
+import { RecoContextProvider } from "./contexts/RecoContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <UsersContextProvider>
     <BubbleContextProvider>
-      <ThemeContextProvider>
-        <React.StrictMode>
-          <BrowserRouter>
-            <App />
-          </BrowserRouter>
-        </React.StrictMode>
-      </ThemeContextProvider>
+      <RecoContextProvider>
+        <ThemeContextProvider>
+          <React.StrictMode>
+            <BrowserRouter>
+              <App />
+            </BrowserRouter>
+          </React.StrictMode>
+        </ThemeContextProvider>
+      </RecoContextProvider>
     </BubbleContextProvider>
   </UsersContextProvider>
 );
