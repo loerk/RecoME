@@ -1,36 +1,29 @@
 import React, { useState } from "react";
 import { useUsers } from "../../contexts/UsersContext";
 import { useBubbles } from "../../contexts/BubbleContext";
-import { useLocation, useParams, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useParams } from "react-router-dom";
 
 export default function AddFriend() {
+  window.scrollTo(0, 0);
+  const params = useParams();
   const { findUserById, currentUser, findUserByEmail, inviteFriendsToBubble } =
     useUsers();
   const { getBubbles, getBubbleById } = useBubbles();
-
   const [invitationStatus, setInvitationStatus] = useState({
     single: "",
     group: "",
   });
-  const [selectedBubbleId, setSelectedBubbleId] = useState(null);
+  const [selectedBubbleId, setSelectedBubbleId] = useState(
+    params.bubbleId || ""
+  );
   const [email, setEmail] = useState("");
   const [friendsList, setFriendsList] = useState([]);
 
-  const params = useParams();
-  const location = useLocation();
   const bubbles = getBubbles();
-  const navigate = useNavigate();
-
   const { friends } = currentUser;
   const selectedBubble = getBubbleById(selectedBubbleId);
 
   const isFriendInvited = (id) => friendsList.includes(id);
-  useEffect(() => {
-    if (params.bubbleId) setSelectedBubbleId(params.bubbleId);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const toggleFriend = (id) => {
     if (isFriendInvited(id)) {
@@ -61,7 +54,6 @@ export default function AddFriend() {
 
       if (isAlreadyInvited || isAlreadyMember) return false;
       return true;
-      // return !isAlreadyMember && !isAlreadyInvited;
     });
 
     inviteFriendsToBubble(selectedBubbleId, filteredInvitedFriendsList);
