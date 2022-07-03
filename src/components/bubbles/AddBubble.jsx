@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useBubbles } from "../../contexts/BubbleContext";
 
 export default function AddBubble() {
+  window.scrollTo(0, 0);
   const [bubbleData, setBubbleData] = useState({
     name: "",
     description: "",
