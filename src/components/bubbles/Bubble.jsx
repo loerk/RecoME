@@ -1,8 +1,9 @@
 import React from "react";
-
+import { RiDeleteBinLine } from "react-icons/ri";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { AddButton } from "../../utilities/Buttons";
+import { FiExternalLink } from "react-icons/fi";
 
+import { AddButton } from "../../utilities/Buttons";
 import { useTheme } from "../../contexts/ThemeContext";
 import { useBubbles } from "../../contexts/BubbleContext";
 import { useRecos } from "../../contexts/RecoContext";
@@ -13,7 +14,7 @@ export default function Bubble() {
   let { bubbleId } = useParams();
   const theme = useTheme();
   const { getBubbleById, deleteBubble } = useBubbles();
-  const { getRecosFromBubble } = useRecos();
+  const { getRecosFromBubble, deleteReco } = useRecos();
   const { findUserById } = useUsers();
 
   const bubble = getBubbleById(bubbleId);
@@ -76,15 +77,24 @@ export default function Bubble() {
               bubbleRecos.map((reco) => {
                 const date = new Date(reco.createdAt);
                 return (
-                  <a
-                    href={reco.url}
+                  <div
                     key={reco.id}
-                    className="grid border border-b-2 border-l-2 border-black  p-4 grid-cols-1 md:grid-cols-3 m-6 text-center"
+                    className="grid border border-b-2 border-l-2 border-black  p-4 grid-cols-1 md:grid-cols-3 m-auto text-center"
                   >
                     <p>{reco.title}</p>
                     <p>{reco.comment}</p>
                     <p>{date.toLocaleDateString("en-GB")}</p>
-                  </a>
+                    <div className="absolute">
+                      <FiExternalLink
+                        className="cursor-pointer mb-3"
+                        onClick={reco.url}
+                      ></FiExternalLink>
+                      <RiDeleteBinLine
+                        className="cursor-pointer"
+                        onClick={() => deleteReco(reco.id)}
+                      ></RiDeleteBinLine>
+                    </div>
+                  </div>
                 );
               })
             ) : (
@@ -106,7 +116,6 @@ export default function Bubble() {
           It's always hard to say goodbye, but sometimes there is no other
           option
         </p>
-        {/* TODO:theme doesnt work */}
         <button
           className={
             theme
