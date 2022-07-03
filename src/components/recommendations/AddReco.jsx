@@ -3,23 +3,28 @@ import React, { useState } from "react";
 import { useBubbles } from "../../contexts/BubbleContext";
 import { useTheme } from "../../contexts/ThemeContext";
 import { useUsers } from "../../contexts/UsersContext";
-import { v1 as uuidv1 } from "uuid";
 import { useNavigate, useParams } from "react-router-dom";
-import { useEffect } from "react";
+import { useRecos } from "../../contexts/RecoContext";
+import { v1 as uuidv1 } from "uuid";
 
 export default function AddReco() {
+  window.scrollTo(0, 0);
   const theme = useTheme();
   const navigate = useNavigate();
-
   const { bubbleId } = useParams();
-
   const { findUserById, currentUser, addRecoToUsers } = useUsers();
   const { getBubbles, getBubbleById, updateBubble } = useBubbles();
-  const [selected, setSelected] = useState({
-    bubble: undefined,
-    user: undefined,
-  });
-  const [shareWithId, setShareWithId] = useState("");
+  const { addReco } = useRecos();
+
+  const [selected, setSelected] = useState(
+    bubbleId
+      ? {
+          bubble: getBubbleById(bubbleId),
+          user: "",
+        }
+      : { bubble: "", user: "" }
+  );
+
   const [recoData, setRecoData] = useState({
     title: "",
     private: false,
@@ -29,28 +34,9 @@ export default function AddReco() {
     categories: "",
     url: "",
     comment: "",
-    createdAt: Date.now(),
-    createdBy: currentUser.id,
     id: uuidv1(),
   });
   const bubbles = getBubbles();
-
-  useEffect(() => {
-    if (bubbleId) {
-      const invitedToBubble = getBubbleById(bubbleId);
-      setSelected({ bubble: invitedToBubble });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    if (recoData.sharedWithFriends && shareWithId) {
-      const invitedUser = findUserById(shareWithId);
-      console.log("shared");
-      setSelected({ user: invitedUser });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [shareWithId]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -59,65 +45,44 @@ export default function AddReco() {
       [name]: type === "checkbox" ? checked : value,
     }));
   };
-  console.log(currentUser);
+
   const handleSubmit = () => {
-    if (!selected.bubble && recoData.sharedWithBubbles) {
-      const currentBubble = getBubbleById(shareWithId);
-      const updatedBubble = {
-        ...currentBubble,
-        recos: [
-          ...currentBubble.recos,
-          {
-            ...recoData,
-            sharedWithBubbles: true,
-            sharedWith: currentBubble.id,
-          },
-        ],
+    if (selected.bubble.id) {
+      const recoToBubble = {
+        ...recoData,
+        sharedWith: selected.bubble.id,
+        sharedWithBubbles: true,
       };
-      updateBubble(updatedBubble);
-      navigate("/recos");
-    }
-    if (selected.bubble) {
+
       const updatedBubble = {
         ...selected.bubble,
-        recos: [
-          ...selected.bubble.recos,
-          {
-            ...recoData,
-            sharedWithBubbles: true,
-            sharedWith: selected.bubble.id,
-          },
-        ],
+        recos: [...selected.bubble.recos, recoData.id],
       };
+      addReco(recoToBubble);
       updateBubble(updatedBubble);
       navigate("/recos");
     }
-    if (recoData.sharedWithFriends && selected.user) {
-      addRecoToUsers(recoData, [shareWithId]);
+
+    if (selected.user.id) {
+      const recoToFriend = {
+        ...recoData,
+        sharedWith: selected.user.id,
+      };
+      addReco(recoToFriend);
+      addRecoToUsers(recoData.id, [selected.user.id]);
       navigate("/recos");
     }
   };
-  console.log("updated", selected.user);
+
   return (
     <div className="w-72 m-auto pt-10">
       <h1 className="uppercase tracking-wider text-3xl mb-8">
         create a Recommendation
       </h1>
-      {!selected.bubble ? (
+      {!selected.bubble.name ? (
         <div className="flex flex-wrap gap-2">
           <div className="flex flex-col gap-3 mb-8">
-            <label className="pl-3 font-face-tm text-2xl" htmlFor="isPrivate">
-              <input
-                className="mr-3"
-                id="isPrivate"
-                type="checkbox"
-                name="private"
-                onChange={handleChange}
-                checked={recoData.private}
-              />
-              private
-            </label>
-            <label className="pl-3 font-face-tm text-2xl" htmlFor="isPrivate">
+            <label className="pl-3 font-face-tm text-2xl">
               <input
                 className="mr-3"
                 id="isSharedInBubble"
@@ -128,7 +93,7 @@ export default function AddReco() {
               />
               share with Bubble
             </label>
-            <label className="pl-3 font-face-tm text-2xl" htmlFor="isPrivate">
+            <label className="pl-3 font-face-tm text-2xl">
               <input
                 className="mr-3"
                 id="isSharedWithFriends"
@@ -143,7 +108,10 @@ export default function AddReco() {
           {recoData.sharedWithBubbles && (
             <select
               onChange={(e) => {
-                setShareWithId(e.target.value);
+                setSelected({
+                  ...selected,
+                  bubble: getBubbleById(e.target.value),
+                });
               }}
               name="bubble"
               id="bubble"
@@ -177,7 +145,10 @@ export default function AddReco() {
           {recoData.sharedWithFriends && (
             <select
               onChange={(e) => {
-                setShareWithId(e.target.value);
+                setSelected({
+                  ...selected,
+                  user: findUserById(e.target.value),
+                });
               }}
               name="friends"
               id="friends"
@@ -251,7 +222,7 @@ export default function AddReco() {
             }
             disabled={!recoData.title || !recoData.url}
           >
-            Create Recommendation
+            Create
           </button>
         </div>
       ) : (
