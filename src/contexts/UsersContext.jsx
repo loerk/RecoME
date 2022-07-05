@@ -100,7 +100,7 @@ export function UsersContextProvider({ children }) {
     return users.find((user) => user.id === id);
   };
 
-  const getRecosByUsers = () => {
+  const getRecosByUser = () => {
     return users.map((user) => {
       return user.recos.filter((reco) => reco.createdBy === currentUser.id);
     });
@@ -139,7 +139,7 @@ export function UsersContextProvider({ children }) {
     findUserByEmail,
     findUserById,
     inviteFriendsToBubble,
-    getRecosByUsers,
+    getRecosByUser,
     addRecoToUsers,
   };
 
