@@ -51,7 +51,12 @@ export default function Details() {
     navigate("/bubbles");
   };
   const acceptReco = () => {
-    currentUser.recos = [...currentUser.recos, newReco.id];
+    const updatedUser = {
+      ...currentUser,
+      recos: [...currentUser.recos, newReco.id],
+    };
+    updateCurrentUser(updatedUser);
+    updateUsers([updatedUser]);
     resetInvitationsArr();
     navigate("/recos");
   };
