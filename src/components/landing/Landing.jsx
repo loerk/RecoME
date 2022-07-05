@@ -9,6 +9,7 @@ export default function Landing() {
   const { getBubbles } = useBubbles();
   const { getAllRecos } = useRecos();
   const navigate = useNavigate();
+
   window.scrollTo(0, 0);
 
   if (!currentUser) {
@@ -76,15 +77,15 @@ export default function Landing() {
         <div className="flex justify-around items-center w-full content-center">
           <h1 className="px-10">Latest Recos</h1>
           <ul className="flex  overflow-x-hidden w-2/3">
-            {recosFromUser?.map((reco) => (
-              <li key={reco.id}>
-                <div className="flex w-28 h-28 object-cover object-center opacity-60 bg-yellow-200 hover:opacity-100 rounded-full cursor-pointer">
-                  <button className="pl-2" onClick={() => navigate("/recos")}>
-                    {reco.title}
-                  </button>
-                </div>
-              </li>
-            ))}
+            {recosFromUser
+              ?.filter((reco) => !reco.ignoredBy?.includes(currentUser.id))
+              .map((reco) => (
+                <button key={reco.id} onClick={() => navigate("/recos")}>
+                  <div className="flex w-28 h-28 object-cover object-center opacity-60 bg-yellow-200 hover:opacity-100 rounded-full cursor-pointer">
+                    <div className="m-auto">{reco.title}</div>
+                  </div>
+                </button>
+              ))}
           </ul>
           <Link to={"/recos"}>
             <MdArrowForwardIos className="mx-6 text-2xl md:text-3xl"></MdArrowForwardIos>

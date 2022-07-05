@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { RiDeleteBinLine } from "react-icons/ri";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { FiExternalLink } from "react-icons/fi";
@@ -8,19 +8,40 @@ import { useTheme } from "../../contexts/ThemeContext";
 import { useBubbles } from "../../contexts/BubbleContext";
 import { useRecos } from "../../contexts/RecoContext";
 import { useUsers } from "../../contexts/UsersContext";
+import Modal from "../../utilities/Modal";
 
 export default function Bubble() {
+  const [currRecoId, setCurrRecoId] = useState();
+  const [showModal, setShowModal] = useState(false);
+  const [deleteCurrentReco, setDeleteCurrentReco] = useState({
+    forUser: false,
+    forAll: false,
+  });
+
   const navigate = useNavigate();
   let { bubbleId } = useParams();
+
   const theme = useTheme();
   const { getBubbleById, deleteBubble } = useBubbles();
-  const { getRecosFromBubble, deleteReco } = useRecos();
-  const { findUserById } = useUsers();
+  const { getRecosFromBubble, deleteReco, ignoreReco } = useRecos();
+  const { findUserById, currentUser } = useUsers();
 
   const bubble = getBubbleById(bubbleId);
   const bubbleRecos = getRecosFromBubble(bubbleId);
 
-  const handleDelete = () => {
+  const handleModal = (id) => {
+    setShowModal(true);
+    setCurrRecoId(id);
+  };
+  const handleDeleteReco = () => {
+    if (deleteCurrentReco.forAll) deleteReco(currRecoId);
+    if (deleteCurrentReco.forUser) ignoreReco(currRecoId);
+    setShowModal(false);
+  };
+
+  const handleOnClose = () => setShowModal(false);
+
+  const handleDeleteBubble = () => {
     deleteBubble(bubbleId);
     navigate("/bubbles");
   };
@@ -74,29 +95,39 @@ export default function Bubble() {
           <h1 className="mt-20 mb-5 uppercase">Recommendations</h1>
           <ul>
             {bubbleRecos ? (
-              bubbleRecos.map((reco) => {
-                const date = new Date(reco.createdAt);
-                return (
-                  <div
-                    key={reco.id}
-                    className="grid border border-b-2 border-l-2 border-black  p-4 grid-cols-1 md:grid-cols-3 m-auto text-center"
-                  >
-                    <p>{reco.title}</p>
-                    <p>{reco.comment}</p>
-                    <p>{date.toLocaleDateString("en-GB")}</p>
-                    <div className="absolute">
-                      <FiExternalLink
-                        className="cursor-pointer mb-3"
-                        onClick={reco.url}
-                      ></FiExternalLink>
-                      <RiDeleteBinLine
-                        className="cursor-pointer"
-                        onClick={() => deleteReco(reco.id)}
-                      ></RiDeleteBinLine>
+              bubbleRecos
+                .filter((reco) => !reco.ignoredBy?.includes(currentUser.id))
+                .map((reco) => {
+                  const date = new Date(reco.createdAt);
+                  return (
+                    <div
+                      key={reco.id}
+                      className="grid border border-b-2 border-l-2 border-black  p-4 grid-cols-1 md:grid-cols-3 m-auto text-center"
+                    >
+                      <p>{reco.title}</p>
+                      <p>{reco.comment}</p>
+                      <p>{date.toLocaleDateString("en-GB")}</p>
+                      <div className="absolute">
+                        <a href={reco.url}>
+                          <FiExternalLink></FiExternalLink>
+                        </a>
+                        <RiDeleteBinLine
+                          className="cursor-pointer"
+                          onClick={() => handleModal(reco.id)}
+                        ></RiDeleteBinLine>
+                      </div>
+                      {showModal && (
+                        <Modal
+                          onClose={handleOnClose}
+                          showModal={showModal}
+                          setDeleteCurrentReco={setDeleteCurrentReco}
+                          deleteCurrentReco={deleteCurrentReco}
+                          handleModalDelete={handleDeleteReco}
+                        />
+                      )}
                     </div>
-                  </div>
-                );
-              })
+                  );
+                })
             ) : (
               <>
                 <p>
@@ -122,7 +153,7 @@ export default function Bubble() {
               ? "w-40 hover:translate-y-1  text-3xl p-3 bg-white  text-black  font-face-tm my-4"
               : "w-40 hover:translate-y-1  text-3xl p-3 bg-black  text-white  font-face-tm my-4"
           }
-          onClick={handleDelete}
+          onClick={handleDeleteBubble}
         >
           DELETE BUBBLE
         </button>

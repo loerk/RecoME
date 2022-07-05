@@ -61,12 +61,31 @@ export function RecoContextProvider({ children }) {
   };
 
   const deleteReco = (id) => {
+    console.log("deleted", id);
     const filteredRecos = recos.filter((reco) => reco.id !== id);
     setRecos(filteredRecos);
+    console.log(filteredRecos);
     localStorage.setItem("recos", JSON.stringify(filteredRecos));
   };
 
   const findRecoById = (id) => recos.find((reco) => reco.id === id);
+  const updateRecos = (updatedReco) => {
+    const updatedRecosArray = recos.map((reco) => {
+      if (reco.id === updatedReco.id) return updatedReco;
+      return reco;
+    });
+    setRecos(updatedRecosArray);
+    localStorage.setItem("recos", JSON.stringify(updatedRecosArray));
+  };
+  const ignoreReco = (id) => {
+    const currentUser = getCurrentUser();
+    const currentReco = findRecoById(id);
+    const updatedReco = {
+      ...currentReco,
+      ignoredBy: [...(currentReco.ignoredBy || []), currentUser.id],
+    };
+    updateRecos(updatedReco);
+  };
 
   const contextValue = {
     addReco,
@@ -76,6 +95,8 @@ export function RecoContextProvider({ children }) {
     getAllRecos,
     findRecoById,
     getRecosForCurrentUser,
+    ignoreReco,
+    updateRecos,
   };
   return (
     <RecoContext.Provider value={contextValue}>{children}</RecoContext.Provider>

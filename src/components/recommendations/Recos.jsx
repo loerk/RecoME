@@ -8,16 +8,40 @@ import { AddButton } from "../../utilities/Buttons";
 import { useBubbles } from "../../contexts/BubbleContext";
 import { LinkPreview } from "../../utilities/LinkPreview";
 import { useRecos } from "../../contexts/RecoContext";
+import Modal from "../../utilities/Modal";
 
 export default function Recos() {
+  const [showModal, setShowModal] = useState(false);
+  const [deleteCurrentReco, setDeleteCurrentReco] = useState({
+    forUser: false,
+    forAll: false,
+  });
+  const [currRecoId, setCurrRecoId] = useState();
   const location = useLocation();
 
-  const { findUserById } = useUsers();
-  const { getAllRecos, deleteReco } = useRecos();
+  const { findUserById, currentUser } = useUsers();
+  const { getAllRecos, deleteReco, ignoreReco } = useRecos();
   const { getBubbleById } = useBubbles();
   const [searchFor, setSearchFor] = useState("");
-
   const allRecos = getAllRecos();
+
+  const handleModal = (id) => {
+    setShowModal(true);
+    setCurrRecoId(id);
+  };
+  const handleDelete = () => {
+    if (deleteCurrentReco.forAll) deleteReco(currRecoId);
+    if (deleteCurrentReco.forUser) ignoreReco(currRecoId);
+    setShowModal(false);
+  };
+
+  const handleOnClose = () => setShowModal(false);
+
+  const filteredRecos = allRecos
+    .filter((reco) => !reco.ignoredBy?.includes(currentUser.id))
+    .filter((reco) => {
+      return reco.title.toLowerCase().includes(searchFor.toLowerCase());
+    });
 
   return (
     <div className="mt-28">
@@ -59,66 +83,69 @@ export default function Recos() {
           <div className=" p-10">
             {allRecos.length ? (
               <ul className="pt-6 flex flex-wrap gap-4 justify-around">
-                {allRecos
-                  .filter((reco) => {
-                    return reco.title
-                      .toLowerCase()
-                      .includes(searchFor.toLowerCase());
-                  })
-                  .map((reco) => {
-                    const date = new Date(reco.createdAt);
+                {filteredRecos.map((reco) => {
+                  const date = new Date(reco.createdAt);
 
-                    return (
-                      <div key={reco.id}>
-                        <div className="flex bg-white flex-col hover:shadow-inner md:flex-row  rounded-lg shadow-lg  ">
-                          <div className="p-4 backdrop-blur-xl relative rounded flex flex-col justify-start">
-                            <div className="z-2 flex justify-between">
-                              <h5 className=" text-xl font-medium mb-2">
-                                {reco.title}
-                              </h5>
-                              <div className="relative flex pb-3">
-                                <img
-                                  src={findUserById(reco.createdBy).avatarUrl}
-                                  alt=""
-                                  className="w-9 z-3 relative left-3 aspect-square shadow-lg rounded-full"
-                                />
+                  return (
+                    <div key={reco.id}>
+                      <div className="flex bg-white flex-col hover:shadow-inner md:flex-row  rounded-lg shadow-lg  ">
+                        <div className="p-4 backdrop-blur-xl relative rounded flex flex-col justify-start">
+                          <div className="z-2 flex justify-between">
+                            <h5 className=" text-xl font-medium mb-2">
+                              {reco.title}
+                            </h5>
+                            <div className="relative flex pb-3">
+                              <img
+                                src={findUserById(reco.createdBy).avatarUrl}
+                                alt=""
+                                className="w-9 z-3 relative left-3 aspect-square shadow-lg rounded-full"
+                              />
 
-                                <img
-                                  src={
-                                    getBubbleById(reco.sharedWith)?.imageUrl ||
-                                    findUserById(reco.sharedWith)?.avatarUrl
-                                  }
-                                  alt=""
-                                  className="w-9 aspect-square shadow-lg rounded-full"
-                                />
-                              </div>
+                              <img
+                                src={
+                                  getBubbleById(reco.sharedWith)?.imageUrl ||
+                                  findUserById(reco.sharedWith)?.avatarUrl
+                                }
+                                alt=""
+                                className="w-9 aspect-square shadow-lg rounded-full"
+                              />
                             </div>
-                            <p className=" text-base mb-4">{reco.comment}</p>
-                            <p className="tracking-widest text-xs">
-                              {date.toLocaleString("en-GB")}
-                            </p>
-                            <LinkPreview url={reco.url} />
-                            <div className="flex flex-wrap  gap-2 justify-center mt-auto">
-                              {reco.categories.split(",").map((category) => {
-                                return (
-                                  <span
-                                    key={uuidv1()}
-                                    className="text-xs tracking-widest font-face-tl inline-block py-1 px-2.5 leading-none text-center whitespace-nowrap align-baseline font-bold bg-lime-400 text-black rounded-full"
-                                  >
-                                    {category}
-                                  </span>
-                                );
-                              })}
-                            </div>
-                            <RiDeleteBinLine
-                              className="m-auto mt-5 cursor-pointer"
-                              onClick={() => deleteReco(reco.id)}
-                            ></RiDeleteBinLine>
                           </div>
+                          <p className=" text-base mb-4">{reco.comment}</p>
+                          <p className="tracking-widest text-xs">
+                            {date.toLocaleString("en-GB")}
+                          </p>
+                          <LinkPreview url={reco.url} />
+                          <div className="flex flex-wrap  gap-2 justify-center mt-auto">
+                            {reco.categories.split(",").map((category) => {
+                              return (
+                                <span
+                                  key={uuidv1()}
+                                  className="text-xs tracking-widest font-face-tl inline-block py-1 px-2.5 leading-none text-center whitespace-nowrap align-baseline font-bold bg-lime-400 text-black rounded-full"
+                                >
+                                  {category}
+                                </span>
+                              );
+                            })}
+                          </div>
+                          <RiDeleteBinLine
+                            className="m-auto mt-5 cursor-pointer"
+                            onClick={() => handleModal(reco.id)}
+                          ></RiDeleteBinLine>
                         </div>
+                        {showModal && (
+                          <Modal
+                            onClose={handleOnClose}
+                            showModal={showModal}
+                            setDeleteCurrentReco={setDeleteCurrentReco}
+                            deleteCurrentReco={deleteCurrentReco}
+                            handleModalDelete={handleDelete}
+                          />
+                        )}
                       </div>
-                    );
-                  })}
+                    </div>
+                  );
+                })}
               </ul>
             ) : (
               <p className="text-center pt-5">
