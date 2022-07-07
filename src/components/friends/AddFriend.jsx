@@ -4,7 +4,6 @@ import { useBubbles } from "../../contexts/BubbleContext";
 import { useParams } from "react-router-dom";
 
 export default function AddFriend() {
-  window.scrollTo(0, 0);
   const params = useParams();
   const { findUserById, currentUser, findUserByEmail, inviteFriendsToBubble } =
     useUsers();

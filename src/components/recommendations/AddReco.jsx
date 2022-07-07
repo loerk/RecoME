@@ -8,7 +8,6 @@ import { useRecos } from "../../contexts/RecoContext";
 import { v1 as uuidv1 } from "uuid";
 
 export default function AddReco() {
-  window.scrollTo(0, 0);
   const theme = useTheme();
   const navigate = useNavigate();
   const { bubbleId } = useParams();
