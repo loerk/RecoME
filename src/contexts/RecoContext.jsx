@@ -61,10 +61,8 @@ export function RecoContextProvider({ children }) {
   };
 
   const deleteReco = (id) => {
-    console.log("deleted", id);
     const filteredRecos = recos.filter((reco) => reco.id !== id);
     setRecos(filteredRecos);
-    console.log(filteredRecos);
     localStorage.setItem("recos", JSON.stringify(filteredRecos));
   };
 
