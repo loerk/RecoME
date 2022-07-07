@@ -24,19 +24,21 @@ export default function Landing() {
 
   return (
     <div className="py-10 ">
-      <div className="flex items-center m-auto gap-7 mt-16 p-10 flex-col h-76 rounded shadow-2xl ">
+      <div className="flex items-center m-auto gap-7 mt-16 py-5 flex-col h-76 rounded shadow-2xl ">
         <div className="flex justify-around items-center w-full content-center">
           <h1 className="px-10">Your bubbles</h1>
           <ul className="flex overflow-x-hidden w-2/3">
             {bubbles?.map((bubble) => (
               <li key={bubble.id}>
-                <div className="text-center">
-                  <img
-                    onClick={() => navigate(`/bubbles/${bubble.id}`)}
-                    className="w-28 h-28 object-cover object-center opacity-50  hover:opacity-100 rounded-full cursor-pointer"
-                    src={bubble.imageUrl}
-                    alt=""
-                  />
+                <div className="text-center m-2">
+                  <div className="w-28 h-28 object-cover object-center opacity-50  hover:opacity-100 rounded-full cursor-pointer">
+                    <img
+                      onClick={() => navigate(`/bubbles/${bubble.id}`)}
+                      className="rounded-full  h-28 w-28"
+                      src={bubble.imageUrl}
+                      alt=""
+                    />
+                  </div>
                   <button>{bubble.name}</button>
                 </div>
               </li>
@@ -47,7 +49,7 @@ export default function Landing() {
           </Link>
         </div>
       </div>
-      <div className="flex items-center m-auto gap-7 my-7 p-10 flex-col h-76   rounded shadow-2xl ">
+      <div className="flex items-center m-auto gap-7 my-7 py-5 flex-col h-76  rounded shadow-2xl ">
         <div className="flex justify-around items-center w-full content-center">
           <h1 className="px-10">Your friends</h1>
           <ul className="flex overflow-x-hidden w-2/3">
@@ -55,13 +57,14 @@ export default function Landing() {
               let currFriend = findFriend(friendId);
               return (
                 <li key={friendId}>
-                  <div className="text-center">
-                    <img
-                      onClick={() => navigate(`/friends/${currFriend.id}`)}
-                      className="w-28 h-28 object-cover object-center opacity-50  hover:opacity-100 rounded-full cursor-pointer"
-                      src={currFriend.avatarUrl}
-                      alt=""
-                    />
+                  <div className="text-center m-2">
+                    <div className="w-28 h-28 object-cover object-center opacity-50  hover:opacity-100 rounded-full cursor-pointer">
+                      <img
+                        onClick={() => navigate(`/friends/${currFriend.id}`)}
+                        src={currFriend.avatarUrl}
+                        alt=""
+                      />
+                    </div>
                     <button className="relative">{currFriend.username}</button>
                   </div>
                 </li>
@@ -73,7 +76,7 @@ export default function Landing() {
           </Link>
         </div>
       </div>{" "}
-      <div className="flex items-center m-auto gap-7 my-7 p-10   flex-col h-76rounded shadow-2xl ">
+      <div className="flex items-center m-auto gap-7 my-7 py-5 flex-col h-76rounded shadow-2xl ">
         <div className="flex justify-around items-center w-full content-center">
           <h1 className="px-10">Latest Recos</h1>
           <ul className="flex  overflow-x-hidden w-2/3">
@@ -81,8 +84,8 @@ export default function Landing() {
               ?.filter((reco) => !reco.ignoredBy?.includes(currentUser.id))
               .map((reco) => (
                 <button key={reco.id} onClick={() => navigate("/recos")}>
-                  <div className="flex w-28 h-28 object-cover object-center opacity-60 bg-yellow-200 hover:opacity-100 rounded-full cursor-pointer">
-                    <div className="m-auto">{reco.title}</div>
+                  <div className="flex m-2 items-center w-28 h-28 opacity-60 bg-yellow-200  hover:opacity-100 rounded-full cursor-pointer">
+                    <div className="truncate px-3 ">{reco.title}</div>
                   </div>
                 </button>
               ))}

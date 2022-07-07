@@ -22,8 +22,8 @@ export default function Header() {
     <div
       className={
         theme
-          ? "text-white bg-black z-20 w-full fixed top-0"
-          : " top-0 bg-white z-20 w-full fixed"
+          ? "text-white bg-black z-20 w-full fixed pt-2 top-0"
+          : " top-0 bg-white z-20 pt-2 w-full fixed"
       }
     >
       <div className=" flex flex-wrap justify-between py-4 px-7">
@@ -41,9 +41,9 @@ export default function Header() {
               <img
                 src={currentUser.avatarUrl}
                 alt=""
-                className="w-10 h-10 shadow-lg rounded-full "
+                className="w-14 h-14 shadow-lg rounded-full "
               />
-              <div className="text-sm relative pl-2">
+              <div className="mt-2 text-sm relative pl-2">
                 <p>Hi {currentUser.username} !</p>
                 <button onClick={handleLogout}>Logout</button>
               </div>
