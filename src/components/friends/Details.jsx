@@ -64,6 +64,10 @@ export default function Details() {
     resetInvitationsArr();
     navigate("/recos");
   };
+
+  if (currentNotifications && !currentBubble && !newReco) {
+    resetInvitationsArr();
+  }
   return (
     <div className="flex items-center flex-col pt-28">
       <h1>WOW WOW WOW</h1>
