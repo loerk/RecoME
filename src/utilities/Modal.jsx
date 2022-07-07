@@ -1,5 +1,4 @@
 import React from "react";
-import { AiOutlineCloseCircle } from "react-icons/ai";
 
 export default function Modal({
   showModal,
@@ -20,20 +19,18 @@ export default function Modal({
       className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex items-center justify-center"
     >
       <div className="bg-white p-2 rounded w-72">
-        <AiOutlineCloseCircle className="ml-auto" onClick={onClose} />
-        <h1 className="font-semibold text-center text-xl text-gray-700">
-          What do you want to delete?
+        <h1 className="font-semibold mt-2 text-center text-xl text-gray-700">
+          Delete, sure!
         </h1>
-        <p className="text-center text-gray-700 mb-5">?</p>
-
-        <div className="flex flex-col">
-          <label htmlFor="">
+        <p className="text-center mb-4">But tell me more...</p>
+        <div className="flex w-2/3 m-auto flex-col">
+          <label className="">
             <input
               type="checkbox"
               onChange={() =>
                 setDeleteCurrentReco({ ...deleteCurrentReco, forUser: true })
               }
-              className="border border-gray-700 p-2 rounded mb-5"
+              className="border border-gray-700 p-2 mr-2 rounded mb-5"
             />
             delete Reco only for me
           </label>
@@ -43,7 +40,7 @@ export default function Modal({
               onChange={() =>
                 setDeleteCurrentReco({ ...deleteCurrentReco, forAll: true })
               }
-              className="border border-gray-700 p-2 rounded mb-5"
+              className="border border-gray-700 p-2 mr-2 rounded mb-5"
             />
             delete Reco for everybody
           </label>
@@ -51,7 +48,7 @@ export default function Modal({
         <div className="text-center">
           <button
             onClick={() => handleModalDelete()}
-            className="px-5 py-2 bg-gray-700 text-white rounded"
+            className="px-5 py-2 bg-gray-700 text-white m-3 rounded"
           >
             Delete
           </button>
