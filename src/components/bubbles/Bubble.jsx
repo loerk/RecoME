@@ -1,46 +1,25 @@
-import React, { useState } from "react";
-import { RiDeleteBinLine } from "react-icons/ri";
+import React from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { FiExternalLink } from "react-icons/fi";
 
 import { AddButton } from "../../utilities/Buttons";
 import { useTheme } from "../../contexts/ThemeContext";
 import { useBubbles } from "../../contexts/BubbleContext";
 import { useRecos } from "../../contexts/RecoContext";
 import { useUsers } from "../../contexts/UsersContext";
-import Modal from "../../utilities/Modal";
+
 import Accordion from "../../utilities/Accordion";
 
 export default function Bubble() {
-  const [currRecoId, setCurrRecoId] = useState();
-  const [showModal, setShowModal] = useState(false);
-  const [deleteCurrentReco, setDeleteCurrentReco] = useState({
-    forUser: false,
-    forAll: false,
-  });
-
   const navigate = useNavigate();
   let { bubbleId } = useParams();
 
   const theme = useTheme();
   const { getBubbleById, deleteBubble } = useBubbles();
-  const { getRecosFromBubble, deleteReco, ignoreReco } = useRecos();
+  const { getRecosFromBubble } = useRecos();
   const { findUserById, currentUser } = useUsers();
 
   const bubble = getBubbleById(bubbleId);
   const bubbleRecos = getRecosFromBubble(bubbleId);
-
-  const handleModal = (id) => {
-    setShowModal(true);
-    setCurrRecoId(id);
-  };
-  const handleDeleteReco = () => {
-    if (deleteCurrentReco.forAll) deleteReco(currRecoId);
-    if (deleteCurrentReco.forUser) ignoreReco(currRecoId);
-    setShowModal(false);
-  };
-
-  const handleOnClose = () => setShowModal(false);
 
   const handleDeleteBubble = () => {
     deleteBubble(bubbleId);
@@ -103,28 +82,11 @@ export default function Bubble() {
                   return (
                     <div>
                       <Accordion
-                        key={reco.id}
                         title={reco.title}
                         date={date.toLocaleDateString("en-GB")}
                         comment={reco.comment}
                         content={reco.url}
-                        handleDelete={handleModal}
-
-                        //   <RiDeleteBinLine
-                        //   className="cursor-pointer"
-                        //   onClick={() => handleModal(reco.id)}
-                        // ></RiDeleteBinLine>
                       />
-
-                      {showModal && (
-                        <Modal
-                          onClose={handleOnClose}
-                          showModal={showModal}
-                          setDeleteCurrentReco={setDeleteCurrentReco}
-                          deleteCurrentReco={deleteCurrentReco}
-                          handleModalDelete={handleDeleteReco}
-                        />
-                      )}
                     </div>
                   );
                 })
