@@ -4,7 +4,7 @@ import Notifications from "../notifications/Notifications";
 
 export default function Navigation() {
   return (
-    <div className="flex justify-center gap-3">
+    <div className="flex justify-center pt-2 w-full absolute gap-3">
       <NavLink to="/">home</NavLink>
       <NavLink to="/bubbles">bubbles</NavLink>
       <NavLink to="/friends">friends</NavLink>
