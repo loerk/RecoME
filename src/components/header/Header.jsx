@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 import { useUsers } from "../../contexts/UsersContext";
 
 import Navigation from "../navigation/Navigation";
-import Notifications from "../notifications/Notifications";
 
 export default function Header() {
   const { theme, setTheme } = useTheme();
@@ -27,7 +26,7 @@ export default function Header() {
           : " top-0 bg-white z-20 w-full fixed"
       }
     >
-      <div className=" flex flex-wrap justify-between py-4 px-4">
+      <div className=" flex flex-wrap justify-between py-4 px-7">
         <button onClick={() => setTheme(!theme)}>
           {!theme ? (
             <MdLightMode />
@@ -35,15 +34,21 @@ export default function Header() {
             <MdOutlineLightMode style={{ color: "white" }} />
           )}
         </button>
+        {currentUser && <Navigation />}
         {currentUser && (
-          <>
-            <Navigation />
-            <Notifications />
-            <div className="absolute right-28 top-7">
-              <p>Hi {currentUser.username} !</p>
-              <button onClick={handleLogout}>Logout</button>
+          <div className="flex ">
+            <div className="flex justify-between">
+              <img
+                src={currentUser.avatarUrl}
+                alt=""
+                className="w-10 h-10 shadow-lg rounded-full "
+              />
+              <div className="text-sm relative pl-2">
+                <p>Hi {currentUser.username} !</p>
+                <button onClick={handleLogout}>Logout</button>
+              </div>
             </div>
-          </>
+          </div>
         )}
       </div>
     </div>
