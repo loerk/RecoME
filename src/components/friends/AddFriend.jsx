@@ -123,7 +123,7 @@ export default function AddFriend() {
   }
 
   return (
-    <div className="py-16">
+    <div>
       {bubbles ? (
         <div>
           {!params.bubbleId && (
