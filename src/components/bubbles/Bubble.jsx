@@ -9,6 +9,7 @@ import { useBubbles } from "../../contexts/BubbleContext";
 import { useRecos } from "../../contexts/RecoContext";
 import { useUsers } from "../../contexts/UsersContext";
 import Modal from "../../utilities/Modal";
+import Accordion from "../../utilities/Accordion";
 
 export default function Bubble() {
   const [currRecoId, setCurrRecoId] = useState();
@@ -100,22 +101,21 @@ export default function Bubble() {
                 .map((reco) => {
                   const date = new Date(reco.createdAt);
                   return (
-                    <div
-                      key={reco.id}
-                      className="grid border border-b-2 border-l-2 border-black  p-4 grid-cols-1 md:grid-cols-3 m-auto text-center"
-                    >
-                      <p>{reco.title}</p>
-                      <p>{reco.comment}</p>
-                      <p>{date.toLocaleDateString("en-GB")}</p>
-                      <div className="absolute">
-                        <a href={reco.url}>
-                          <FiExternalLink></FiExternalLink>
-                        </a>
-                        <RiDeleteBinLine
-                          className="cursor-pointer"
-                          onClick={() => handleModal(reco.id)}
-                        ></RiDeleteBinLine>
-                      </div>
+                    <div>
+                      <Accordion
+                        key={reco.id}
+                        title={reco.title}
+                        date={date.toLocaleDateString("en-GB")}
+                        comment={reco.comment}
+                        content={reco.url}
+                        handleDelete={handleModal}
+
+                        //   <RiDeleteBinLine
+                        //   className="cursor-pointer"
+                        //   onClick={() => handleModal(reco.id)}
+                        // ></RiDeleteBinLine>
+                      />
+
                       {showModal && (
                         <Modal
                           onClose={handleOnClose}
