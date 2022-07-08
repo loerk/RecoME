@@ -10,6 +10,10 @@ const initialValueCurrentUser = JSON.parse(localStorage.getItem("currentUser"));
 const initialValueUsers = JSON.parse(localStorage.getItem("users"));
 
 export function UsersContextProvider({ children }) {
+  const NotificationType = {
+    INVITATION_TO_BUBBLE: "INVITATION_TO_BUBBLE",
+    INVITATION_TO_RECO: "INVITATION_TO_RECO",
+  };
   const [currentUser, setCurrentUser] = useState(
     initialValueCurrentUser || null
   );
@@ -53,7 +57,7 @@ export function UsersContextProvider({ children }) {
             toBubble: bubbleId,
             invitedAt: Date.now(),
             invitationId: uuidv1(),
-            type: "Invitation to Bubble",
+            type: NotificationType.INVITATION_TO_BUBBLE,
             invitedBy: currentUser.id,
             invitedByUser: currentUser.username,
           },
@@ -75,7 +79,7 @@ export function UsersContextProvider({ children }) {
             recoId: id,
             invitedAt: Date.now(),
             invitationId: uuidv1(),
-            type: "Reco for you",
+            type: NotificationType.INVITATION_TO_RECO,
             invitedBy: currentUser.id,
             invitedByUser: currentUser.username,
           },
