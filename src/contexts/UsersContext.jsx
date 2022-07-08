@@ -42,7 +42,7 @@ export function UsersContextProvider({ children }) {
     localStorage.setItem("currentUser", JSON.stringify(updatedUser));
   };
 
-  const inviteFriendsToBubble = (bubbleId, friendList) => {
+  const sendBubbleNotification = (bubbleId, friendList) => {
     const updatedFriendList = friendList.map((friendId) => {
       const friend = findUserById(friendId);
       return {
@@ -64,7 +64,7 @@ export function UsersContextProvider({ children }) {
     updateUsers(updatedFriendList);
   };
 
-  const addRecoToUsers = (id, friendList) => {
+  const sendRecoNotification = (id, friendList) => {
     const updatedFriendList = friendList.map((friendId) => {
       const friend = findUserById(friendId);
       return {
@@ -138,9 +138,9 @@ export function UsersContextProvider({ children }) {
     deleteUser,
     findUserByEmail,
     findUserById,
-    inviteFriendsToBubble,
+    sendBubbleNotification,
     getRecosByUser,
-    addRecoToUsers,
+    sendRecoNotification,
   };
 
   return (
