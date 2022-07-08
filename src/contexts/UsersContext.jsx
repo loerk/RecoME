@@ -100,12 +100,6 @@ export function UsersContextProvider({ children }) {
     return users.find((user) => user.id === id);
   };
 
-  const getRecosByUser = () => {
-    return users.map((user) => {
-      return user.recos.filter((reco) => reco.createdBy === currentUser.id);
-    });
-  };
-
   const createNewUser = (registeredUser) => {
     const newUser = {
       ...registeredUser,
@@ -139,7 +133,6 @@ export function UsersContextProvider({ children }) {
     findUserByEmail,
     findUserById,
     sendBubbleNotification,
-    getRecosByUser,
     sendRecoNotification,
   };
 
