@@ -42,19 +42,20 @@ export function RecoContextProvider({ children }) {
     );
   };
   const getAllRecos = () => {
+    const currentUser = getCurrentUser();
     const recosForAndByUser = getRecosForAndByUser();
     const userBubbles = getBubbles();
     const userBubbleRecos = userBubbles.flatMap((bubble) =>
       getRecosFromBubble(bubble.id)
     );
-    return [...recosForAndByUser, ...userBubbleRecos];
+    const allRecos = [...recosForAndByUser, ...userBubbleRecos].filter(
+      (reco) => !reco.ignoredBy?.includes(currentUser.id)
+    );
 
-    // return allRecos.reduce((acc, curr) => {
-    //   if (acc.some((user) => user.id === curr.id)) return acc;
-    //   return [...acc, curr];
-    // }, []);
-
-    //   return [...new Map(arr.map((item) => [item[key], item])).values()];
+    return allRecos.reduce((acc, curr) => {
+      if (acc.some((user) => user.id === curr.id)) return acc;
+      return [...acc, curr];
+    }, []);
   };
 
   const deleteReco = (id) => {
