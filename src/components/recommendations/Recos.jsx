@@ -13,7 +13,7 @@ import DeleteRecoModal from "../../utilities/DeleteRecoModal";
 export default function Recos() {
   const [showModal, setShowModal] = useState(false);
   const [searchFor, setSearchFor] = useState("");
-  const [currentRecoId, setCurrentRecoId] = useState();
+  const [recoIdToDelete, setRecoIdToDelete] = useState(null);
 
   const { getBubbleById } = useBubbles();
   const location = useLocation();
@@ -24,7 +24,7 @@ export default function Recos() {
 
   const handleModal = (id) => {
     setShowModal(true);
-    setCurrentRecoId(id);
+    setRecoIdToDelete(id);
   };
   const filteredRecos = allRecos
     .filter((reco) => !reco.ignoredBy?.includes(currentUser.id))
@@ -88,6 +88,7 @@ export default function Recos() {
                                 alt=""
                                 className="w-9 z-3 relative left-3 aspect-square shadow-lg rounded-full"
                               />
+
                               <img
                                 src={
                                   getBubbleById(reco.sharedWith)?.imageUrl ||
@@ -124,7 +125,7 @@ export default function Recos() {
                           <DeleteRecoModal
                             showModal={showModal}
                             setShowModal={setShowModal}
-                            currentRecoId={currentRecoId}
+                            recoIdToDelete={recoIdToDelete}
                           />
                         )}
                       </div>

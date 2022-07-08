@@ -1,21 +1,21 @@
 import React, { useState } from "react";
 import { useRecos } from "../contexts/RecoContext";
-
+const DeletionType = {
+  USER: "USER",
+  ALL: "ALL",
+};
 export default function DeleteRecoModal({
   showModal,
   setShowModal,
-  currentRecoId,
+  recoIdToDelete,
 }) {
-  const [deleteCurrentReco, setDeleteCurrentReco] = useState({
-    forUser: false,
-    forAll: false,
-  });
+  const [deletionType, setDeletionType] = useState(null);
 
   const { deleteReco, ignoreReco } = useRecos();
 
   const handleDelete = () => {
-    if (deleteCurrentReco.forAll) deleteReco(currentRecoId);
-    if (deleteCurrentReco.forUser) ignoreReco(currentRecoId);
+    if (deletionType === "ALL") deleteReco(recoIdToDelete);
+    if (deletionType === "USER") ignoreReco(recoIdToDelete);
     setShowModal(false);
   };
 
@@ -27,7 +27,7 @@ export default function DeleteRecoModal({
   return (
     <div
       id="container"
-      onClick={handleOnClose}
+      onClick={(e) => handleOnClose(e)}
       className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex items-center justify-center"
     >
       <div className="bg-white p-2 rounded w-72">
@@ -39,9 +39,7 @@ export default function DeleteRecoModal({
           <label className="">
             <input
               type="checkbox"
-              onChange={() =>
-                setDeleteCurrentReco({ ...deleteCurrentReco, forUser: true })
-              }
+              onChange={() => setDeletionType(DeletionType.USER)}
               className="border border-gray-700 p-2 mr-2 rounded mb-5"
             />
             delete Reco only for me
@@ -49,9 +47,7 @@ export default function DeleteRecoModal({
           <label htmlFor="">
             <input
               type="checkbox"
-              onChange={() =>
-                setDeleteCurrentReco({ ...deleteCurrentReco, forAll: true })
-              }
+              onChange={() => setDeletionType(DeletionType.ALL)}
               className="border border-gray-700 p-2 mr-2 rounded mb-5"
             />
             delete Reco for everybody
