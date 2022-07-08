@@ -80,7 +80,7 @@ export default function Bubble() {
                 .map((reco) => {
                   const date = new Date(reco.createdAt);
                   return (
-                    <div>
+                    <div key={reco.id}>
                       <Accordion
                         title={reco.title}
                         date={date.toLocaleDateString("en-GB")}
