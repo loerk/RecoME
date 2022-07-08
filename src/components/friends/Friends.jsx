@@ -7,6 +7,7 @@ import { v1 as uuidv1 } from "uuid";
 export default function Friends() {
   const navigate = useNavigate();
   const location = useLocation();
+  window.scrollTo(0, 0);
 
   const { findUserById, currentUser } = useUsers();
   const [searchFor, setSearchFor] = useState("");

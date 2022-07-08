@@ -50,7 +50,7 @@ export default function DeleteRecoModal({
               onChange={() => setDeletionType(DeletionType.ALL)}
               className="border border-gray-700 p-2 mr-2 rounded mb-5"
             />
-            delete Reco for everybody
+            delete Reco for everyone
           </label>
         </div>
         <div className="text-center">
