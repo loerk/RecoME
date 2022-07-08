@@ -8,35 +8,24 @@ import { AddButton } from "../../utilities/Buttons";
 import { useBubbles } from "../../contexts/BubbleContext";
 import { LinkPreview } from "../../utilities/LinkPreview";
 import { useRecos } from "../../contexts/RecoContext";
-import Modal from "../../utilities/Modal";
+import DeleteRecoModal from "../../utilities/DeleteRecoModal";
 
 export default function Recos() {
   const [showModal, setShowModal] = useState(false);
-  const [deleteCurrentReco, setDeleteCurrentReco] = useState({
-    forUser: false,
-    forAll: false,
-  });
-  const [currRecoId, setCurrRecoId] = useState();
-  const location = useLocation();
-
-  const { findUserById, currentUser } = useUsers();
-  const { getAllRecos, deleteReco, ignoreReco } = useRecos();
-  const { getBubbleById } = useBubbles();
   const [searchFor, setSearchFor] = useState("");
+  const [currentRecoId, setCurrentRecoId] = useState();
+
+  const { getBubbleById } = useBubbles();
+  const location = useLocation();
+  const { findUserById, currentUser } = useUsers();
+  const { getAllRecos } = useRecos();
+
   const allRecos = getAllRecos();
 
   const handleModal = (id) => {
     setShowModal(true);
-    setCurrRecoId(id);
+    setCurrentRecoId(id);
   };
-  const handleDelete = () => {
-    if (deleteCurrentReco.forAll) deleteReco(currRecoId);
-    if (deleteCurrentReco.forUser) ignoreReco(currRecoId);
-    setShowModal(false);
-  };
-
-  const handleOnClose = () => setShowModal(false);
-
   const filteredRecos = allRecos
     .filter((reco) => !reco.ignoredBy?.includes(currentUser.id))
     .filter((reco) => {
@@ -85,7 +74,6 @@ export default function Recos() {
               <ul className="pt-6 flex flex-wrap gap-4 justify-around">
                 {filteredRecos.map((reco) => {
                   const date = new Date(reco.createdAt);
-
                   return (
                     <div key={reco.id}>
                       <div className="flex bg-white flex-col hover:shadow-inner md:flex-row  rounded-lg shadow-lg  ">
@@ -100,7 +88,6 @@ export default function Recos() {
                                 alt=""
                                 className="w-9 z-3 relative left-3 aspect-square shadow-lg rounded-full"
                               />
-
                               <img
                                 src={
                                   getBubbleById(reco.sharedWith)?.imageUrl ||
@@ -134,12 +121,10 @@ export default function Recos() {
                           ></RiDeleteBinLine>
                         </div>
                         {showModal && (
-                          <Modal
-                            onClose={handleOnClose}
+                          <DeleteRecoModal
                             showModal={showModal}
-                            setDeleteCurrentReco={setDeleteCurrentReco}
-                            deleteCurrentReco={deleteCurrentReco}
-                            handleModalDelete={handleDelete}
+                            setShowModal={setShowModal}
+                            currentRecoId={currentRecoId}
                           />
                         )}
                       </div>

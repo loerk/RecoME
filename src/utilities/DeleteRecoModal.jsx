@@ -1,15 +1,27 @@
-import React from "react";
+import React, { useState } from "react";
+import { useRecos } from "../contexts/RecoContext";
 
-export default function Modal({
+export default function DeleteRecoModal({
   showModal,
-  onClose,
-  setDeleteCurrentReco,
-  deleteCurrentReco,
-  handleModalDelete,
+  setShowModal,
+  currentRecoId,
 }) {
+  const [deleteCurrentReco, setDeleteCurrentReco] = useState({
+    forUser: false,
+    forAll: false,
+  });
+
+  const { deleteReco, ignoreReco } = useRecos();
+
+  const handleDelete = () => {
+    if (deleteCurrentReco.forAll) deleteReco(currentRecoId);
+    if (deleteCurrentReco.forUser) ignoreReco(currentRecoId);
+    setShowModal(false);
+  };
+
   if (!showModal) return null;
   const handleOnClose = (e) => {
-    if (e.target.id === "container") onClose();
+    if (e.target.id === "container") setShowModal(false);
   };
 
   return (
@@ -47,7 +59,7 @@ export default function Modal({
         </div>
         <div className="text-center">
           <button
-            onClick={() => handleModalDelete()}
+            onClick={() => handleDelete()}
             className="px-5 py-2 bg-gray-700 text-white m-3 rounded"
           >
             Delete
