@@ -11,7 +11,7 @@ export default function AddReco() {
   const theme = useTheme();
   const navigate = useNavigate();
   const { bubbleId } = useParams();
-  const { findUserById, currentUser, addRecoToUsers } = useUsers();
+  const { findUserById, currentUser, sendRecoNotification } = useUsers();
   const { getBubbles, getBubbleById } = useBubbles();
   const { addReco } = useRecos();
 
@@ -62,7 +62,7 @@ export default function AddReco() {
         sharedWith: selected.user.id,
       };
       addReco(recoToFriend);
-      addRecoToUsers(recoData.id, [selected.user.id]);
+      sendRecoNotification(recoData.id, [selected.user.id]);
       navigate("/recos");
     }
   };
