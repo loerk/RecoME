@@ -38,7 +38,7 @@ export function RecoContextProvider({ children }) {
     const currentUser = getCurrentUser();
     return recos.filter(
       (reco) =>
-        reco.sharedWith === currentUser.id && reco.createdBy === currentUser.id
+        reco.sharedWith === currentUser.id || reco.createdBy === currentUser.id
     );
   };
   const getAllRecos = () => {
