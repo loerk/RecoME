@@ -1,5 +1,5 @@
-import React from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import React, { useState } from "react";
+import { useParams, Link } from "react-router-dom";
 
 import { AddButton } from "../../utilities/Buttons";
 import { useTheme } from "../../contexts/ThemeContext";
@@ -8,22 +8,22 @@ import { useRecos } from "../../contexts/RecoContext";
 import { useUsers } from "../../contexts/UsersContext";
 
 import Accordion from "../../utilities/Accordion";
-
+import DeleteBubbleModal from "../../utilities/DeleteBubbleModal";
 export default function Bubble() {
-  const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
+
   let { bubbleId } = useParams();
 
   const theme = useTheme();
-  const { getBubbleById, deleteBubble } = useBubbles();
+  const { getBubbleById } = useBubbles();
   const { getRecosFromBubble } = useRecos();
   const { findUserById, currentUser } = useUsers();
 
   const bubble = getBubbleById(bubbleId);
   const bubbleRecos = getRecosFromBubble(bubbleId);
 
-  const handleDeleteBubble = () => {
-    deleteBubble(bubbleId);
-    navigate("/bubbles");
+  const handleModal = (id) => {
+    setShowModal(true);
   };
 
   return (
@@ -115,11 +115,18 @@ export default function Bubble() {
               ? "w-40 hover:translate-y-1  text-3xl p-3 bg-white  text-black  font-face-tm my-4"
               : "w-40 hover:translate-y-1  text-3xl p-3 bg-black  text-white  font-face-tm my-4"
           }
-          onClick={handleDeleteBubble}
+          onClick={handleModal}
         >
           DELETE BUBBLE
         </button>
       </div>
+      {showModal && (
+        <DeleteBubbleModal
+          showModal={showModal}
+          setShowModal={setShowModal}
+          bubbleId={bubbleId}
+        />
+      )}
     </div>
   );
 }
