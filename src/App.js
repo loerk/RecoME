@@ -1,6 +1,5 @@
-import { useEffect } from "react";
 import { useTheme } from "./contexts/ThemeContext";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route, Outlet, Navigate } from "react-router-dom";
 
 import Header from "./components/header/Header";
 import Register from "./components/register/Register.jsx";
@@ -24,13 +23,14 @@ import { useUsers } from "./contexts/UsersContext";
 function App() {
   const { theme } = useTheme();
   const { currentUser } = useUsers();
-  const navigate = useNavigate();
 
-  useEffect(() => {
+  const ProtectedRoute = ({ currentUser, redirectPath = "/login" }) => {
     if (!currentUser) {
-      navigate("/login");
+      return <Navigate to={redirectPath} replace />;
     }
-  }, []); // eslint-disable-line
+
+    return <Outlet />;
+  };
 
   return (
     <div className={theme ? "bg-black min-h-screen h-full" : "h-screen"}>
@@ -38,24 +38,26 @@ function App() {
       <Routes>
         <Route path="/register" element={<Register />} />
         <Route path="login" element={<Login />} />
-        <Route path="/" element={<Landing />} />
-        <Route path="settings" element={<Settings />} />
+        <Route element={<ProtectedRoute currentUser={currentUser} />}>
+          <Route path="/" element={<Landing />} />
+          <Route path="settings" element={<Settings />} />
+          <Route path="bubbles" element={<Bubbles />}>
+            <Route path=":bubbleId" element={<Bubble />} />
+            <Route path="addBubble" element={<AddBubble />} />
+            <Route path=":bubbleId/addReco" element={<AddReco />} />
+            <Route path=":bubbleId/addFriend" element={<AddFriend />} />
+          </Route>
+          <Route path="friends" element={<Friends />}>
+            <Route path=":friendId" element={<Friend />} />
+            <Route path="addFriend" element={<AddFriend />} />
+            <Route path="details" element={<Details />} />
+          </Route>
+          <Route path="recos" element={<Recos />}>
+            <Route path=":recoId" element={<Reco />} />
+            <Route path="addReco" element={<AddReco />} />
+          </Route>
+        </Route>
         <Route path="*" element={<PageNotFound />} />
-        <Route path="bubbles" element={<Bubbles />}>
-          <Route path=":bubbleId" element={<Bubble />} />
-          <Route path="addBubble" element={<AddBubble />} />
-          <Route path=":bubbleId/addReco" element={<AddReco />} />
-          <Route path=":bubbleId/addFriend" element={<AddFriend />} />
-        </Route>
-        <Route path="friends" element={<Friends />}>
-          <Route path=":friendId" element={<Friend />} />
-          <Route path="addFriend" element={<AddFriend />} />
-          <Route path="details" element={<Details />} />
-        </Route>
-        <Route path="recos" element={<Recos />}>
-          <Route path=":recoId" element={<Reco />} />
-          <Route path="addReco" element={<AddReco />} />
-        </Route>
       </Routes>
     </div>
   );
