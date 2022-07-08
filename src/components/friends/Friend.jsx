@@ -16,7 +16,6 @@ export default function Friend() {
         <div>
           <h2>shared Bubbles</h2>
           <h2>shared Recommendations </h2>
-          <h2>private Recommendations </h2>
         </div>
       </div>
     </div>
