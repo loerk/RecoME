@@ -12,7 +12,7 @@ export default function AddReco() {
   const navigate = useNavigate();
   const { bubbleId } = useParams();
   const { findUserById, currentUser, addRecoToUsers } = useUsers();
-  const { getBubbles, getBubbleById, updateBubble } = useBubbles();
+  const { getBubbles, getBubbleById } = useBubbles();
   const { addReco } = useRecos();
 
   const [selected, setSelected] = useState(
@@ -52,13 +52,7 @@ export default function AddReco() {
         sharedWith: selected.bubble.id,
         sharedWithBubbles: true,
       };
-
-      const updatedBubble = {
-        ...selected.bubble,
-        recos: [...selected.bubble.recos, recoData.id],
-      };
       addReco(recoToBubble);
-      updateBubble(updatedBubble);
       navigate("/recos");
     }
 

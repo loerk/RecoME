@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 
 export default function AddFriend() {
   const params = useParams();
-  const { findUserById, currentUser, findUserByEmail, inviteFriendsToBubble } =
+  const { findUserById, currentUser, findUserByEmail, sendBubbleNotification } =
     useUsers();
   const { getBubbles, getBubbleById } = useBubbles();
   const [invitationStatus, setInvitationStatus] = useState({
@@ -55,7 +55,7 @@ export default function AddFriend() {
       return true;
     });
 
-    inviteFriendsToBubble(selectedBubbleId, filteredInvitedFriendsList);
+    sendBubbleNotification(selectedBubbleId, filteredInvitedFriendsList);
 
     if (filteredInvitedFriendsList.length === friendsList.length) {
       setStatus({ group: "all your friends got invited" });
@@ -114,7 +114,7 @@ export default function AddFriend() {
       });
       return;
     }
-    inviteFriendsToBubble(selectedBubbleId, [friend.id]);
+    sendBubbleNotification(selectedBubbleId, [friend.id]);
     setStatus({ single: "Great, your friend got invited!" });
   };
   if (!selectedBubble && params.bubbleId) {
