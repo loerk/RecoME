@@ -7,10 +7,10 @@ const RecoContext = createContext([]);
 export const useRecos = () => {
   return useContext(RecoContext);
 };
-const initialValueRecos = JSON.parse(localStorage.getItem("recos"));
+const initialRecos = JSON.parse(localStorage.getItem("recos"));
 
 export function RecoContextProvider({ children }) {
-  const [recos, setRecos] = useState(initialValueRecos || []);
+  const [recos, setRecos] = useState(initialRecos || []);
   const getCurrentUser = useGetCurrentUser();
   const { getBubbles } = useBubbles();
 
@@ -29,33 +29,30 @@ export function RecoContextProvider({ children }) {
     localStorage.setItem("recos", JSON.stringify(newRecos));
   };
 
-  const getRecosByCurrentUser = () => {
-    const currentUser = getCurrentUser();
-    return recos.filter((reco) => reco.createdBy === currentUser.id);
-  };
-  const getRecosForCurrentUser = () => {
-    const currentUser = getCurrentUser();
-    return recos.filter((reco) => reco.sharedWith === currentUser.id);
-  };
   const getRecosFromBubble = (id) => {
     return recos.filter(
       (reco) => reco.sharedWithBubbles && reco.sharedWith === id
     );
   };
-
+  const getRecosForAndByUser = () => {
+    const currentUser = getCurrentUser();
+    return recos.filter(
+      (reco) =>
+        reco.sharedWith === currentUser.id && reco.createdBy === currentUser.id
+    );
+  };
   const getAllRecos = () => {
-    const recosByUser = getRecosByCurrentUser();
-    const recosForUser = getRecosForCurrentUser();
+    const recosForAndByUser = getRecosForAndByUser();
     const userBubbles = getBubbles();
     const userBubbleRecos = userBubbles.flatMap((bubble) =>
       getRecosFromBubble(bubble.id)
     );
-    const allRecos = [...recosByUser, ...recosForUser, ...userBubbleRecos];
+    return [...recosForAndByUser, ...userBubbleRecos];
 
-    return allRecos.reduce((acc, curr) => {
-      if (acc.some((user) => user.id === curr.id)) return acc;
-      return [...acc, curr];
-    }, []);
+    // return allRecos.reduce((acc, curr) => {
+    //   if (acc.some((user) => user.id === curr.id)) return acc;
+    //   return [...acc, curr];
+    // }, []);
 
     //   return [...new Map(arr.map((item) => [item[key], item])).values()];
   };
@@ -87,12 +84,10 @@ export function RecoContextProvider({ children }) {
 
   const contextValue = {
     addReco,
-    getRecosByCurrentUser,
     deleteReco,
     getRecosFromBubble,
     getAllRecos,
     findRecoById,
-    getRecosForCurrentUser,
     ignoreReco,
     updateRecos,
   };
