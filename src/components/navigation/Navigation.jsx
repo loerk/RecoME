@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import Notifications from "../notifications/Notifications";
+import Notifications from "./NotificationButton";
 
 export default function Navigation() {
   return (
