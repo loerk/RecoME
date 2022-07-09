@@ -69,14 +69,23 @@ export function BubbleContextProvider({ children }) {
     const updatedBubble = { ...currentBubble, members: updatedMembersArr };
     updateBubble(updatedBubble);
   };
-
+  const findBubbleMember = (bubble, userId) => {
+    bubble.members.filter((member) => member === userId);
+  };
+  const addMember = (memberId, bubbleId) => {
+    const bubble = getBubbleById(bubbleId);
+    if (bubble.members.includes(memberId)) return;
+    updateBubble({ ...bubble, members: [...bubble.members, memberId] });
+  };
   const contextValue = {
+    findBubbleMember,
     addBubble,
     getBubbles,
     getBubbleById,
     updateBubble,
     deleteBubble,
     exitBubble,
+    addMember,
   };
   return (
     <BubbleContext.Provider value={contextValue}>
