@@ -31,23 +31,26 @@ export default function DeleteRecoModal({
       className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex items-center justify-center"
     >
       <div className="bg-white p-2 rounded w-72">
-        <h1 className="font-semibold mt-2 text-center text-xl text-gray-700">
-          Delete, sure!
-        </h1>
-        <p className="text-center mb-4">But tell me more...</p>
+        <p className="text-center mb-4">I want to ...</p>
         <div className="flex w-2/3 m-auto flex-col">
           <label className="">
             <input
+              checked={deletionType === DeletionType.USER}
               type="checkbox"
-              onChange={() => setDeletionType(DeletionType.USER)}
+              onChange={(e) =>
+                setDeletionType(e.target.checked ? DeletionType.USER : null)
+              }
               className="border border-gray-700 p-2 mr-2 rounded mb-5"
             />
             delete Reco only for me
           </label>
           <label htmlFor="">
             <input
+              checked={deletionType === DeletionType.ALL}
               type="checkbox"
-              onChange={() => setDeletionType(DeletionType.ALL)}
+              onChange={(e) =>
+                setDeletionType(e.target.checked ? DeletionType.ALL : null)
+              }
               className="border border-gray-700 p-2 mr-2 rounded mb-5"
             />
             delete Reco for everyone

@@ -5,14 +5,15 @@ import { useTheme } from "../../contexts/ThemeContext";
 import { useUsers } from "../../contexts/UsersContext";
 import { useNavigate, useParams } from "react-router-dom";
 import { useRecos } from "../../contexts/RecoContext";
-import { v1 as uuidv1 } from "uuid";
+import { useNotifications } from "../../contexts/NotificationsContext";
 
 export default function AddReco() {
   const theme = useTheme();
   const navigate = useNavigate();
   const { bubbleId } = useParams();
-  const { findUserById, currentUser, sendRecoNotification } = useUsers();
+  const { findUserById, currentUser } = useUsers();
   const { getBubbles, getBubbleById } = useBubbles();
+  const { addRecoNotification } = useNotifications();
   const { addReco } = useRecos();
 
   const [selected, setSelected] = useState(
@@ -33,7 +34,6 @@ export default function AddReco() {
     categories: "",
     url: "",
     comment: "",
-    id: uuidv1(),
   });
   const bubbles = getBubbles();
 
@@ -62,7 +62,7 @@ export default function AddReco() {
         sharedWith: selected.user.id,
       };
       addReco(recoToFriend);
-      sendRecoNotification(recoData.id, [selected.user.id]);
+      addRecoNotification([selected.user.id]);
       navigate("/recos");
     }
   };
