@@ -5,6 +5,7 @@ import { useGetCurrentUser } from "./UsersContext";
 export const NotificationType = {
   INVITATION_TO_BUBBLE: "INVITATION_TO_BUBBLE",
   INVITATION_TO_RECO: "INVITATION_TO_RECO",
+  NOTIFICATION_ABOUT_RECO_IN_BUBBLE: "NOTIFICATION_ABOUT_RECO_IN_BUBBLE",
 };
 const NotificationsContext = createContext([]);
 
@@ -20,6 +21,9 @@ export function NotifivationsContextProvider({ children }) {
   );
   const getCurrentUser = useGetCurrentUser();
   const { getBubbleById } = useBubbles();
+
+  const findNotificationById = (id) =>
+    notifications.find((notification) => notification.id === id);
 
   const addBubbleNotification = (bubbleId, friendsList) => {
     const currentUser = getCurrentUser();
@@ -39,14 +43,15 @@ export function NotifivationsContextProvider({ children }) {
     );
   };
 
-  const addRecoNotification = (userId) => {
+  const addRecoToUserNotification = (recoId, userId) => {
     const currentUser = getCurrentUser();
     const newNotification = {
       id: uuidv1(),
-      user: userId,
+      user: [userId],
       invitedAt: Date.now(),
       type: NotificationType.INVITATION_TO_RECO,
       invitedBy: currentUser.id,
+      recoId: recoId,
       invitedByUser: currentUser.username,
     };
     setNotifications([...notifications, newNotification]);
@@ -56,12 +61,34 @@ export function NotifivationsContextProvider({ children }) {
     );
   };
 
-  const getNotifications = () => {
+  const addRecoToBubbleNotification = (bubbleId, recoId, membersList) => {
     const currentUser = getCurrentUser();
+    const newNotification = {
+      id: uuidv1(),
+      user: [...membersList],
+      invitedAt: Date.now(),
+      type: NotificationType.NOTIFICATION_ABOUT_RECO_IN_BUBBLE,
+      invitedBy: currentUser.id,
+      toBubble: bubbleId,
+      invitedByUser: currentUser.username,
+      recoId: recoId,
+    };
+    setNotifications([...notifications, newNotification]);
+    localStorage.setItem(
+      "notifications",
+      JSON.stringify([...notifications, newNotification])
+    );
+  };
+
+  const isAlreadyInvitedToBubble = (userId, bubbleId) => {
+    return getNotificationsByUserId(userId).some(
+      (notification) => notification.bubbleId === bubbleId
+    );
+  };
+
+  const getNotificationsByUserId = (userId) => {
     return notifications
-      .filter((notification) =>
-        notification.user.find((id) => id === currentUser.id)
-      )
+      .filter((notification) => notification.user.find((id) => id === userId))
       .map((notification) => {
         if (notification.type === NotificationType.INVITATION_TO_BUBBLE) {
           const bubble = getBubbleById(notification.bubbleId);
@@ -73,28 +100,65 @@ export function NotifivationsContextProvider({ children }) {
         return notification;
       });
   };
+
+  const getNotifications = () => {
+    const currentUser = getCurrentUser();
+    return getNotificationsByUserId(currentUser.id);
+  };
+
   const getUserNotificationsToBubble = (userId, bubbleId) => {
     const userNotifications = getNotifications(userId);
     return userNotifications.filter(
       (notification) => notification.bubbleId === bubbleId
     );
   };
-  const deleteNotification = (id) => {
-    const filteredNotifications = notifications.filter(
-      (notification) => notification.id !== id
-    );
-    setNotifications(filteredNotifications);
+  const updateNotifications = (updatedNotification) => {
+    const updatedNotificationsArray = notifications.map((notification) => {
+      if (notification.id === updatedNotification.id)
+        return updatedNotification;
+      return notification;
+    });
+    setNotifications(updatedNotificationsArray);
     localStorage.setItem(
       "notifications",
-      JSON.stringify(filteredNotifications)
+      JSON.stringify(updatedNotificationsArray)
     );
   };
+  const deleteNotification = (id) => {
+    const currentNotification = findNotificationById(id);
+    const currentUser = getCurrentUser();
+    if (currentNotification.user.length > 1) {
+      const filteredUsers = currentNotification.user.filter(
+        (userId) => userId !== currentUser.id
+      );
+      const updatedNotification = {
+        ...currentNotification,
+        user: filteredUsers,
+      };
+      updateNotifications(updatedNotification);
+    } else {
+      const filteredNotifications = notifications.filter(
+        (notification) => notification.id !== id
+      );
+      setNotifications(filteredNotifications);
+      localStorage.setItem(
+        "notifications",
+        JSON.stringify(filteredNotifications)
+      );
+    }
+  };
+
   const contextValue = {
+    findNotificationById,
     addBubbleNotification,
-    addRecoNotification,
+    addRecoToUserNotification,
+    addRecoToBubbleNotification,
     getNotifications,
-    getUserNotificationsToBubble,
+    getNotificationsByUserId,
+    isAlreadyInvitedToBubble,
     deleteNotification,
+    updateNotifications,
+    getUserNotificationsToBubble,
   };
   return (
     <NotificationsContext.Provider value={contextValue}>

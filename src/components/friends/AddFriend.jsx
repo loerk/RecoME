@@ -2,12 +2,17 @@ import React, { useState } from "react";
 import { useUsers } from "../../contexts/UsersContext";
 import { useBubbles } from "../../contexts/BubbleContext";
 import { useParams } from "react-router-dom";
+import { useNotifications } from "../../contexts/NotificationsContext";
 
 export default function AddFriend() {
   const params = useParams();
-  const { findUserById, currentUser, findUserByEmail, sendBubbleNotification } =
-    useUsers();
-  const { getBubbles, getBubbleById } = useBubbles();
+  const { findUserById, currentUser, findUserByEmail } = useUsers();
+  const { getBubbles, getBubbleById, findBubbleMember } = useBubbles();
+  const {
+    addBubbleNotification,
+    getUserNotificationsToBubble,
+    isAlreadyInvitedToBubble,
+  } = useNotifications();
   const [invitationStatus, setInvitationStatus] = useState({
     single: "",
     group: "",
@@ -43,19 +48,15 @@ export default function AddFriend() {
     }
 
     const filteredInvitedFriendsList = friendsList.filter((friendId) => {
-      const friend = findUserById(friendId);
-      const isAlreadyMember = selectedBubble.members.some(
-        (member) => member === friendId
-      );
-      const isAlreadyInvited = friend.notifications.some(
-        (notification) => notification.toBubble === selectedBubbleId
-      );
-
+      const isAlreadyMember = !!findBubbleMember(selectedBubble, friendId);
+      const isAlreadyInvited = !!getUserNotificationsToBubble(
+        friendId,
+        selectedBubble.id
+      ).length;
       if (isAlreadyInvited || isAlreadyMember) return false;
       return true;
     });
-
-    sendBubbleNotification(selectedBubbleId, filteredInvitedFriendsList);
+    addBubbleNotification(selectedBubbleId, filteredInvitedFriendsList);
 
     if (filteredInvitedFriendsList.length === friendsList.length) {
       setStatus({ group: "all your friends got invited" });
@@ -78,12 +79,8 @@ export default function AddFriend() {
       return;
     }
 
-    if (!email) {
-      setStatus({ single: "Ooops, an email is missing :/ try again!" });
-      return;
-    }
-
-    if (email && !findUserByEmail(email)) {
+    const friend = findUserByEmail(email);
+    if (!friend) {
       setStatus({
         single:
           "Oh, we dont know your friend,yet... please ask your friend to register first",
@@ -92,31 +89,29 @@ export default function AddFriend() {
     }
 
     const selectedBubble = getBubbleById(selectedBubbleId);
-    const friend = findUserByEmail(email);
-    const isAlreadyMember =
-      selectedBubble &&
-      selectedBubble.members.some((memberId) => memberId === friend.id);
+    const isAlreadyMember = findBubbleMember(selectedBubble, friend.id);
 
     if (isAlreadyMember) {
-      setStatus({ single: "Your friend is already member of this group!" });
-      return;
-    }
-    const isAlreadyInvited = friend.notifications.some(
-      (notification) => notification.toBubble === selectedBubbleId
-    );
-
-    if (isAlreadyInvited) return;
-
-    if (!friend) {
       setStatus({
-        single:
-          "Oh, we dont know your friend, yet... please ask your friend to register first",
+        single: `Your friend is already member of ${selectedBubble.name} !`,
       });
       return;
     }
-    sendBubbleNotification(selectedBubbleId, [friend.id]);
+    const isAlreadyInvited = isAlreadyInvitedToBubble(
+      friend.id,
+      selectedBubbleId
+    );
+
+    if (isAlreadyInvited) {
+      setStatus({
+        single: "Oh, your friend is already invited",
+      });
+      return;
+    }
+    addBubbleNotification(selectedBubbleId, [friend.id]);
     setStatus({ single: "Great, your friend got invited!" });
   };
+
   if (!selectedBubble && params.bubbleId) {
     return;
   }
@@ -211,7 +206,7 @@ export default function AddFriend() {
               </button>
             ) : (
               <button
-                className="inline-block leading-tight uppercase  shadow-md  focus:bg-black  disabled:bg-slate-400 disabled:opacity-50 rounded-md  text-white px-2 py-1"
+                className="inline-block leading-tight uppercase  shadow-md  focus:bg-black  disabled:bg-slate-300 disabled:opacity-50 rounded-md  text-white px-2 py-1"
                 onClick={inviteFriend}
                 disabled
               >
