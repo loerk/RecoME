@@ -70,13 +70,14 @@ export function BubbleContextProvider({ children }) {
     updateBubble(updatedBubble);
   };
   const findBubbleMember = (bubble, userId) => {
-    bubble.members.filter((member) => member === userId);
+    bubble.members.find((member) => member === userId);
   };
   const addMember = (memberId, bubbleId) => {
     const bubble = getBubbleById(bubbleId);
     if (bubble.members.includes(memberId)) return;
     updateBubble({ ...bubble, members: [...bubble.members, memberId] });
   };
+
   const contextValue = {
     findBubbleMember,
     addBubble,
