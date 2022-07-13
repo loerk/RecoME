@@ -14,6 +14,7 @@ export default function AddReco() {
   const { bubbleId } = useParams();
   const { findUserById, currentUser } = useUsers();
   const { getBubbles, getBubbleById } = useBubbles();
+  const { addRecoNotification } = useNotifications();
   const { addReco } = useRecos();
   const { addRecoToUserNotification, addRecoToBubbleNotification } =
     useNotifications();
@@ -36,7 +37,6 @@ export default function AddReco() {
     categories: "",
     url: "",
     comment: "",
-    id: uuidv1(),
   });
   const bubbles = getBubbles();
 
@@ -74,6 +74,7 @@ export default function AddReco() {
       addRecoToUserNotification(recoData.id, selected.user.id);
       navigate("/recos");
     }
+    
   };
 
   return (
