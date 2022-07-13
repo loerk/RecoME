@@ -1,14 +1,15 @@
-import { v1 as uuidv1 } from "uuid";
-import React from "react";
-import { AiOutlinePlusCircle } from "react-icons/ai";
-import { useNavigate } from "react-router-dom";
+import { MdArrowForwardIos } from "react-icons/md";
+import { Link, useNavigate } from "react-router-dom";
 import { useUsers } from "../../contexts/UsersContext";
 import { useBubbles } from "../../contexts/BubbleContext";
+import { useRecos } from "../../contexts/RecoContext";
 
 export default function Landing() {
   const { currentUser, findUserById } = useUsers();
   const { getBubbles } = useBubbles();
+  const { getAllRecos } = useRecos();
   const navigate = useNavigate();
+
   window.scrollTo(0, 0);
 
   if (!currentUser) {
@@ -16,105 +17,82 @@ export default function Landing() {
   }
 
   const bubbles = getBubbles();
-
+  const recosFromUser = getAllRecos();
   const findFriend = (id) => {
     return findUserById(id);
   };
 
   return (
-    <div>
-      <div className="flex items-center m-auto gap-7 my-16 p-20 flex-col bg-gradient-to-r from-purple-500 to-pink-500 rounded shadow-2xl ">
-        <div className="text-center">
-          <h1 className="pb-6">Your bubbles</h1>
-          <ul className="flex gap-6 flex-wrap justify-center">
-            {!!bubbles.length ? (
-              bubbles.map((bubble) => (
-                <li key={uuidv1()}>
-                  <div className="text-center">
+    <div className="py-10 ">
+      <div className="flex items-center m-auto gap-7 mt-16 py-5 flex-col h-76 rounded shadow-2xl ">
+        <div className="flex justify-around items-center w-full content-center">
+          <h1 className="px-10">Your bubbles</h1>
+          <ul className="flex overflow-x-hidden w-2/3">
+            {bubbles?.map((bubble) => (
+              <li key={bubble.id}>
+                <div className="text-center m-2">
+                  <div className="w-28 h-28 object-cover object-center opacity-50  hover:opacity-100 rounded-full cursor-pointer">
                     <img
                       onClick={() => navigate(`/bubbles/${bubble.id}`)}
-                      className="w-28 h-28 object-cover object-center opacity-50  hover:opacity-100 rounded-full cursor-pointer"
+                      className="rounded-full  h-28 w-28"
                       src={bubble.imageUrl}
                       alt=""
                     />
-                    <button className="relative">{bubble.name}</button>
                   </div>
-                </li>
-              ))
-            ) : (
-              <div className="flex">
-                <button
-                  onClick={() => navigate("/bubbles")}
-                  className="m-auto mt-8"
-                >
-                  <AiOutlinePlusCircle></AiOutlinePlusCircle>
-                </button>
-              </div>
-            )}
+                  <button>{bubble.name}</button>
+                </div>
+              </li>
+            ))}
           </ul>
+          <Link to={"/bubbles"}>
+            <MdArrowForwardIos className="mx-6 text-2xl md:text-3xl"></MdArrowForwardIos>
+          </Link>
         </div>
       </div>
-      <div className="flex items-center m-auto gap-7 my-7 p-10 flex-col bg-gradient-to-r from-violet-500 to-fuchsia-500  rounded shadow-2xl ">
-        <div className="text-center">
-          <h1 className="pb-6">Your friends</h1>
-          <ul className="flex gap-6 flex-wrap justify-center">
-            {currentUser.friends.length !== 0 ? (
-              currentUser.friends.map((friendId) => {
-                let currFriend = findFriend(friendId);
-                return (
-                  <li key={uuidv1()}>
-                    <div className="text-center">
+      <div className="flex items-center m-auto gap-7 my-7 py-5 flex-col h-76  rounded shadow-2xl ">
+        <div className="flex justify-around items-center w-full content-center">
+          <h1 className="px-10">Your friends</h1>
+          <ul className="flex overflow-x-hidden w-2/3">
+            {currentUser.friends?.map((friendId) => {
+              let currFriend = findFriend(friendId);
+              return (
+                <li key={friendId}>
+                  <div className="text-center m-2">
+                    <div className="w-28 h-28 object-cover object-center opacity-50  hover:opacity-100 rounded-full cursor-pointer">
                       <img
-                        onClick={() => navigate("/friends")}
-                        className="w-28 h-28 object-cover object-center opacity-50  hover:opacity-100 rounded-full cursor-pointer"
+                        onClick={() => navigate(`/friends/${currFriend.id}`)}
                         src={currFriend.avatarUrl}
                         alt=""
                       />
-                      <button className="relative">
-                        {currFriend.username}
-                      </button>
                     </div>
-                  </li>
-                );
-              })
-            ) : (
-              <div className="flex">
-                <button
-                  onClick={() => navigate("/bubbles")}
-                  className="m-auto mt-8"
-                >
-                  <AiOutlinePlusCircle></AiOutlinePlusCircle>
-                </button>
-              </div>
-            )}
+                    <button className="relative">{currFriend.username}</button>
+                  </div>
+                </li>
+              );
+            })}
           </ul>
+          <Link to={"/friends"}>
+            <MdArrowForwardIos className="mx-6 text-2xl md:text-3xl"></MdArrowForwardIos>
+          </Link>
         </div>
       </div>{" "}
-      <div className="flex items-center m-auto gap-7 my-7 p-10 flex-col  bg-gradient-to-r from-cyan-500 to-blue-500  rounded shadow-2xl ">
-        <div>
-          <h1>Latest Recos</h1>
-          <ul>
-            {!currentUser.recos ? (
-              currentUser.recos.map((type) =>
-                type.map((reco) => (
-                  <li key={uuidv1()}>
-                    <button onClick={() => navigate("/bubbles")}>
-                      {reco.title}
-                    </button>
-                  </li>
-                ))
-              )
-            ) : (
-              <div className="flex">
-                <button
-                  onClick={() => navigate("/friends")}
-                  className="m-auto mt-8"
-                >
-                  <AiOutlinePlusCircle></AiOutlinePlusCircle>
+      <div className="flex items-center m-auto gap-7 my-7 py-5 flex-col h-76rounded shadow-2xl ">
+        <div className="flex justify-around items-center w-full content-center">
+          <h1 className="px-10">Latest Recos</h1>
+          <ul className="flex  overflow-x-hidden w-2/3">
+            {recosFromUser
+              ?.filter((reco) => !reco.ignoredBy?.includes(currentUser.id))
+              .map((reco) => (
+                <button key={reco.id} onClick={() => navigate("/recos")}>
+                  <div className="flex m-2 items-center w-28 h-28 opacity-60 bg-yellow-200  hover:opacity-100 rounded-full cursor-pointer">
+                    <div className="truncate px-3 ">{reco.title}</div>
+                  </div>
                 </button>
-              </div>
-            )}
+              ))}
           </ul>
+          <Link to={"/recos"}>
+            <MdArrowForwardIos className="mx-6 text-2xl md:text-3xl"></MdArrowForwardIos>
+          </Link>
         </div>
       </div>
     </div>

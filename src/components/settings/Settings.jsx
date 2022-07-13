@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useUsers } from "../../contexts/UsersContext";
 
 export default function Settings() {
+  window.scrollTo(0, 0);
   const { currentUser, deleteUser } = useUsers();
   const navigate = useNavigate();
 

@@ -10,7 +10,9 @@ import { AddButton } from "../../utilities/Buttons";
 import BubbleList from "./BubbleList";
 
 export default function Bubbles() {
+  window.scrollTo(0, 0);
   const [searchParams, setSearchParams] = useSearchParams();
+
   const navigate = useNavigate();
   const params = useParams();
 

@@ -5,6 +5,7 @@ import { useNavigate, NavLink } from "react-router-dom";
 import { useUsers } from "../../contexts/UsersContext";
 
 export default function Register() {
+  window.scrollTo(0, 0);
   const { theme } = useTheme();
   const { users, createNewUser } = useUsers();
 
@@ -49,12 +50,12 @@ export default function Register() {
   }
 
   return (
-    <div className=" flex justify-center flex-col">
+    <div className=" flex justify-center mt-10 flex-col">
       <h1
         className={
           theme
-            ? "mt-8 font-face-tb text-9xl text-center py-5 text-white"
-            : "mt-8 font-face-tb text-9xl text-center py-5 text-black"
+            ? "mt-8 font-face-tb text-8xl text-center py-5 text-white"
+            : "mt-8 font-face-tb text-8xl text-center py-5 text-black"
         }
       >
         {" "}
@@ -109,7 +110,7 @@ export default function Register() {
                   ? "pl-3 font-face-tm text-2xl text-white"
                   : "pl-3 font-face-tm text-2xl text-black"
               }
-              htmlFor="okayToEmail"
+              htmlFor="okayToStayLoggedIn"
             >
               I want to stay logged in
             </label>
@@ -120,6 +121,12 @@ export default function Register() {
               theme
                 ? "w-full hover:translate-y-1  text-3xl p-3 bg-white  text-black  font-face-tm my-4"
                 : "w-full hover:translate-y-1  text-3xl p-3 bg-black  text-white  font-face-tm my-4"
+            }
+            disabled={
+              !registerData.email ||
+              !registerData.password ||
+              !registerData.username ||
+              !registerData.passwordConfirm
             }
           >
             Register

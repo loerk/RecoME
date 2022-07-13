@@ -1,62 +1,54 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React from "react";
 
 import { useUsers } from "../../contexts/UsersContext";
+import {
+  NotificationType,
+  useNotifications,
+} from "../../contexts/NotificationsContext";
+import RecommendationNotification from "./RecommendationNotification";
+import BubbleNotification from "./BubbleNotification";
+import RecommendationToBubbleNotification from "./RecommendationToBubbleNotification";
 
 export default function Notifications() {
-  const [showNotificationsList, setShowNotificationsList] = useState(false);
-  const navigate = useNavigate();
-
   const { currentUser } = useUsers();
-
-  const notifications = currentUser.notifications;
-  const hasNewNotifications = notifications.length !== 0;
+  const { getNotifications } = useNotifications();
+  let currentNotifications = getNotifications(currentUser.id);
 
   return (
-    <div className="p-2">
-      <img
-        src={currentUser.avatarUrl}
-        alt=""
-        className="w-10 shadow-lg rounded-full"
-      />
-      {hasNewNotifications && (
-        <div className="relative">
-          <button
-            onClick={() => setShowNotificationsList(!showNotificationsList)}
-            className="bg-clip-text pt-2  text-transparent bg-gradient-to-r from-pink-500 to-violet-500"
-          >
-            {currentUser.notifications.length} NEWS
-          </button>
-          {showNotificationsList && (
-            <ul>
-              {currentUser.notifications.map((note) => {
-                return (
-                  <li
-                    key={note.id}
-                    onClick={() => navigate("/friends/details")}
-                    className="
-                        absolute      
-                        right-10
-                        text-sm
-                        py-2
-                        font-normal
-                        block
-                        w-full
-                        whitespace-nowrap
-                        bg-transparent
-                        text-gray-700
-                        hover:text-fuchsia-800
-                        cursor-pointer
-                        "
-                  >
-                    {note.type}
-                  </li>
-                );
-              })}
-            </ul>
-          )}
-        </div>
-      )}
+    <div className="flex items-center flex-col pt-28">
+      <h1>WOW WOW WOW</h1>
+      <p>here are your news</p>
+      {currentNotifications.map((notification) => {
+        if (notification.type === NotificationType.INVITATION_TO_RECO) {
+          return (
+            <RecommendationNotification
+              key={notification.id}
+              notification={notification}
+            />
+          );
+        }
+        if (notification.type === NotificationType.INVITATION_TO_BUBBLE) {
+          return (
+            <BubbleNotification
+              key={notification.id}
+              notification={notification}
+            />
+          );
+        }
+        if (
+          notification.type ===
+          NotificationType.NOTIFICATION_ABOUT_RECO_IN_BUBBLE
+        ) {
+          return (
+            <RecommendationToBubbleNotification
+              key={notification.id}
+              notification={notification}
+            />
+          );
+        }
+
+        return null;
+      })}
     </div>
   );
 }

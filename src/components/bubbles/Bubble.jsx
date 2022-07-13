@@ -1,33 +1,34 @@
-import React from "react";
+import React, { useState } from "react";
+import { useParams, Link } from "react-router-dom";
 
-import { useParams, useNavigate } from "react-router-dom";
 import { AddButton } from "../../utilities/Buttons";
-import { v1 as uuidv1 } from "uuid";
 import { useTheme } from "../../contexts/ThemeContext";
 import { useBubbles } from "../../contexts/BubbleContext";
+import { useRecos } from "../../contexts/RecoContext";
+import { useUsers } from "../../contexts/UsersContext";
 
+import Accordion from "../../utilities/Accordion";
+import DeleteBubbleModal from "../../utilities/DeleteBubbleModal";
 export default function Bubble() {
-  const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
+
   let { bubbleId } = useParams();
+
   const theme = useTheme();
-  const { getBubbleById, deleteBubble } = useBubbles();
+  const { getBubbleById } = useBubbles();
+  const { getRecosFromBubble } = useRecos();
+  const { findUserById, currentUser } = useUsers();
 
-  let bubble = getBubbleById(bubbleId);
+  const bubble = getBubbleById(bubbleId);
+  const bubbleRecos = getRecosFromBubble(bubbleId);
 
-  const handleDelete = () => {
-    deleteBubble(bubbleId);
-    navigate("/bubbles");
+  const handleModal = (id) => {
+    setShowModal(true);
   };
-
-  const addFriends = () => {
-    navigate("/friends/addFriend");
-  };
-  const addPrivateRecos = () => {};
-  const addPublicRecos = () => {};
 
   return (
     <div>
-      <div className="mt-6">
+      <div className="mt-20">
         <div className=" relative w-full">
           <div className="relative overflow-hidden bg-contain">
             <img src={bubble.imageUrl} className="block  w-96 m-auto" alt="" />
@@ -39,12 +40,26 @@ export default function Bubble() {
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 my-4 gap-4 text-center">
+      <div className="w-2/3  m-auto text-center">
         <div>
-          <h1 className="mb-3 uppercase">Members</h1>
+          <h1 className="py-10 uppercase">Members</h1>
           <div>
             {!!bubble.members.length ? (
-              <p>{bubble.members.length}</p>
+              <div className="flex gap-2">
+                {bubble.members.map((memberId) => {
+                  const member = findUserById(memberId);
+                  return (
+                    <div className="m-auto" key={memberId}>
+                      <img
+                        src={member.avatarUrl}
+                        alt=""
+                        className="w-16 aspect-square shadow-lg rounded-full"
+                      />
+                      <p>{member.username}</p>
+                    </div>
+                  );
+                })}
+              </div>
             ) : (
               <>
                 <p>Oh your bubble doesn't have any members ..yet</p>
@@ -52,15 +67,29 @@ export default function Bubble() {
               </>
             )}
           </div>
-          <AddButton action={addFriends} />
+          <Link to={`/bubbles/${bubbleId}/addFriend`}>
+            <AddButton />
+          </Link>
         </div>
         <div>
-          <h1 className="mb-3 uppercase">Recommendations</h1>
+          <h1 className="mt-20 mb-5 uppercase">Recommendations</h1>
           <ul>
-            {bubble.publicRecos ? (
-              bubble.publicRecos.map((publicReco) => (
-                <li key={publicReco.id}>{publicReco.username}</li>
-              ))
+            {bubbleRecos ? (
+              bubbleRecos
+                .filter((reco) => !reco.ignoredBy?.includes(currentUser.id))
+                .map((reco) => {
+                  const date = new Date(reco.createdAt);
+                  return (
+                    <div key={reco.id}>
+                      <Accordion
+                        title={reco.title}
+                        date={date.toLocaleDateString("en-GB")}
+                        comment={reco.comment}
+                        content={reco.url}
+                      />
+                    </div>
+                  );
+                })
             ) : (
               <>
                 <p>
@@ -70,23 +99,9 @@ export default function Bubble() {
               </>
             )}
           </ul>
-          <AddButton action={addPublicRecos} />
-        </div>
-        <div>
-          <h1 className="mb-3 uppercase">private save</h1>
-          <ul>
-            {bubble.privateRecos ? (
-              bubble.privateRecos.recoFrom.map((privateRecos) => (
-                <li key={uuidv1()}>{privateRecos.username}</li>
-              ))
-            ) : (
-              <>
-                <p>Oh you don't have any private Recommendations ..yet</p>
-                <p>add some</p>
-              </>
-            )}
-          </ul>
-          <AddButton action={addPrivateRecos} />
+          <Link to={`/bubbles/${bubbleId}/addReco`}>
+            <AddButton />
+          </Link>
         </div>
       </div>
       <div className="text-center mt-40 p-4">
@@ -94,18 +109,24 @@ export default function Bubble() {
           It's always hard to say goodbye, but sometimes there is no other
           option
         </p>
-        {/* TODO:theme funktioniert nicht */}
         <button
           className={
             theme
               ? "w-40 hover:translate-y-1  text-3xl p-3 bg-white  text-black  font-face-tm my-4"
               : "w-40 hover:translate-y-1  text-3xl p-3 bg-black  text-white  font-face-tm my-4"
           }
-          onClick={handleDelete}
+          onClick={handleModal}
         >
           DELETE BUBBLE
         </button>
       </div>
+      {showModal && (
+        <DeleteBubbleModal
+          showModal={showModal}
+          setShowModal={setShowModal}
+          bubbleId={bubbleId}
+        />
+      )}
     </div>
   );
 }

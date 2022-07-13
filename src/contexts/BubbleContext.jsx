@@ -7,10 +7,10 @@ const BubbleContext = createContext([]);
 export const useBubbles = () => {
   return useContext(BubbleContext);
 };
-const initialValueBubbles = JSON.parse(localStorage.getItem("bubbles"));
+const initialBubbles = JSON.parse(localStorage.getItem("bubbles"));
 
 export function BubbleContextProvider({ children }) {
-  const [bubbles, setBubbles] = useState(initialValueBubbles || []);
+  const [bubbles, setBubbles] = useState(initialBubbles || []);
   const getCurrentUser = useGetCurrentUser();
 
   const addBubble = (newBubble) => {
@@ -53,13 +53,40 @@ export function BubbleContextProvider({ children }) {
     setBubbles(deletedBubbleArr);
     localStorage.setItem("bubbles", JSON.stringify(deletedBubbleArr));
   };
+  const exitBubble = (id) => {
+    const currentUser = getCurrentUser();
+    const currentBubble = getBubbleById(id);
+
+    if (
+      currentBubble.members.length === 0 ||
+      currentBubble.members.length === 1
+    ) {
+      return deleteBubble(id);
+    }
+    const updatedMembersArr = currentBubble.members.filter(
+      (member) => member !== currentUser.id
+    );
+    const updatedBubble = { ...currentBubble, members: updatedMembersArr };
+    updateBubble(updatedBubble);
+  };
+  const findBubbleMember = (bubble, userId) => {
+    bubble.members.find((member) => member === userId);
+  };
+  const addMember = (memberId, bubbleId) => {
+    const bubble = getBubbleById(bubbleId);
+    if (bubble.members.includes(memberId)) return;
+    updateBubble({ ...bubble, members: [...bubble.members, memberId] });
+  };
 
   const contextValue = {
+    findBubbleMember,
     addBubble,
     getBubbles,
     getBubbleById,
     updateBubble,
     deleteBubble,
+    exitBubble,
+    addMember,
   };
   return (
     <BubbleContext.Provider value={contextValue}>

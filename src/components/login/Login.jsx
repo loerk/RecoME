@@ -4,6 +4,7 @@ import { useTheme } from "../../contexts/ThemeContext";
 import { useUsers } from "../../contexts/UsersContext";
 
 export default function Login() {
+  window.scrollTo(0, 0);
   const { theme } = useTheme();
   const { users, loginUser } = useUsers();
 
@@ -28,25 +29,22 @@ export default function Login() {
     event.preventDefault();
     const knownUser = users.find((user) => user.email === loginData.email);
 
-    if (!knownUser) {
-      setError("please register first");
+    if (!knownUser || knownUser.password !== loginData.password) {
+      setError("password or email are not correct");
       return;
     }
-    if (knownUser.password !== loginData.password) {
-      setError("wrong password, try again");
-      return;
-    }
+
     loginUser(knownUser);
     navigate("/");
   }
 
   return (
-    <div className="flex justify-center flex-col">
+    <div className="flex justify-center mt-10 flex-col">
       <h1
         className={
           theme
-            ? "mt-8 font-face-tb text-9xl text-center py-5 text-white"
-            : "mt-8 font-face-tb text-9xl text-center py-5 text-black"
+            ? "mt-8 font-face-tb text-8xl text-center py-5 text-white"
+            : "mt-8 font-face-tb text-8xl text-center py-5 text-black"
         }
       >
         {" "}
@@ -94,9 +92,10 @@ export default function Login() {
           <button
             className={
               theme
-                ? "w-full hover:translate-y-1  text-3xl p-3 bg-white  text-black  font-face-tm my-4"
-                : "w-full hover:translate-y-1  text-3xl p-3 bg-black  text-white  font-face-tm my-4"
+                ? "w-full active:translate-y-1  text-3xl p-3 bg-white  text-black  font-face-tm my-4"
+                : "w-full active:translate-y-1  text-3xl p-3 bg-black  text-white  font-face-tm my-4"
             }
+            disabled={!loginData.email || !loginData.password}
           >
             Sign in
           </button>
