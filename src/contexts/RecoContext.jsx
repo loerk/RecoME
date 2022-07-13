@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState } from "react";
 import { useBubbles } from "./BubbleContext";
 import { useGetCurrentUser } from "./UsersContext";
-import { v1 as uuidv1 } from "uuid";
+
 const RecoContext = createContext([]);
 
 export const useRecos = () => {
@@ -20,7 +20,6 @@ export function RecoContextProvider({ children }) {
       ...recos,
       {
         ...newReco,
-        id: uuidv1(),
         createdAt: Date.now(),
         createdBy: currentUser.id,
       },
