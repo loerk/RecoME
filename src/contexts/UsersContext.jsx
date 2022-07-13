@@ -10,10 +10,6 @@ const initialValueCurrentUser = JSON.parse(localStorage.getItem("currentUser"));
 const initialValueUsers = JSON.parse(localStorage.getItem("users"));
 
 export function UsersContextProvider({ children }) {
-  const NotificationType = {
-    INVITATION_TO_BUBBLE: "INVITATION_TO_BUBBLE",
-    INVITATION_TO_RECO: "INVITATION_TO_RECO",
-  };
   const [currentUser, setCurrentUser] = useState(
     initialValueCurrentUser || null
   );
@@ -46,50 +42,15 @@ export function UsersContextProvider({ children }) {
     localStorage.setItem("currentUser", JSON.stringify(updatedUser));
   };
 
-  const sendBubbleNotification = (bubbleId, friendList) => {
-    const updatedFriendList = friendList.map((friendId) => {
-      const friend = findUserById(friendId);
-      return {
-        ...friend,
-        notifications: [
-          ...friend.notifications,
-          {
-            toBubble: bubbleId,
-            invitedAt: Date.now(),
-            invitationId: uuidv1(),
-            type: NotificationType.INVITATION_TO_BUBBLE,
-            invitedBy: currentUser.id,
-            invitedByUser: currentUser.username,
-          },
-        ],
-      };
-    });
-
-    updateUsers(updatedFriendList);
-  };
-
-  const sendRecoNotification = (id, friendList) => {
-    const updatedFriendList = friendList.map((friendId) => {
-      const friend = findUserById(friendId);
-      return {
-        ...friend,
-        notifications: [
-          ...friend.notifications,
-          {
-            recoId: id,
-            invitedAt: Date.now(),
-            invitationId: uuidv1(),
-            type: NotificationType.INVITATION_TO_RECO,
-            invitedBy: currentUser.id,
-            invitedByUser: currentUser.username,
-          },
-        ],
-      };
-    });
-    updateUsers(updatedFriendList);
-  };
   const deleteUser = () => {
-    const filteredUser = users.filter((user) => user.id !== currentUser.id);
+    // replace filter and map by reduce :)
+    const filteredUser = users
+      .filter((user) => user.id !== currentUser.id)
+      .map((user) => ({
+        ...user,
+        friends: user.friends.filter((friend) => friend.id !== currentUser.id),
+      }));
+
     setUsers(filteredUser);
     setCurrentUser(null);
     localStorage.setItem("users", JSON.stringify(filteredUser));
@@ -116,14 +77,27 @@ export function UsersContextProvider({ children }) {
       notifications: [],
       invitedBy: "",
       avatarUrl: `https://api.multiavatar.com/${registeredUser.username}.png`,
-      recos: [],
     };
     setCurrentUser(newUser);
     setUsers([...users, newUser]);
     localStorage.setItem("currentUser", JSON.stringify(newUser));
     localStorage.setItem("users", JSON.stringify([...users, newUser]));
   };
+  const addFriend = (friendId) => {
+    if (currentUser.friends.includes(friendId)) return;
+    const updatedUser = {
+      ...currentUser,
+      friends: [...currentUser.friends, friendId],
+    };
+    updateCurrentUser(updatedUser);
 
+    const friend = findUserById(friendId);
+    const updatedFriend = {
+      ...friend,
+      friends: [...friend.friends, currentUser.id],
+    };
+    updateUsers([updatedUser, updatedFriend]);
+  };
   const contextValue = {
     users,
     setUsers,
@@ -136,8 +110,7 @@ export function UsersContextProvider({ children }) {
     deleteUser,
     findUserByEmail,
     findUserById,
-    sendBubbleNotification,
-    sendRecoNotification,
+    addFriend,
   };
 
   return (

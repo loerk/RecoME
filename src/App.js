@@ -13,10 +13,10 @@ import AddBubble from "./components/bubbles/AddBubble";
 import Friends from "./components/friends/Friends";
 import Friend from "./components/friends/Friend";
 import AddFriend from "./components/friends/AddFriend";
-import Details from "./components/friends/Details";
 import Recos from "./components/recommendations/Recos";
 import AddReco from "./components/recommendations/AddReco";
 import Reco from "./components/recommendations/Reco";
+import Notifications from "./components/notifications/Notifications";
 
 import { useUsers } from "./contexts/UsersContext";
 
@@ -50,12 +50,12 @@ function App() {
           <Route path="friends" element={<Friends />}>
             <Route path=":friendId" element={<Friend />} />
             <Route path="addFriend" element={<AddFriend />} />
-            <Route path="details" element={<Details />} />
           </Route>
           <Route path="recos" element={<Recos />}>
             <Route path=":recoId" element={<Reco />} />
             <Route path="addReco" element={<AddReco />} />
           </Route>
+          <Route path="notifications" element={<Notifications />} />
         </Route>
         <Route path="*" element={<PageNotFound />} />
       </Routes>

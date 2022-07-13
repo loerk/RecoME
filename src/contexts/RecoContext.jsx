@@ -53,6 +53,12 @@ export function RecoContextProvider({ children }) {
       (reco) => !reco.ignoredBy?.includes(currentUser.id)
     );
 
+    //   const getUniqueList = (arr, key) => {
+    //     return [...new Map(arr.map((item) => [item[key], item])).values()];
+    //   };
+    //   return getUniqueList(allRecos, "id");
+    // };
+
     return allRecos.reduce((acc, curr) => {
       if (acc.some((user) => user.id === curr.id)) return acc;
       return [...acc, curr];

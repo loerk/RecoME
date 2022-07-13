@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { v1 as uuidv1 } from "uuid";
 
 import { useBubbles } from "../../contexts/BubbleContext";
 import { useTheme } from "../../contexts/ThemeContext";
@@ -15,6 +16,8 @@ export default function AddReco() {
   const { getBubbles, getBubbleById } = useBubbles();
   const { addRecoNotification } = useNotifications();
   const { addReco } = useRecos();
+  const { addRecoToUserNotification, addRecoToBubbleNotification } =
+    useNotifications();
 
   const [selected, setSelected] = useState(
     bubbleId
@@ -30,7 +33,7 @@ export default function AddReco() {
     private: false,
     sharedWithBubbles: false,
     sharedWithFriends: false,
-    sharedWith: "",
+    sharedWith: [],
     categories: "",
     url: "",
     comment: "",
@@ -53,6 +56,12 @@ export default function AddReco() {
         sharedWithBubbles: true,
       };
       addReco(recoToBubble);
+      addRecoToBubbleNotification(selected.bubble.id, recoData.id, [
+        ...selected.bubble.members.filter(
+          (member) => member !== currentUser.id
+        ),
+      ]);
+
       navigate("/recos");
     }
 
@@ -62,9 +71,10 @@ export default function AddReco() {
         sharedWith: selected.user.id,
       };
       addReco(recoToFriend);
-      addRecoNotification([selected.user.id]);
+      addRecoToUserNotification(recoData.id, selected.user.id);
       navigate("/recos");
     }
+    
   };
 
   return (
