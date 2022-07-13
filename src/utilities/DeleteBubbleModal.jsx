@@ -46,26 +46,16 @@ export default function DeleteBubbleModal({
         <div className="flex w-2/3 m-auto flex-col">
           <label className="">
             <input
-              checked={deletionType === DeletionType.USER}
               type="checkbox"
-              onChange={() => {
-                setDeletionType(
-                  deletionType === DeletionType.USER ? null : DeletionType.USER
-                );
-              }}
+              onChange={() => setDeletionType(DeletionType.USER)}
               className="border border-gray-700 p-2 mr-2 rounded mb-5"
             />
             exit Bubble
           </label>
           <label htmlFor="">
             <input
-              checked={deletionType === DeletionType.ALL}
               type="checkbox"
-              onChange={() =>
-                setDeletionType(
-                  deletionType === DeletionType.ALL ? null : DeletionType.ALL
-                )
-              }
+              onChange={() => setDeletionType(DeletionType.ALL)}
               className="border border-gray-700 p-2 mr-2 rounded mb-5"
             />
             delete Bubble for everyone

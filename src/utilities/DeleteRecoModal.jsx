@@ -37,22 +37,16 @@ export default function DeleteRecoModal({
         <div className="flex w-2/3 m-auto flex-col">
           <label className="">
             <input
-              checked={deletionType === DeletionType.USER}
               type="checkbox"
-              onChange={(e) =>
-                setDeletionType(e.target.checked ? DeletionType.USER : null)
-              }
+              onChange={() => setDeletionType(DeletionType.USER)}
               className="border border-gray-700 p-2 mr-2 rounded mb-5"
             />
             delete Reco only for me
           </label>
           <label htmlFor="">
             <input
-              checked={deletionType === DeletionType.ALL}
               type="checkbox"
-              onChange={(e) =>
-                setDeletionType(e.target.checked ? DeletionType.ALL : null)
-              }
+              onChange={() => setDeletionType(DeletionType.ALL)}
               className="border border-gray-700 p-2 mr-2 rounded mb-5"
             />
             delete Reco for everyone
