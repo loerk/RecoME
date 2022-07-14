@@ -2,13 +2,12 @@ import React, { useState } from "react";
 
 import { useTheme } from "../../contexts/ThemeContext";
 import { useNavigate, NavLink } from "react-router-dom";
-import { useUsers } from "../../contexts/UsersContext";
+import { fetchData } from "../../api/fetchers";
 
 export default function Register() {
   const { theme } = useTheme();
-  const { users, createNewUser } = useUsers();
 
-  const [error, setError] = useState();
+  const [status, setStatus] = useState();
   const [registerData, setRegisterData] = useState({
     username: "",
     email: "",
@@ -27,26 +26,22 @@ export default function Register() {
     }));
   }
 
-  function handleSubmit(event) {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-
-    const knownUser = users.find((user) => user.email === registerData.email);
-    if (knownUser) {
-      setError("This email already has an account. Please sign in");
-      return;
-    }
 
     if (
       registerData.password !== registerData.passwordConfirm ||
       !registerData.password
     ) {
-      setError("The passwords have to match");
+      setStatus("The passwords have to match");
       return;
     }
-
-    createNewUser(registerData);
+    const result = await fetchData("/signup", "POST", registerData);
+    if (result.message !== "success")
+      return setStatus("we could not register your account, try again");
+    setStatus("please verify your email and login");
     navigate("/");
-  }
+  };
 
   return (
     <div className=" flex justify-center mt-10 flex-col">
@@ -114,7 +109,7 @@ export default function Register() {
               I want to stay logged in
             </label>
           </div>
-          {!!error && <p className="text-fuchsia-600">{error}</p>}
+          {!!status && <p className="text-fuchsia-600">{status}</p>}
           <button
             className={
               theme
