@@ -28,7 +28,7 @@ export default function Recos() {
   };
 
   return (
-    <div className="mt-28">
+    <div className="pt-32 pb-12">
       {location.pathname === "/recos" ? (
         <div>
           <div className="flex justify-center">
@@ -64,7 +64,7 @@ export default function Recos() {
             <AddButton />
           </Link>
 
-          <div className=" p-10">
+          <div className="p-10">
             {allRecos.length ? (
               <ul className="pt-6 flex flex-wrap gap-4 justify-around">
                 {allRecos
@@ -135,9 +135,7 @@ export default function Recos() {
                   })}
               </ul>
             ) : (
-              <p className="text-center pt-5">
-                :/ you didnt write any recos...yet
-              </p>
+              <p className="text-center">:/ you didnt write any recos...yet</p>
             )}
           </div>
         </div>

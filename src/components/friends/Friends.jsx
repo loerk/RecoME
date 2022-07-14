@@ -18,7 +18,7 @@ export default function Friends() {
   };
 
   return (
-    <div className="mt-28">
+    <div className="pt-32 pb-12">
       {location.pathname === "/friends" ? (
         <div>
           <div className="flex justify-center">

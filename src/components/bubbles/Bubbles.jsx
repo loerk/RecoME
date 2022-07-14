@@ -21,7 +21,7 @@ export default function Bubbles() {
   };
 
   return (
-    <div className="pt-32 md:pt-28">
+    <div className="pt-32 pb-12">
       {!params.bubbleId ? (
         <div>
           <div className="flex  justify-center">

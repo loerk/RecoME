@@ -80,6 +80,7 @@ export function UsersContextProvider({ children }) {
     setCurrentUser(newUser);
     setUsers([...users, newUser]);
     localStorage.setItem("currentUser", JSON.stringify(newUser));
+    //  fetch("http://localhost:4000/createUser",{ {options}, {data}})
     localStorage.setItem("users", JSON.stringify([...users, newUser]));
   };
   const addFriend = (friendId) => {

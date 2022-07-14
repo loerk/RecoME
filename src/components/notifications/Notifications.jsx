@@ -15,7 +15,7 @@ export default function Notifications() {
   let currentNotifications = getNotifications(currentUser.id);
 
   return (
-    <div className="flex items-center flex-col pt-28">
+    <div className="flex items-center flex-col pt-32 pb-12">
       <h1>WOW WOW WOW</h1>
       <p>here are your news</p>
       {currentNotifications.map((notification) => {

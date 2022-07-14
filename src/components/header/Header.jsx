@@ -22,8 +22,8 @@ export default function Header() {
     <div
       className={
         theme
-          ? "text-white bg-black z-20 w-full fixed pt-2 top-0"
-          : " top-0 bg-white z-20 pt-2 w-full fixed"
+          ? "text-white bg-black z-20 w-full fixed pt-2 top-0 shadow-xl"
+          : " top-0 bg-white z-20 pt-2 w-full fixed shadow-xl"
       }
     >
       <div className=" flex flex-wrap justify-between py-4 px-7">
@@ -36,7 +36,7 @@ export default function Header() {
         </button>
         {currentUser && <Navigation />}
         {currentUser && (
-          <div className="flex ">
+          <div className="flex">
             <div className="flex justify-between">
               <img
                 src={currentUser.avatarUrl}

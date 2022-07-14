@@ -13,7 +13,7 @@ export default function Settings() {
   };
 
   return (
-    <div className="text-center mt-28">
+    <div className="text-center pt-32 pb-12">
       <p>Think about it, but here you can...</p>
       <p>say goodbye forever :/</p>
       <button

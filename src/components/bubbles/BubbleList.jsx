@@ -50,7 +50,7 @@ export default function BubbleList({ searchParams }) {
                                 return (
                                   <span
                                     key={index}
-                                    className="text-xs tracking-widest mt-2 font-face-tl inline-block py-1 px-2.5 leading-none whitespace-nowrap  font-bold  text-black border border-black bg-white opacity-70   rounded-md"
+                                    className="text-xs tracking-widest mt-2  inline-block py-1 px-2.5 leading-none whitespace-nowrap    text-black border border-black bg-white opacity-70   rounded-md"
                                   >
                                     {category}
                                   </span>

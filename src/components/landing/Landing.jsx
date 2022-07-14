@@ -23,7 +23,7 @@ export default function Landing() {
   };
 
   return (
-    <div className="py-10 ">
+    <div className="pb-12 pt-32">
       <div className="flex items-center m-auto gap-7 mt-16 py-5 flex-col h-76 rounded shadow-2xl ">
         <div className="flex justify-around items-center w-full content-center">
           <h1 className="px-10">Your bubbles</h1>
@@ -79,7 +79,7 @@ export default function Landing() {
       <div className="flex items-center m-auto gap-7 my-7 py-5 flex-col h-76rounded shadow-2xl ">
         <div className="flex justify-around items-center w-full content-center">
           <h1 className="px-10">Latest Recos</h1>
-          <ul className="flex  overflow-x-hidden w-2/3">
+          <ul className="flex overflow-x-hidden w-2/3">
             {recosFromUser
               ?.filter((reco) => !reco.ignoredBy?.includes(currentUser.id))
               .map((reco) => (
