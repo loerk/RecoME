@@ -43,7 +43,6 @@ export function UsersContextProvider({ children }) {
   };
 
   const deleteUser = () => {
-    // replace filter and map by reduce :)
     const filteredUser = users
       .filter((user) => user.id !== currentUser.id)
       .map((user) => ({

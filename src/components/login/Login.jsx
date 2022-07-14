@@ -4,7 +4,6 @@ import { useTheme } from "../../contexts/ThemeContext";
 import { useUsers } from "../../contexts/UsersContext";
 
 export default function Login() {
-  window.scrollTo(0, 0);
   const { theme } = useTheme();
   const { users, loginUser } = useUsers();
 

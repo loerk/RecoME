@@ -5,7 +5,6 @@ import { useNavigate, NavLink } from "react-router-dom";
 import { useUsers } from "../../contexts/UsersContext";
 
 export default function Register() {
-  window.scrollTo(0, 0);
   const { theme } = useTheme();
   const { users, createNewUser } = useUsers();
 
