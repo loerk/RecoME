@@ -3,7 +3,7 @@ import { BsChevronUp, BsChevronDown } from "react-icons/bs";
 
 import { LinkPreview } from "./LinkPreview";
 
-export default function Accordion({ title, date, comment, content }) {
+export default function Accordion({ title, date, description, content }) {
   const [isOpen, setIsOpen] = useState(false);
   const contentElement = useRef(null);
 
@@ -26,7 +26,7 @@ export default function Accordion({ title, date, comment, content }) {
         }
         className="overflow-hidden transition-all duration-200"
       >
-        <p className="p-4">{comment}</p>
+        <p className="p-4">{description}</p>
         <LinkPreview url={content} />
       </div>
     </div>

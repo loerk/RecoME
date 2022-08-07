@@ -32,7 +32,7 @@ export default function App() {
   };
 
   return (
-    <div className={theme ? "bg-black min-h-screen h-full" : "h-screen "}>
+    <div className={theme ? "bg-black min-h-screen h-full" : "h-screen"}>
       <Header />
       <Routes>
         <Route path="register" element={<Register />} />
