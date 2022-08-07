@@ -1,6 +1,5 @@
 import React from "react";
 
-import { useUsers } from "../../contexts/UsersContext";
 import {
   NotificationType,
   useNotifications,
@@ -10,19 +9,17 @@ import BubbleNotification from "./BubbleNotification";
 import RecommendationToBubbleNotification from "./RecommendationToBubbleNotification";
 
 export default function Notifications() {
-  const { currentUser } = useUsers();
-  const { getNotifications } = useNotifications();
-  let currentNotifications = getNotifications(currentUser.id);
+  const { notifications } = useNotifications();
 
   return (
     <div className="flex items-center flex-col pt-32 pb-12">
       <h1>WOW WOW WOW</h1>
       <p>here are your news</p>
-      {currentNotifications.map((notification) => {
+      {notifications.map((notification) => {
         if (notification.type === NotificationType.INVITATION_TO_RECO) {
           return (
             <RecommendationNotification
-              key={notification.id}
+              key={notification._id}
               notification={notification}
             />
           );
@@ -30,7 +27,7 @@ export default function Notifications() {
         if (notification.type === NotificationType.INVITATION_TO_BUBBLE) {
           return (
             <BubbleNotification
-              key={notification.id}
+              key={notification._id}
               notification={notification}
             />
           );
@@ -41,7 +38,7 @@ export default function Notifications() {
         ) {
           return (
             <RecommendationToBubbleNotification
-              key={notification.id}
+              key={notification._id}
               notification={notification}
             />
           );

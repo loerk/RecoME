@@ -2,11 +2,13 @@ import React from "react";
 import { FiExternalLink } from "react-icons/fi";
 import { VscCheck } from "react-icons/vsc";
 import { useNotifications } from "../../contexts/NotificationsContext";
-import { useRecos } from "../../contexts/RecoContext";
+
 export default function RecommendationNotification({ notification }) {
   const { deleteNotification } = useNotifications();
-  const { findRecoById } = useRecos();
-  const currentReco = findRecoById(notification.recoId);
+  const handleDelete = async (id) => {
+    await deleteNotification(id);
+  };
+
   return (
     <div className="flex mt-8 mb-4 md:w-full justify-center">
       <div className="flex flex-col w-64 md:w-full md:flex-row md:max-w-xl rounded-lg bg-gradient-to-r from-green-500 to-yellow-200 shadow-lg">
@@ -19,17 +21,17 @@ export default function RecommendationNotification({ notification }) {
             You got a personal Reco !
           </h5>
 
-          <h5 className="uppercase">{currentReco.title}</h5>
+          <h5 className="uppercase">{notification.recoId.title}</h5>
           <p className="text-gray-900 text-base mb-4">
-            by {notification.invitedByUser.toUpperCase()} !
+            by {notification.invitedBy.username.toUpperCase()} !
           </p>
 
           <div className="text-black flex justify-between gap-3">
-            <a href={currentReco.url}>
+            <a href={notification.recoId.url}>
               <FiExternalLink></FiExternalLink>
             </a>
             <VscCheck
-              onClick={() => deleteNotification(notification.id)}
+              onClick={() => handleDelete(notification._id)}
               className="cursor-pointer"
             ></VscCheck>
           </div>

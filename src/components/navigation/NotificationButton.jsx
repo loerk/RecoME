@@ -5,8 +5,7 @@ import { useNotifications } from "../../contexts/NotificationsContext";
 export default function NotificationButton() {
   const navigate = useNavigate();
 
-  const { getNotifications } = useNotifications();
-  const notifications = getNotifications();
+  const { notifications } = useNotifications();
 
   return (
     <div className="relative">

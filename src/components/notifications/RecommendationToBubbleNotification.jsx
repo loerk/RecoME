@@ -3,15 +3,12 @@ import { Link } from "react-router-dom";
 import { VscCheck } from "react-icons/vsc";
 
 import { useNotifications } from "../../contexts/NotificationsContext";
-import { useBubbles } from "../../contexts/BubbleContext";
-import { useRecos } from "../../contexts/RecoContext";
 
 export default function RecommendationToBubbleNotification({ notification }) {
   const { deleteNotification } = useNotifications();
-  const { getBubbleById } = useBubbles();
-  const currentBubble = getBubbleById(notification.toBubble);
-  const { findRecoById } = useRecos();
-  const currentReco = findRecoById(notification.recoId);
+  const handleDelete = async (id) => {
+    await deleteNotification(id);
+  };
   return (
     <div className="flex mt-8 md:w-full justify-center">
       <div className="flex flex-col w-64 md:w-full md:flex-row md:max-w-xl rounded-lg bg-gradient-to-br from-yellow-300 to-red-300 shadow-lg">
@@ -22,17 +19,20 @@ export default function RecommendationToBubbleNotification({ notification }) {
         <div className="p-6 flex w-full flex-col justify-between">
           <div>
             <h5 className="text-gray-900 uppercase text-xl font-medium mb-2">
-              A new Reco was added to {currentBubble.name.toUpperCase()} !
+              A new Reco was added to {notification.bubbleId.name.toUpperCase()}{" "}
+              !
             </h5>
-            <p>{currentReco.title}</p>
+            <p>{notification.recoId.title}</p>
             <p className="text-gray-900 text-base mb-4">
-              by {notification.invitedByUser.toUpperCase()} !
+              by {notification.invitedBy.username.toUpperCase()} !
             </p>
           </div>
           <div className="text-black flex justify-between gap-3">
-            <Link to={`/bubbles/${notification.toBubble}`}>go to bubble</Link>
+            <Link to={`/bubbles/${notification.bubbleId._id}`}>
+              go to bubble
+            </Link>
             <VscCheck
-              onClick={() => deleteNotification(notification.id)}
+              onClick={() => handleDelete(notification._id)}
               className="cursor-pointer"
             ></VscCheck>
           </div>
