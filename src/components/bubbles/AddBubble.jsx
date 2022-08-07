@@ -9,7 +9,7 @@ export default function AddBubble() {
     categories: "",
     imageUrl: "",
   });
-  const { addBubble } = useBubbles();
+  const { addBubble, setShouldFetchNotifications } = useBubbles();
 
   const navigate = useNavigate();
 
@@ -21,11 +21,12 @@ export default function AddBubble() {
     }));
   };
 
-  function handleSubmit(event) {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    addBubble(bubbleData);
+    await addBubble(bubbleData);
+    setShouldFetchNotifications(true);
     navigate(-1);
-  }
+  };
 
   return (
     <div className="w-72 m-auto mt-8">

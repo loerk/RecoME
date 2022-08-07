@@ -5,24 +5,37 @@ import { AddButton } from "../../utilities/Buttons";
 import { useTheme } from "../../contexts/ThemeContext";
 import { useBubbles } from "../../contexts/BubbleContext";
 import { useRecos } from "../../contexts/RecoContext";
-import { useUsers } from "../../contexts/UsersContext";
 
 import Accordion from "../../utilities/Accordion";
 import DeleteBubbleModal from "../../utilities/DeleteBubbleModal";
 export default function Bubble() {
   const [showModal, setShowModal] = useState(false);
+  const [fetchBubbleInfo, setFetchBubbleInfo] = useState(true);
+  const [bubble, setBubble] = useState({});
+  const [bubbleRecos, setBubbleRecos] = useState([]);
 
   let { bubbleId } = useParams();
 
   const theme = useTheme();
   const { getBubbleById } = useBubbles();
   const { getRecosFromBubble } = useRecos();
-  const { findUserById, currentUser } = useUsers();
 
-  const bubble = getBubbleById(bubbleId);
-  const bubbleRecos = getRecosFromBubble(bubbleId);
+  const getCurrentBubbleInfo = async () => {
+    try {
+      const bubble = await getBubbleById(bubbleId);
+      const recos = await getRecosFromBubble(bubbleId);
+      setBubble(() => bubble);
+      setBubbleRecos(() => recos);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  if (fetchBubbleInfo) {
+    getCurrentBubbleInfo();
+    setFetchBubbleInfo(false);
+  }
 
-  const handleModal = (id) => {
+  const handleModal = () => {
     setShowModal(true);
   };
 
@@ -46,10 +59,9 @@ export default function Bubble() {
           <div>
             {!!bubble.members.length ? (
               <div className="flex gap-2">
-                {bubble.members.map((memberId) => {
-                  const member = findUserById(memberId);
+                {bubble.members.map((member) => {
                   return (
-                    <div className="m-auto" key={memberId}>
+                    <div className="m-auto" key={member._id}>
                       <img
                         src={member.avatarUrl}
                         alt=""
@@ -75,21 +87,19 @@ export default function Bubble() {
           <h1 className="mt-20 mb-5 uppercase">Recommendations</h1>
           <ul>
             {bubbleRecos ? (
-              bubbleRecos
-                .filter((reco) => !reco.ignoredBy?.includes(currentUser.id))
-                .map((reco) => {
-                  const date = new Date(reco.createdAt);
-                  return (
-                    <div key={reco.id}>
-                      <Accordion
-                        title={reco.title}
-                        date={date.toLocaleDateString("en-GB")}
-                        comment={reco.comment}
-                        content={reco.url}
-                      />
-                    </div>
-                  );
-                })
+              bubbleRecos.map((reco) => {
+                const date = new Date(reco.createdAt);
+                return (
+                  <div key={reco._id}>
+                    <Accordion
+                      title={reco.title}
+                      date={date.toLocaleDateString("en-GB")}
+                      description={reco.description}
+                      content={reco.url}
+                    />
+                  </div>
+                );
+              })
             ) : (
               <>
                 <p>

@@ -4,11 +4,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useBubbles } from "../../contexts/BubbleContext";
 
 export default function BubbleList({ searchParams }) {
-  const { getBubbles } = useBubbles();
+  const { bubbles } = useBubbles();
   const navigate = useNavigate();
   const params = useParams();
-  const bubbles = getBubbles();
-
   return (
     <div className=" m-auto bg-transparent mt-5">
       {bubbles.length !== 0 ? (
@@ -24,8 +22,8 @@ export default function BubbleList({ searchParams }) {
               if (params.bubbleId === undefined) {
                 return (
                   <div
-                    key={bubble.id}
-                    onClick={() => navigate(`/bubbles/${bubble.id}`)}
+                    key={bubble._id}
+                    onClick={() => navigate(`/bubbles/${bubble._id}`)}
                     className="mb-10  md:m-auto cursor-pointer md:w-72 w-full flex justify-center"
                   >
                     <div className="flex text-white flex-col w-full relative md:flex-row  hover:shadow-inner md:rounded-lg shadow-lg max-w-xl">
@@ -43,22 +41,20 @@ export default function BubbleList({ searchParams }) {
                         </p>
 
                         <div className="flex flex-wrap gap-2 md:w-56 mt-auto">
-                          {bubble.categories
-                            .split(",")
-                            .map((category, index) => {
-                              if (index < 3) {
-                                return (
-                                  <span
-                                    key={index}
-                                    className="text-xs tracking-widest mt-2  inline-block py-1 px-2.5 leading-none whitespace-nowrap    text-black border border-black bg-white opacity-70   rounded-md"
-                                  >
-                                    {category}
-                                  </span>
-                                );
-                              } else {
-                                return null;
-                              }
-                            })}
+                          {bubble.categories.map((category, index) => {
+                            if (index < 3) {
+                              return (
+                                <span
+                                  key={index}
+                                  className="text-xs tracking-widest mt-2  inline-block py-1 px-2.5 leading-none whitespace-nowrap    text-black border border-black bg-white opacity-70   rounded-md"
+                                >
+                                  {category}
+                                </span>
+                              );
+                            } else {
+                              return null;
+                            }
+                          })}
                           ...
                         </div>
                       </div>
