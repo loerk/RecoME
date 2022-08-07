@@ -3,11 +3,12 @@ import { useParams } from "react-router-dom";
 import { useUsers } from "../../contexts/UsersContext";
 
 export default function Friend() {
-  const params = useParams();
+  const { friendId } = useParams();
 
-  const { findUserById } = useUsers();
-
-  const currentFriend = findUserById(params.friendId);
+  const { currentUser } = useUsers();
+  const currentFriend = currentUser.friends.find(
+    (friend) => friend._id === friendId
+  );
 
   return (
     <div className="flex m-10">

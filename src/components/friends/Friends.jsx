@@ -2,14 +2,13 @@ import { useNavigate, Outlet, useLocation } from "react-router-dom";
 import { AddButton } from "../../utilities/Buttons";
 import { useUsers } from "../../contexts/UsersContext";
 import React, { useState } from "react";
-import { v1 as uuidv1 } from "uuid";
 
 export default function Friends() {
   const navigate = useNavigate();
   const location = useLocation();
   window.scrollTo(0, 0);
 
-  const { findUserById, currentUser } = useUsers();
+  const { currentUser } = useUsers();
   const [searchFor, setSearchFor] = useState("");
 
   const friends = currentUser.friends;
@@ -56,26 +55,22 @@ export default function Friends() {
             {friends.length !== 0 ? (
               <ul className="pt-6 flex flex-wrap gap-4 justify-around">
                 {friends
-                  .filter((friendId) => {
-                    let currFriend = findUserById(friendId);
-                    return currFriend.username
+                  .filter((friend) => {
+                    return friend.username
                       .toLowerCase()
                       .includes(searchFor.toLowerCase());
                   })
-                  .map((friendId) => {
-                    let currFriend = findUserById(friendId);
+                  .map((friend) => {
                     return (
-                      <li key={uuidv1()}>
+                      <li key={friend._id}>
                         <div className="text-center">
                           <img
-                            onClick={() =>
-                              navigate(`/friends/${currFriend.id}`)
-                            }
+                            onClick={() => navigate(`/friends/${friend._id}`)}
                             className="w-28 h-28 object-cover object-center opacity-50  hover:opacity-100 rounded-full cursor-pointer"
-                            src={currFriend.avatarUrl}
+                            src={friend.avatarUrl}
                             alt=""
                           />
-                          <p className="relative">{currFriend.username}</p>
+                          <p className="relative">{friend.username}</p>
                         </div>
                       </li>
                     );
