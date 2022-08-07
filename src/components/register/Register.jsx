@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-
 import { useTheme } from "../../contexts/ThemeContext";
 import { useNavigate, NavLink } from "react-router-dom";
-import { fetchData } from "../../api/fetchers";
+
+import { useUsers } from "../../contexts/UsersContext";
 
 export default function Register() {
   const { theme } = useTheme();
@@ -18,6 +18,7 @@ export default function Register() {
 
   const navigate = useNavigate();
 
+  const { createNewUser } = useUsers();
   function handleChange(event) {
     const { name, value, type, checked } = event.target;
     setRegisterData((prevRegisterData) => ({
@@ -28,18 +29,21 @@ export default function Register() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    if (!registerData.email || !registerData.username)
+      return setStatus("All fields are required");
 
     if (
       registerData.password !== registerData.passwordConfirm ||
       !registerData.password
-    ) {
-      setStatus("The passwords have to match");
-      return;
-    }
-    const result = await fetchData("/signup", "POST", registerData);
+    )
+      return setStatus("The passwords have to match");
+
+    const result = await createNewUser(registerData);
+
     if (result.message !== "success")
       return setStatus("we could not register your account, try again");
-    setStatus("please verify your email and login");
+
+    setStatus("Great! Please verify your email before you login");
     navigate("/");
   };
 

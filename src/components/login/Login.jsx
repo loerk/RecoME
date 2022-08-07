@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
+
 import { useTheme } from "../../contexts/ThemeContext";
 import { useUsers } from "../../contexts/UsersContext";
 
 export default function Login() {
   const { theme } = useTheme();
-  const { users, loginUser } = useUsers();
+  const { loginUser } = useUsers();
 
-  const [error, setError] = useState(null);
+  const [status, setStatus] = useState("");
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
@@ -24,18 +25,17 @@ export default function Login() {
     }));
   }
 
-  function handleSubmit(event) {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    const knownUser = users.find((user) => user.email === loginData.email);
-
-    if (!knownUser || knownUser.password !== loginData.password) {
-      setError("password or email are not correct");
+    if (!loginData.email || !loginData.password) {
+      setStatus("All fields are required");
       return;
     }
-
-    loginUser(knownUser);
-    navigate("/");
-  }
+    const result = await loginUser(loginData);
+    if (typeof result === "string") return setStatus(result);
+    setStatus("");
+    navigate("/", { replace: true });
+  };
 
   return (
     <div className="flex justify-center mt-10 flex-col">
@@ -87,7 +87,7 @@ export default function Login() {
               I want to stay logged in
             </label>
           </div>
-          {!!error && <p className="text-fuchsia-600">{error}</p>}
+          {!!status && <p className="text-fuchsia-600">{status}</p>}
           <button
             className={
               theme

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
-import { v1 as uuidv1 } from "uuid";
+import { fetchData, loginFetchData } from "../api/fetchers";
 
 const UsersContext = createContext([]);
 
@@ -7,110 +7,107 @@ export const useUsers = () => {
   return useContext(UsersContext);
 };
 const initialValueCurrentUser = JSON.parse(localStorage.getItem("currentUser"));
-const initialValueUsers = JSON.parse(localStorage.getItem("users"));
 
 export function UsersContextProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(
     initialValueCurrentUser || null
   );
-  const [users, setUsers] = useState(initialValueUsers || []);
 
-  const loginUser = (user) => {
-    const userWithLastLogin = { ...user, lastLogin: Date.now() };
-    setCurrentUser(userWithLastLogin);
-    localStorage.setItem("currentUser", JSON.stringify(userWithLastLogin));
+  const loginUser = async (loginData) => {
+    const resp = await loginFetchData("/auth/signin", loginData);
+    if (resp.message === "please confirm your email first") return resp.message;
+    if (resp.message !== "successfully logged in")
+      return "something went wrong, try again";
+
+    setCurrentUser(() => resp.existingUser);
+    localStorage.setItem(
+      "currentUser",
+      JSON.stringify({
+        _id: resp.existingUser._id,
+        avatarUrl: resp.existingUser.avatarUrl,
+        friends: resp.existingUser.friends,
+        username: resp.existingUser.username,
+      })
+    );
+    localStorage.setItem(
+      "expiresAt",
+      JSON.stringify({
+        expiresAt: resp.expiresAt,
+      })
+    );
+    return currentUser;
   };
 
   const logoutUser = () => {
     setCurrentUser(null);
-    localStorage.setItem("currentUser", JSON.stringify(null));
+    localStorage.clear();
   };
 
-  const updateUsers = (updatedUserList) => {
-    const updatedUsers = users.map((user) => {
-      const foundUser = updatedUserList.find(
-        (findUser) => findUser.id === user.id
-      );
-      return foundUser ? foundUser : user;
-    });
-    setUsers(updatedUsers);
-    localStorage.setItem("users", JSON.stringify(updatedUsers));
+  const findUserById = async (id) => {
+    const resp = await fetchData(`/users/${id}`, "GET");
+    if (!resp) return null;
+    return resp;
   };
 
-  const updateCurrentUser = (updatedUser) => {
-    setCurrentUser({ ...updatedUser });
-    localStorage.setItem("currentUser", JSON.stringify(updatedUser));
+  const createNewUser = async (registeredUser) => {
+    const newUser = await fetchData("/auth/signup", "POST", registeredUser);
+    if (!newUser) return null;
+    return newUser;
   };
+  // const updateUser = async (updatedUser) => {
+  //   const updatedUserData = await fetchData(
+  //     `/users/${updatedUser.id}`,
+  //     "PUT",
+  //     updatedUser
+  //   );
+  //   setCurrentUser(updatedUserData);
+  //   return updatedUserData;
+  // };
 
-  const deleteUser = () => {
-    const filteredUser = users
-      .filter((user) => user.id !== currentUser.id)
-      .map((user) => ({
-        ...user,
-        friends: user.friends.filter((friend) => friend.id !== currentUser.id),
-      }));
-
-    setUsers(filteredUser);
+  const deleteUser = async (id) => {
+    await fetchData(`/users/${id}`, "DELETE");
     setCurrentUser(null);
-    localStorage.setItem("users", JSON.stringify(filteredUser));
-    localStorage.setItem("currentUser", JSON.stringify(null));
   };
 
-  const findUserByEmail = (email) => {
-    return users.find((user) => user.email === email);
-  };
+  // const addFriend = async (friendId) => {
+  //   try {
+  //     if (currentUser.friends.includes(friendId)) return;
+  //     const updatedCurrentUser = {
+  //       ...currentUser,
+  //       friends: [...currentUser.friends, friendId],
+  //     };
+  //     await updateUser(updatedCurrentUser);
+  //   } catch (error) {}
 
-  const findUserById = (id) => {
-    return users.find((user) => user.id === id);
-  };
+  //   const friend = await findUserById(friendId);
+  //   const updatedFriend = {
+  //     ...friend,
+  //     friends: [...friend.friends, currentUser.id],
+  //   };
+  //   await updateUser(updatedFriend);
+  // };
 
-  const createNewUser = (registeredUser) => {
-    const newUser = {
-      ...registeredUser,
-      id: uuidv1(),
-      lastLogin: Date.now(),
-      memberSince: Date.now(),
-      stayLoggedIn: false,
-      friends: [],
-      invitedFriends: [],
-      notifications: [],
-      invitedBy: "",
-      avatarUrl: `https://api.multiavatar.com/${registeredUser.username}.png`,
-    };
-    setCurrentUser(newUser);
-    setUsers([...users, newUser]);
-    localStorage.setItem("currentUser", JSON.stringify(newUser));
-    //  fetch("http://localhost:4000/createUser",{ {options}, {data}})
-    localStorage.setItem("users", JSON.stringify([...users, newUser]));
-  };
-  const addFriend = (friendId) => {
-    if (currentUser.friends.includes(friendId)) return;
-    const updatedUser = {
-      ...currentUser,
-      friends: [...currentUser.friends, friendId],
-    };
-    updateCurrentUser(updatedUser);
+  // const updateUsers = (updatedUserList) => {
+  //   const updatedUsers = users.map((user) => {
+  //     const foundUser = updatedUserList.find(
+  //       (findUser) => findUser.id === user.id
+  //     );
+  //     return foundUser ? foundUser : user;
+  //   });
+  //   setUsers(updatedUsers);
+  //   localStorage.setItem("users", JSON.stringify(updatedUsers));
+  // };
 
-    const friend = findUserById(friendId);
-    const updatedFriend = {
-      ...friend,
-      friends: [...friend.friends, currentUser.id],
-    };
-    updateUsers([updatedUser, updatedFriend]);
-  };
   const contextValue = {
-    users,
-    setUsers,
+    // updateUsers,
+
     currentUser,
-    updateUsers,
-    updateCurrentUser,
     loginUser,
     logoutUser,
     createNewUser,
     deleteUser,
-    findUserByEmail,
     findUserById,
-    addFriend,
+    //addFriend,
   };
 
   return (
