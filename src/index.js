@@ -7,14 +7,14 @@ import { BrowserRouter } from "react-router-dom";
 import { UsersContextProvider } from "./contexts/UsersContext";
 import { BubbleContextProvider } from "./contexts/BubbleContext";
 import { RecoContextProvider } from "./contexts/RecoContext";
-import { NotifivationsContextProvider } from "./contexts/NotificationsContext";
+import { NotificationsContextProvider } from "./contexts/NotificationsContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <UsersContextProvider>
     <BubbleContextProvider>
       <RecoContextProvider>
-        <NotifivationsContextProvider>
+        <NotificationsContextProvider>
           <ThemeContextProvider>
             <React.StrictMode>
               <BrowserRouter>
@@ -22,7 +22,7 @@ root.render(
               </BrowserRouter>
             </React.StrictMode>
           </ThemeContextProvider>
-        </NotifivationsContextProvider>
+        </NotificationsContextProvider>
       </RecoContextProvider>
     </BubbleContextProvider>
   </UsersContextProvider>
