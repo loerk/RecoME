@@ -5,23 +5,12 @@ import { useBubbles } from "../../contexts/BubbleContext";
 import { useRecos } from "../../contexts/RecoContext";
 
 export default function Landing() {
-  const { currentUser, findUserById } = useUsers();
-  const { getBubbles } = useBubbles();
-  const { getAllRecos } = useRecos();
   const navigate = useNavigate();
 
+  const { bubbles } = useBubbles();
+  const { recos } = useRecos();
+  const currentUser = useUsers();
   window.scrollTo(0, 0);
-
-  if (!currentUser) {
-    return null;
-  }
-
-  const bubbles = getBubbles();
-  const recosFromUser = getAllRecos();
-  const findFriend = (id) => {
-    return findUserById(id);
-  };
-
   return (
     <div className="pb-12 pt-32">
       <div className="flex items-center m-auto gap-7 mt-16 py-5 flex-col h-76 rounded shadow-2xl ">
@@ -29,11 +18,11 @@ export default function Landing() {
           <h1 className="px-10">Your bubbles</h1>
           <ul className="flex overflow-x-hidden w-2/3">
             {bubbles?.map((bubble) => (
-              <li key={bubble.id}>
+              <li key={bubble._id}>
                 <div className="text-center m-2">
                   <div className="w-28 h-28 object-cover object-center opacity-50  hover:opacity-100 rounded-full cursor-pointer">
                     <img
-                      onClick={() => navigate(`/bubbles/${bubble.id}`)}
+                      onClick={() => navigate(`/bubbles/${bubble._id}`)}
                       className="rounded-full  h-28 w-28"
                       src={bubble.imageUrl}
                       alt=""
@@ -53,19 +42,18 @@ export default function Landing() {
         <div className="flex justify-around items-center w-full content-center">
           <h1 className="px-10">Your friends</h1>
           <ul className="flex overflow-x-hidden w-2/3">
-            {currentUser.friends?.map((friendId) => {
-              let currFriend = findFriend(friendId);
+            {currentUser.friends?.map((friend) => {
               return (
-                <li key={friendId}>
+                <li key={friend._id}>
                   <div className="text-center m-2">
                     <div className="w-28 h-28 object-cover object-center opacity-50  hover:opacity-100 rounded-full cursor-pointer">
                       <img
-                        onClick={() => navigate(`/friends/${currFriend.id}`)}
-                        src={currFriend.avatarUrl}
+                        onClick={() => navigate(`/friends/${friend._id}`)}
+                        src={friend.avatarUrl}
                         alt=""
                       />
                     </div>
-                    <button className="relative">{currFriend.username}</button>
+                    <button className="relative">{friend.username}</button>
                   </div>
                 </li>
               );
@@ -80,15 +68,13 @@ export default function Landing() {
         <div className="flex justify-around items-center w-full content-center">
           <h1 className="px-10">Latest Recos</h1>
           <ul className="flex overflow-x-hidden w-2/3">
-            {recosFromUser
-              ?.filter((reco) => !reco.ignoredBy?.includes(currentUser.id))
-              .map((reco) => (
-                <button key={reco.id} onClick={() => navigate("/recos")}>
-                  <div className="flex m-2 items-center w-28 h-28 opacity-60 bg-yellow-200  hover:opacity-100 rounded-full cursor-pointer">
-                    <div className="truncate px-3 ">{reco.title}</div>
-                  </div>
-                </button>
-              ))}
+            {recos?.map((reco) => (
+              <button key={reco._id} onClick={() => navigate("/recos")}>
+                <div className="flex m-2 items-center w-28 h-28 opacity-60 bg-yellow-200  hover:opacity-100 rounded-full cursor-pointer">
+                  <div className="truncate px-3 ">{reco.title}</div>
+                </div>
+              </button>
+            ))}
           </ul>
           <Link to={"/recos"}>
             <MdArrowForwardIos className="mx-6 text-2xl md:text-3xl"></MdArrowForwardIos>
