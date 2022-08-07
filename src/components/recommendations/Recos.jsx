@@ -1,11 +1,8 @@
 import React, { useState } from "react";
 import { Outlet, useLocation, Link } from "react-router-dom";
 import { RiDeleteBinLine } from "react-icons/ri";
-import { v1 as uuidv1 } from "uuid";
 
-import { useUsers } from "../../contexts/UsersContext";
 import { AddButton } from "../../utilities/Buttons";
-import { useBubbles } from "../../contexts/BubbleContext";
 import { LinkPreview } from "../../utilities/LinkPreview";
 import { useRecos } from "../../contexts/RecoContext";
 import DeleteRecoModal from "../../utilities/DeleteRecoModal";
@@ -15,12 +12,8 @@ export default function Recos() {
   const [searchFor, setSearchFor] = useState("");
   const [recoIdToDelete, setRecoIdToDelete] = useState(null);
 
-  const { getBubbleById } = useBubbles();
   const location = useLocation();
-  const { findUserById } = useUsers();
-  const { getAllRecos } = useRecos();
-
-  const allRecos = getAllRecos();
+  const { recos } = useRecos();
 
   const handleModal = (id) => {
     setShowModal(true);
@@ -65,9 +58,9 @@ export default function Recos() {
           </Link>
 
           <div className="p-10">
-            {allRecos.length ? (
+            {recos.length ? (
               <ul className="pt-6 flex flex-wrap gap-4 justify-around">
-                {allRecos
+                {recos
                   .filter((reco) => {
                     return reco.title
                       .toLowerCase()
@@ -76,7 +69,7 @@ export default function Recos() {
                   .map((reco) => {
                     const date = new Date(reco.createdAt);
                     return (
-                      <div key={reco.id}>
+                      <div key={reco._id}>
                         <div className="flex bg-white flex-col hover:shadow-inner md:flex-row  rounded-lg shadow-lg  ">
                           <div className="p-4 backdrop-blur-xl relative rounded flex flex-col justify-start">
                             <div className="z-2 flex justify-between">
@@ -85,31 +78,33 @@ export default function Recos() {
                               </h5>
                               <div className="relative flex pb-3">
                                 <img
-                                  src={findUserById(reco.createdBy).avatarUrl}
+                                  src={reco.createdBy.avatarUrl}
                                   alt=""
                                   className="w-9 z-3 relative left-3 aspect-square shadow-lg rounded-full"
                                 />
 
                                 <img
                                   src={
-                                    getBubbleById(reco.sharedWith)?.imageUrl ||
-                                    findUserById(reco.sharedWith)?.avatarUrl
+                                    reco.bubbleId.imageUrl ||
+                                    reco.userIds[0].avatarUrl
                                   }
                                   alt=""
                                   className="w-9 aspect-square shadow-lg rounded-full"
                                 />
                               </div>
                             </div>
-                            <p className=" text-base mb-4">{reco.comment}</p>
+                            <p className=" text-base mb-4">
+                              {reco.description}
+                            </p>
                             <p className="tracking-widest text-xs">
                               {date.toLocaleString("en-GB")}
                             </p>
                             <LinkPreview url={reco.url} />
                             <div className="flex flex-wrap  gap-2 justify-center mt-auto">
-                              {reco.categories.split(",").map((category) => {
+                              {reco.categories.map((category) => {
                                 return (
                                   <span
-                                    key={uuidv1()}
+                                    key={reco._id}
                                     className="text-xs tracking-widest font-face-tl inline-block py-1 px-2.5 leading-none text-center whitespace-nowrap align-baseline font-bold bg-lime-400 text-black rounded-full"
                                   >
                                     {category}
@@ -119,7 +114,7 @@ export default function Recos() {
                             </div>
                             <RiDeleteBinLine
                               className="m-auto mt-5 cursor-pointer"
-                              onClick={() => handleModal(reco.id)}
+                              onClick={() => handleModal(reco._id)}
                             ></RiDeleteBinLine>
                           </div>
                           {showModal && (

@@ -1,96 +1,106 @@
 import React, { createContext, useContext, useState } from "react";
-import { useBubbles } from "./BubbleContext";
-import { useGetCurrentUser } from "./UsersContext";
+import { useEffect } from "react";
+import { fetchData } from "../api/fetchers";
+import { useUsers } from "./UsersContext";
 
 const RecoContext = createContext([]);
 
 export const useRecos = () => {
   return useContext(RecoContext);
 };
-const initialRecos = JSON.parse(localStorage.getItem("recos"));
 
 export function RecoContextProvider({ children }) {
-  const [recos, setRecos] = useState(initialRecos || []);
-  const getCurrentUser = useGetCurrentUser();
-  const { getBubbles } = useBubbles();
+  const [recos, setRecos] = useState([]);
+  const [shouldFetchRecos, setShouldFetchRecos] = useState(true);
+  const { currentUser } = useUsers();
 
-  const addReco = (newReco) => {
-    const currentUser = getCurrentUser();
-    const newRecos = [
-      ...recos,
-      {
-        ...newReco,
-        createdAt: Date.now(),
-        createdBy: currentUser.id,
-      },
-    ];
+  useEffect(() => {
+    const fetchRecos = async () => {
+      try {
+        const resp = await fetchData(`/recos`, "GET");
+        setRecos(() => resp.recos);
+        console.log("from recosContext", resp.recos);
+        setShouldFetchRecos(false);
+        localStorage.setItem("recos", JSON.stringify(resp.recos));
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    if (shouldFetchRecos && currentUser) {
+      fetchRecos();
+    }
+  }, [shouldFetchRecos, currentUser]);
 
-    setRecos(newRecos);
-    localStorage.setItem("recos", JSON.stringify(newRecos));
+  const addReco = async (newReco) => {
+    try {
+      const result = await fetchData("/recos", "POST", newReco);
+      if (!result) throw new Error("no valid response while getting recos");
+      setRecos(result);
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const getRecosFromBubble = (id) => {
-    return recos.filter(
-      (reco) => reco.sharedWithBubbles && reco.sharedWith === id
-    );
-  };
-  const getRecosForAndByUser = () => {
-    const currentUser = getCurrentUser();
-    return recos.filter(
-      (reco) =>
-        reco.sharedWith === currentUser.id || reco.createdBy === currentUser.id
-    );
-  };
-  const getAllRecos = () => {
-    const currentUser = getCurrentUser();
-    const recosForAndByUser = getRecosForAndByUser();
-    const userBubbles = getBubbles();
-    const userBubbleRecos = userBubbles.flatMap((bubble) =>
-      getRecosFromBubble(bubble.id)
-    );
-    const allRecos = [...recosForAndByUser, ...userBubbleRecos].filter(
-      (reco) => !reco.ignoredBy?.includes(currentUser.id)
-    );
-
-    return allRecos.reduce((acc, curr) => {
-      if (acc.some((user) => user.id === curr.id)) return acc;
-      return [...acc, curr];
-    }, []);
+  const getRecosFromBubble = async (id) => {
+    try {
+      const result = await fetchData(`/recos/${id}`, "GET");
+      if (!result)
+        throw new Error("no valid response while getting BubbleRecos");
+      return result.bubbleRecos;
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const deleteReco = (id) => {
-    const filteredRecos = recos.filter((reco) => reco.id !== id);
-    setRecos(filteredRecos);
-    localStorage.setItem("recos", JSON.stringify(filteredRecos));
+  const getAllRecos = async () => {
+    try {
+      const result = await fetchData("/recos", "GET");
+      if (!result) throw new Error("no valid response while getting recos");
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const deleteReco = async (id) => {
+    try {
+      const result = await fetchData(`/recos/${id}`, "DELETE");
+      console.log(result);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const findRecoById = (id) => recos.find((reco) => reco.id === id);
-  const updateRecos = (updatedReco) => {
-    const updatedRecosArray = recos.map((reco) => {
-      if (reco.id === updatedReco.id) return updatedReco;
-      return reco;
-    });
-    setRecos(updatedRecosArray);
-    localStorage.setItem("recos", JSON.stringify(updatedRecosArray));
-  };
-  const ignoreReco = (id) => {
-    const currentUser = getCurrentUser();
-    const currentReco = findRecoById(id);
-    const updatedReco = {
-      ...currentReco,
-      ignoredBy: [...(currentReco.ignoredBy || []), currentUser.id],
-    };
-    updateRecos(updatedReco);
-  };
+  // const updateRecos = (updatedReco) => {
+  //   const updatedRecosArray = recos.map((reco) => {
+  //     if (reco.id === updatedReco.id) return updatedReco;
+  //     return reco;
+  //   });
+  //   setRecos(updatedRecosArray);
+  //   localStorage.setItem("recos", JSON.stringify(updatedRecosArray));
+  // };
+  // const ignoreReco = (id) => {
+  //   const currentUser = getCurrentUser();
+  //   const currentReco = findRecoById(id);
+  //   const updatedReco = {
+  //     ...currentReco,
+  //     ignoredBy: [...(currentReco.ignoredBy || []), currentUser.id],
+  //   };
+  //   updateRecos(updatedReco);
+  // };
 
   const contextValue = {
+    setShouldFetchRecos,
+    recos,
     addReco,
     deleteReco,
     getRecosFromBubble,
     getAllRecos,
     findRecoById,
-    ignoreReco,
-    updateRecos,
+    // ignoreReco,
+    shouldFetchRecos,
   };
   return (
     <RecoContext.Provider value={contextValue}>{children}</RecoContext.Provider>

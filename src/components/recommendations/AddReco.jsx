@@ -1,44 +1,31 @@
 import React, { useState } from "react";
-import { v1 as uuidv1 } from "uuid";
 
 import { useBubbles } from "../../contexts/BubbleContext";
 import { useTheme } from "../../contexts/ThemeContext";
 import { useUsers } from "../../contexts/UsersContext";
 import { useNavigate, useParams } from "react-router-dom";
 import { useRecos } from "../../contexts/RecoContext";
-import { useNotifications } from "../../contexts/NotificationsContext";
 
 export default function AddReco() {
   const theme = useTheme();
   const navigate = useNavigate();
   const { bubbleId } = useParams();
   const { findUserById, currentUser } = useUsers();
-  const { getBubbles, getBubbleById } = useBubbles();
-  const { addReco } = useRecos();
-  const { addRecoToUserNotification, addRecoToBubbleNotification } =
-    useNotifications();
+  const { bubbles, getBubbleById } = useBubbles();
+  const { addReco, setFetchReco } = useRecos();
 
-  const [selected, setSelected] = useState(
-    bubbleId
-      ? {
-          bubble: getBubbleById(bubbleId),
-          user: "",
-        }
-      : { bubble: "", user: "" }
-  );
+  const [selected, setSelected] = useState({
+    bubble: bubbleId || "",
+    user: "",
+  });
 
   const [recoData, setRecoData] = useState({
     title: "",
-    private: false,
-    sharedWithBubbles: false,
-    sharedWithFriends: false,
-    sharedWith: [],
+    userIds: [],
     categories: "",
     url: "",
-    comment: "",
-    id: uuidv1(),
+    description: "",
   });
-  const bubbles = getBubbles();
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -48,30 +35,24 @@ export default function AddReco() {
     }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (selected.bubble.id) {
       const recoToBubble = {
         ...recoData,
-        sharedWith: selected.bubble.id,
-        sharedWithBubbles: true,
+        bubbleId: selected.bubble.id,
       };
-      addReco(recoToBubble);
-      addRecoToBubbleNotification(selected.bubble.id, recoData.id, [
-        ...selected.bubble.members.filter(
-          (member) => member !== currentUser.id
-        ),
-      ]);
-
+      await addReco(recoToBubble);
+      setFetchReco(true);
       navigate("/recos");
     }
 
     if (selected.user.id) {
       const recoToFriend = {
         ...recoData,
-        sharedWith: selected.user.id,
+        userIds: [selected.user.id],
       };
-      addReco(recoToFriend);
-      addRecoToUserNotification(recoData.id, selected.user.id);
+      await addReco(recoToFriend);
+      setFetchReco(true);
       navigate("/recos");
     }
   };
@@ -209,11 +190,11 @@ export default function AddReco() {
           />
           <input
             type="text"
-            placeholder="comment your reco"
+            placeholder="describe your reco"
             className=" w-full font-face-tm text-2xl p-2 border-2"
-            name="comment"
+            name="description"
             onChange={handleChange}
-            value={recoData.comment}
+            value={recoData.description}
           />
           <button
             onClick={handleSubmit}
@@ -258,11 +239,11 @@ export default function AddReco() {
           />
           <input
             type="text"
-            placeholder="comment your reco"
+            placeholder="describe your reco"
             className=" w-full font-face-tm text-2xl p-2 border-2"
-            name="comment"
+            name="description"
             onChange={handleChange}
-            value={recoData.comment}
+            value={recoData.description}
           />
           <button
             onClick={handleSubmit}
