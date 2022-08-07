@@ -20,7 +20,7 @@ import Notifications from "./components/notifications/Notifications";
 
 import { useUsers } from "./contexts/UsersContext";
 
-function App() {
+export default function App() {
   const { theme } = useTheme();
   const { currentUser } = useUsers();
 
@@ -28,7 +28,6 @@ function App() {
     if (!currentUser) {
       return <Navigate to={redirectPath} replace />;
     }
-
     return <Outlet />;
   };
 
@@ -36,7 +35,7 @@ function App() {
     <div className={theme ? "bg-black min-h-screen h-full" : "h-screen "}>
       <Header />
       <Routes>
-        <Route path="/register" element={<Register />} />
+        <Route path="register" element={<Register />} />
         <Route path="login" element={<Login />} />
         <Route element={<ProtectedRoute currentUser={currentUser} />}>
           <Route path="/" element={<Landing />} />
@@ -62,5 +61,3 @@ function App() {
     </div>
   );
 }
-
-export default App;
