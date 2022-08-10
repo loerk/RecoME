@@ -12,9 +12,9 @@ import { NotificationsContextProvider } from "./contexts/NotificationsContext";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <UsersContextProvider>
-    <BubbleContextProvider>
-      <RecoContextProvider>
-        <NotificationsContextProvider>
+    <NotificationsContextProvider>
+      <BubbleContextProvider>
+        <RecoContextProvider>
           <ThemeContextProvider>
             <React.StrictMode>
               <BrowserRouter>
@@ -22,8 +22,8 @@ root.render(
               </BrowserRouter>
             </React.StrictMode>
           </ThemeContextProvider>
-        </NotificationsContextProvider>
-      </RecoContextProvider>
-    </BubbleContextProvider>
+        </RecoContextProvider>
+      </BubbleContextProvider>
+    </NotificationsContextProvider>
   </UsersContextProvider>
 );
