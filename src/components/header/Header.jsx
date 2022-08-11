@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useTheme } from "../../contexts/ThemeContext";
 import { MdLightMode, MdOutlineLightMode } from "react-icons/md";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import { useUsers } from "../../contexts/UsersContext";
 
@@ -12,6 +12,17 @@ export default function Header() {
   const { logoutUser, currentUser } = useUsers();
 
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const { expiresAt } = JSON.parse(localStorage.getItem("expiresAt")) || 0;
+
+    if (expiresAt * 1000 < new Date().getTime()) {
+      handleLogout();
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location]);
 
   const handleLogout = () => {
     logoutUser(currentUser);
