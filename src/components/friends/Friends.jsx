@@ -1,17 +1,21 @@
 import { useNavigate, Outlet, useLocation } from "react-router-dom";
 import { AddButton } from "../../utilities/Buttons";
 import { useUsers } from "../../contexts/UsersContext";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 export default function Friends() {
   const navigate = useNavigate();
   const location = useLocation();
   window.scrollTo(0, 0);
 
-  const { currentUser } = useUsers();
   const [searchFor, setSearchFor] = useState("");
+  const { friends, setShouldUpdateFriends } = useUsers();
 
-  const friends = currentUser.friends;
+  useEffect(() => {
+    setShouldUpdateFriends(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [friends]);
+
   const addFriend = () => {
     navigate("/friends/addFriend");
   };

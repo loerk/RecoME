@@ -5,8 +5,8 @@ import { useParams } from "react-router-dom";
 
 export default function AddFriend() {
   const params = useParams();
-  const { findUserById, currentUser } = useUsers();
-  const { inviteUsers, bubbles } = useBubbles();
+  const { friends } = useUsers();
+  const { inviteUsers, bubbles, inviteUserByEmail } = useBubbles();
   const [invitationStatus, setInvitationStatus] = useState({
     single: "",
     group: "",
@@ -18,7 +18,6 @@ export default function AddFriend() {
   const [friendsList, setFriendsList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const friends = currentUser.friends;
   const isFriendInvited = (id) => friendsList.includes(id);
 
   const toggleFriend = (id) => {
@@ -45,7 +44,9 @@ export default function AddFriend() {
       setStatus({ group: "the friends who are not yet members got invited" });
       setFriendsList([]);
     } else {
-      setStatus({ group: "Oops, something went wrong" });
+      setStatus({
+        group: "Maybe your friends are already invited or already member",
+      });
     }
   };
 
@@ -61,8 +62,9 @@ export default function AddFriend() {
       setStatus({ single: "please select a bubble" });
       return;
     }
-    const result = await inviteUsers(selectedBubbleId, email);
-    if (!result) {
+    const result = await inviteUserByEmail(selectedBubbleId, email);
+
+    if (result === "Conflict") {
       setStatus({
         single: "Maybe your friend is already invited or already member",
       });
@@ -107,7 +109,7 @@ export default function AddFriend() {
                 <option value="">select a bubble</option>
                 {bubbles.map((bubble) => {
                   return (
-                    <option key={bubble.id} value={bubble.id}>
+                    <option key={bubble._id} value={bubble._id}>
                       {bubble.name}
                     </option>
                   );
@@ -180,26 +182,25 @@ export default function AddFriend() {
           <ul className="pt-6 ">
             <h1 className=" pb-5 ">...or choose from your friends:</h1>
             <div className="flex  gap-4 flex-wrap mb-2  w-56  text-center">
-              {friends.map((friendId) => {
-                let currFriend = findUserById(friendId);
+              {friends.map((friend) => {
                 if (params.friendId === undefined) {
                   return (
-                    <li key={friendId}>
+                    <li key={friend._id}>
                       <div className="">
                         <div
                           className={
-                            isFriendInvited(currFriend.id)
+                            isFriendInvited(friend._id)
                               ? "bg-gradient-to-r from-cyan-500 to-blue-500 shadow-lg "
                               : null
                           }
                         >
                           <img
-                            onClick={() => toggleFriend(currFriend.id)}
+                            onClick={() => toggleFriend(friend._id)}
                             className="w-14 h-14 p-1 object-cover object-center shadow-lg  rounded-full cursor-pointer"
-                            src={currFriend.avatarUrl}
+                            src={friend.avatarUrl}
                             alt=""
                           />
-                          <p className="relative">{currFriend.username}</p>
+                          <p className="relative">{friend.username}</p>
                         </div>
                       </div>
                     </li>
