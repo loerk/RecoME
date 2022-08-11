@@ -67,33 +67,27 @@ export function RecoContextProvider({ children }) {
 
   const deleteReco = async (id) => {
     try {
-      const result = await fetchData(`/recos/${id}`, "DELETE");
-      console.log(result);
+      await fetchData(`/recos/${id}`, "DELETE");
+      setShouldFetchRecos(true);
     } catch (error) {
       console.log(error);
     }
   };
 
+  const ignoreReco = async (id) => {
+    try {
+      const result = await fetchData(`/recos/${id}/ignore`, "PUT");
+      console.log(result);
+      setShouldFetchRecos(true);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const findRecoById = (id) => recos.find((reco) => reco.id === id);
-  // const updateRecos = (updatedReco) => {
-  //   const updatedRecosArray = recos.map((reco) => {
-  //     if (reco.id === updatedReco.id) return updatedReco;
-  //     return reco;
-  //   });
-  //   setRecos(updatedRecosArray);
-  //   localStorage.setItem("recos", JSON.stringify(updatedRecosArray));
-  // };
-  // const ignoreReco = (id) => {
-  //   const currentUser = getCurrentUser();
-  //   const currentReco = findRecoById(id);
-  //   const updatedReco = {
-  //     ...currentReco,
-  //     ignoredBy: [...(currentReco.ignoredBy || []), currentUser.id],
-  //   };
-  //   updateRecos(updatedReco);
-  // };
 
   const contextValue = {
+    isLoadingRecos,
+    ignoreReco,
     setShouldFetchRecos,
     recos,
     addReco,
@@ -101,7 +95,6 @@ export function RecoContextProvider({ children }) {
     getRecosFromBubble,
     getAllRecos,
     findRecoById,
-    // ignoreReco,
     shouldFetchRecos,
   };
   return (

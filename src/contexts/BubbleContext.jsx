@@ -11,12 +11,15 @@ export const useBubbles = () => {
 
 export function BubbleContextProvider({ children }) {
   const [bubbles, setBubbles] = useState([]);
+  const [bubble, setBubble] = useState({});
   const [shouldFetchBubbles, setShouldFetchBubbles] = useState(true);
+
   const { currentUser } = useUsers();
 
   useEffect(() => {
     const fetchBubbles = async () => {
       const result = await fetchData("/bubbles", "GET");
+
       if (!result) throw new Error("no valid response while getting bubbles");
       setBubbles(() => result.userBubbles);
       setShouldFetchBubbles(false);
@@ -57,7 +60,7 @@ export function BubbleContextProvider({ children }) {
   const deleteBubble = async (id) => {
     try {
       const result = await fetchData(`/bubbles/${id}`, "DELETE");
-      console.log(result);
+      return result;
     } catch (error) {
       console.log(error);
     }
@@ -65,16 +68,18 @@ export function BubbleContextProvider({ children }) {
 
   const getBubbleById = async (id) => {
     try {
-      const result = await fetchData(`/bubbles/${id}`, "GET");
-      return result;
+      const resp = await fetchData(`/bubbles/${id}`, "GET");
+      setBubble(resp.bubble);
     } catch (error) {
       console.log(error);
     }
   };
 
   const exitBubble = async (id) => {
+    console.log(id);
     try {
-      await fetchData(`/bubbles/${id}/leave`);
+      const result = await fetchData(`/bubbles/${id}/leave`, "DELETE");
+      return result;
     } catch (error) {
       console.log(error);
     }
@@ -101,29 +106,12 @@ export function BubbleContextProvider({ children }) {
     const result = await fetchData(`/bubbles/${bubbleId}/inviteUsers`, "PUT", {
       email,
     });
+    console.log(result);
     return result;
   };
 
-  // const addFriend = async (friendId) => {
-  //   try {
-  //     if (currentUser.friends.includes(friendId)) return;
-  //     const updatedCurrentUser = {
-  //       ...currentUser,
-  //       friends: [...currentUser.friends, friendId],
-  //     };
-  //     await updateUser(updatedCurrentUser);
-  //   } catch (error) {}
-
-  //   const friend = await findUserById(friendId);
-  //   const updatedFriend = {
-  //     ...friend,
-  //     friends: [...friend.friends, currentUser.id],
-  //   };
-  //   await updateUser(updatedFriend);
-  // };
-
   const contextValue = {
-    //findBubbleMember,
+    bubble,
     setShouldFetchBubbles,
     bubbles,
     addBubble,
