@@ -2,7 +2,6 @@ import useLinkPreview from "use-link-preview";
 import { useParams } from "react-router-dom";
 export function LinkPreview({ url }) {
   const { bubbleId } = useParams();
-
   const { metadata } = useLinkPreview(url);
 
   return (
