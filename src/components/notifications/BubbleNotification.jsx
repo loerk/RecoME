@@ -3,18 +3,32 @@ import { VscCheck, VscChromeClose } from "react-icons/vsc";
 import { Link } from "react-router-dom";
 import { useBubbles } from "../../contexts/BubbleContext";
 import { useNotifications } from "../../contexts/NotificationsContext";
+import { useUsers } from "../../contexts/UsersContext";
 
 export default function BubbleNotification({ notification }) {
-  const { acceptBubbleInvitation } = useBubbles();
-  const { deleteNotification } = useNotifications();
+  const {
+    deleteNotification,
+    acceptNotification,
+    setShouldFetchNotifications,
+  } = useNotifications();
+  const { setShouldUpdateFriends } = useUsers();
+  const { setShouldFetchBubbles } = useBubbles();
+
   const handleAccept = async (id) => {
-    await acceptBubbleInvitation(id);
+    try {
+      await acceptNotification(id);
+      setShouldFetchBubbles(true);
+      setShouldFetchNotifications(true);
+      setShouldUpdateFriends(true);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleDelete = async (id) => {
     await deleteNotification(id);
   };
-
+  if (!notification) return;
   return (
     <div className="flex mt-8 w-full justify-center">
       <div className="flex w-64 md:w-full flex-col md:flex-row md:max-w-xl rounded-lg bg-gradient-to-r from-cyan-500 to-blue-300 shadow-lg">

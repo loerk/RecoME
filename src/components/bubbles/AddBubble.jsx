@@ -9,7 +9,8 @@ export default function AddBubble() {
     categories: "",
     imageUrl: "",
   });
-  const { addBubble, setShouldFetchNotifications } = useBubbles();
+
+  const { addBubble, setShouldFetchBubbles } = useBubbles();
 
   const navigate = useNavigate();
 
@@ -24,8 +25,8 @@ export default function AddBubble() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     await addBubble(bubbleData);
-    setShouldFetchNotifications(true);
-    navigate(-1);
+    navigate("/bubbles");
+    setShouldFetchBubbles(true);
   };
 
   return (

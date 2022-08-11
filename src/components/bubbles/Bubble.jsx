@@ -8,37 +8,42 @@ import { useRecos } from "../../contexts/RecoContext";
 
 import Accordion from "../../utilities/Accordion";
 import DeleteBubbleModal from "../../utilities/DeleteBubbleModal";
+import { useEffect } from "react";
+
 export default function Bubble() {
   const [showModal, setShowModal] = useState(false);
   const [fetchBubbleInfo, setFetchBubbleInfo] = useState(true);
-  const [bubble, setBubble] = useState({});
+
   const [bubbleRecos, setBubbleRecos] = useState([]);
 
   let { bubbleId } = useParams();
 
   const theme = useTheme();
-  const { getBubbleById } = useBubbles();
+  const { getBubbleById, bubble } = useBubbles();
   const { getRecosFromBubble } = useRecos();
 
-  const getCurrentBubbleInfo = async () => {
-    try {
-      const bubble = await getBubbleById(bubbleId);
-      const recos = await getRecosFromBubble(bubbleId);
-      setBubble(() => bubble);
-      setBubbleRecos(() => recos);
-    } catch (error) {
-      console.log(error);
+  useEffect(() => {
+    const getCurrentBubbleInfo = async () => {
+      try {
+        const recoResult = await getRecosFromBubble(bubbleId);
+        await getBubbleById(bubbleId);
+        setBubbleRecos(recoResult);
+        setFetchBubbleInfo(false);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    if (fetchBubbleInfo) {
+      getCurrentBubbleInfo();
     }
-  };
-  if (fetchBubbleInfo) {
-    getCurrentBubbleInfo();
-    setFetchBubbleInfo(false);
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fetchBubbleInfo]);
 
   const handleModal = () => {
     setShowModal(true);
   };
 
+  if (!Object.keys(bubble).length) return;
   return (
     <div>
       <div className="pt-20">
@@ -95,7 +100,7 @@ export default function Bubble() {
                       title={reco.title}
                       date={date.toLocaleDateString("en-GB")}
                       description={reco.description}
-                      content={reco.url}
+                      content={reco.recoUrl}
                     />
                   </div>
                 );

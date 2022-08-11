@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { fetchData, loginFetchData } from "../api/fetchers";
 
 const UsersContext = createContext([]);
@@ -12,6 +12,39 @@ export function UsersContextProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(
     initialValueCurrentUser || null
   );
+  const [friends, setFriends] = useState([]);
+  const [shouldFetchCurrentUser, setShouldFetchCurrentUser] = useState(false);
+  const [shouldUpdateFriends, setShouldUpdateFriends] = useState(true);
+
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      const result = await fetchData(`/users/${currentUser._id}`, "GET");
+      if (!result) throw new Error("no valid response while getting User");
+      setCurrentUser(() => result.currentUser);
+      setShouldFetchCurrentUser(false);
+    };
+
+    if (shouldFetchCurrentUser && currentUser) {
+      fetchCurrentUser();
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shouldFetchCurrentUser, currentUser]);
+
+  useEffect(() => {
+    const fetchFriends = async () => {
+      const result = await fetchData(`/users/${currentUser._id}`, "GET");
+
+      if (result?.foundUser) setFriends(() => result.foundUser.friends);
+      setShouldUpdateFriends(false);
+      return result.foundUser.friends;
+    };
+
+    if (shouldUpdateFriends && currentUser) {
+      fetchFriends();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUser, friends]);
 
   const loginUser = async (loginData) => {
     const resp = await loginFetchData("/auth/signin", loginData);
@@ -43,6 +76,11 @@ export function UsersContextProvider({ children }) {
     localStorage.clear();
   };
 
+  const unfriendUser = async (id) => {
+    const result = await fetchData(`/users/${id}`, "PUT");
+    if (result.updatedCurrentUser) setCurrentUser(result.updatedCurrentUser);
+  };
+
   const findUserById = async (id) => {
     const resp = await fetchData(`/users/${id}`, "GET");
     if (!resp) return null;
@@ -54,60 +92,25 @@ export function UsersContextProvider({ children }) {
     if (!newUser) return null;
     return newUser;
   };
-  // const updateUser = async (updatedUser) => {
-  //   const updatedUserData = await fetchData(
-  //     `/users/${updatedUser.id}`,
-  //     "PUT",
-  //     updatedUser
-  //   );
-  //   setCurrentUser(updatedUserData);
-  //   return updatedUserData;
-  // };
 
   const deleteUser = async (id) => {
     await fetchData(`/users/${id}`, "DELETE");
     setCurrentUser(null);
   };
 
-  // const addFriend = async (friendId) => {
-  //   try {
-  //     if (currentUser.friends.includes(friendId)) return;
-  //     const updatedCurrentUser = {
-  //       ...currentUser,
-  //       friends: [...currentUser.friends, friendId],
-  //     };
-  //     await updateUser(updatedCurrentUser);
-  //   } catch (error) {}
-
-  //   const friend = await findUserById(friendId);
-  //   const updatedFriend = {
-  //     ...friend,
-  //     friends: [...friend.friends, currentUser.id],
-  //   };
-  //   await updateUser(updatedFriend);
-  // };
-
-  // const updateUsers = (updatedUserList) => {
-  //   const updatedUsers = users.map((user) => {
-  //     const foundUser = updatedUserList.find(
-  //       (findUser) => findUser.id === user.id
-  //     );
-  //     return foundUser ? foundUser : user;
-  //   });
-  //   setUsers(updatedUsers);
-  //   localStorage.setItem("users", JSON.stringify(updatedUsers));
-  // };
-
   const contextValue = {
-    // updateUsers,
-
+    setShouldUpdateFriends,
+    friends,
+    setFriends,
+    setShouldFetchCurrentUser,
+    unfriendUser,
+    setCurrentUser,
     currentUser,
     loginUser,
     logoutUser,
     createNewUser,
     deleteUser,
     findUserById,
-    //addFriend,
   };
 
   return (

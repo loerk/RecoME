@@ -1,21 +1,37 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
+import { useBubbles } from "../../contexts/BubbleContext";
+import { useNotifications } from "../../contexts/NotificationsContext";
+import { useRecos } from "../../contexts/RecoContext";
 
 import { useTheme } from "../../contexts/ThemeContext";
 import { useUsers } from "../../contexts/UsersContext";
 
 export default function Login() {
   const { theme } = useTheme();
-  const { loginUser } = useUsers();
-
+  const { loginUser, setShouldUpdateFriends } = useUsers();
+  const { setShouldFetchRecos } = useRecos();
+  const { setShouldFetchBubbles } = useBubbles();
+  const { setShouldFetchNotifications } = useNotifications();
   const [status, setStatus] = useState("");
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
     stayLoggedIn: false,
   });
-
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      setShouldFetchBubbles(true);
+      setShouldFetchRecos(true);
+
+      setShouldFetchNotifications(true);
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoggedIn]);
 
   function handleChange(event) {
     const { name, value, type, checked } = event.target;
@@ -34,6 +50,7 @@ export default function Login() {
     const result = await loginUser(loginData);
     if (typeof result === "string") return setStatus(result);
     setStatus("");
+    setIsLoggedIn(true);
     navigate("/", { replace: true });
   };
 

@@ -12,16 +12,18 @@ export const useRecos = () => {
 export function RecoContextProvider({ children }) {
   const [recos, setRecos] = useState([]);
   const [shouldFetchRecos, setShouldFetchRecos] = useState(true);
+  const [isLoadingRecos, setIsLoadingRecos] = useState(false);
   const { currentUser } = useUsers();
 
   useEffect(() => {
     const fetchRecos = async () => {
+      setIsLoadingRecos(true);
       try {
-        const resp = await fetchData(`/recos`, "GET");
-        setRecos(() => resp.recos);
-        console.log("from recosContext", resp.recos);
+        const result = await fetchData(`/recos`, "GET");
+        if (result) setIsLoadingRecos(false);
+        setRecos(() => result.recos);
         setShouldFetchRecos(false);
-        localStorage.setItem("recos", JSON.stringify(resp.recos));
+        //localStorage.setItem("recos", JSON.stringify(result.recos));
       } catch (error) {
         console.log(error);
       }

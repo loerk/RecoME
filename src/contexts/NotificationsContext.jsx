@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 import { fetchData } from "../api/fetchers";
+import { useBubbles } from "./BubbleContext";
 import { useUsers } from "./UsersContext";
 
 export const NotificationType = {
@@ -18,15 +19,16 @@ export function NotificationsContextProvider({ children }) {
   const [notifications, setNotifications] = useState([]);
   const [shouldFetchNotifications, setShouldFetchNotifications] =
     useState(true);
-  const { currentUser } = useUsers();
+  const { currentUser, setFriends } = useUsers();
+
   useEffect(() => {
     const fetchNotifications = async () => {
-      const resp = await fetchData(`/notifications`, "GET");
-      setNotifications(() => resp.notifications);
-      console.log("from notisContext", resp.notifications);
-      return resp.notifications;
+      const result = await fetchData("/notifications", "GET");
+      setNotifications(() => result.notifications);
+      setShouldFetchNotifications(false);
+      return result.notifications;
     };
-    if (shouldFetchNotifications & currentUser) fetchNotifications();
+    if (shouldFetchNotifications && currentUser) fetchNotifications();
   }, [shouldFetchNotifications, currentUser]);
 
   const addBubbleNotification = async (bubbleId, friendsList) => {
@@ -43,12 +45,12 @@ export function NotificationsContextProvider({ children }) {
   };
 
   const addRecoToUserNotification = async (recoId, userId) => {
+    const notification = {
+      userIds: [userId],
+      recoId,
+      type: NotificationType.INVITATION_TO_RECO,
+    };
     try {
-      const notification = {
-        userIds: [userId],
-        recoId,
-        type: NotificationType.INVITATION_TO_RECO,
-      };
       await fetchData(`/notifications/`, "POST", notification);
     } catch (error) {
       console.log(error);
@@ -56,13 +58,13 @@ export function NotificationsContextProvider({ children }) {
   };
 
   const addRecoToBubbleNotification = async (bubbleId, recoId, membersList) => {
+    const notification = {
+      userIds: [...membersList],
+      bubbleId,
+      recoId,
+      type: NotificationType.NOTIFICATION_ABOUT_RECO_IN_BUBBLE,
+    };
     try {
-      const notification = {
-        userIds: [...membersList],
-        bubbleId,
-        recoId,
-        type: NotificationType.NOTIFICATION_ABOUT_RECO_IN_BUBBLE,
-      };
       await fetchData(`/notifications/`, "POST", notification);
     } catch (error) {
       console.log(error);
@@ -71,13 +73,24 @@ export function NotificationsContextProvider({ children }) {
 
   const getNotifications = async () => {
     try {
-      const notifications = await fetchData(`/notifications`, "GET");
-      setNotifications(() => notifications);
+      const result = await fetchData(`/notifications`, "GET");
+      setNotifications(result);
     } catch (error) {
       console.log(error);
     }
   };
 
+  const acceptNotification = async (id) => {
+    console.log("accept");
+    try {
+      const result = await fetchData(`/notifications/${id}`, "PUT");
+      console.log(result);
+      if (currentUser.friends.length !== result.currentUser.friends.length)
+        setFriends(() => result.currentUser.friends);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const deleteNotification = async (id) => {
     try {
       const notifications = await fetchData(`/notifications/${id}`, "DELETE");
@@ -88,6 +101,7 @@ export function NotificationsContextProvider({ children }) {
   };
 
   const contextValue = {
+    acceptNotification,
     notifications,
     setShouldFetchNotifications,
     addBubbleNotification,

@@ -3,13 +3,24 @@ import { Link, useNavigate } from "react-router-dom";
 import { useUsers } from "../../contexts/UsersContext";
 import { useBubbles } from "../../contexts/BubbleContext";
 import { useRecos } from "../../contexts/RecoContext";
+import { useEffect, useState } from "react";
+import { useNotifications } from "../../contexts/NotificationsContext";
 
 export default function Landing() {
   const navigate = useNavigate();
 
-  const { bubbles } = useBubbles();
-  const { recos } = useRecos();
-  const currentUser = useUsers();
+  const { bubbles, setShouldFetchBubbles } = useBubbles();
+  const { recos, setShouldFetchRecos } = useRecos();
+  const { friends, setShouldUpdateFriends } = useUsers();
+  const { setShouldFetchNotifications } = useNotifications();
+
+  useEffect(() => {
+    setShouldFetchBubbles(true);
+    setShouldFetchRecos(true);
+    setShouldFetchNotifications(true);
+    setShouldUpdateFriends(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   window.scrollTo(0, 0);
   return (
     <div className="pb-12 pt-32">
@@ -23,7 +34,7 @@ export default function Landing() {
                   <div className="w-28 h-28 object-cover object-center opacity-50  hover:opacity-100 rounded-full cursor-pointer">
                     <img
                       onClick={() => navigate(`/bubbles/${bubble._id}`)}
-                      className="rounded-full  h-28 w-28"
+                      className="rounded-full object-cover h-28 w-28"
                       src={bubble.imageUrl}
                       alt=""
                     />
@@ -42,7 +53,7 @@ export default function Landing() {
         <div className="flex justify-around items-center w-full content-center">
           <h1 className="px-10">Your friends</h1>
           <ul className="flex overflow-x-hidden w-2/3">
-            {currentUser.friends?.map((friend) => {
+            {friends?.map((friend) => {
               return (
                 <li key={friend._id}>
                   <div className="text-center m-2">

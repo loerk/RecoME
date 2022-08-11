@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Outlet,
   useNavigate,
@@ -8,8 +8,14 @@ import {
 import { AddButton } from "../../utilities/Buttons";
 
 import BubbleList from "./BubbleList";
-
+import { useBubbles } from "../../contexts/BubbleContext";
 export default function Bubbles() {
+  const { setShouldFetchBubbles } = useBubbles();
+
+  useEffect(() => {
+    setShouldFetchBubbles(true);
+  }, []);
+
   window.scrollTo(0, 0);
   const [searchParams, setSearchParams] = useSearchParams();
 
