@@ -1,5 +1,3 @@
-import React from "react";
-
 import { useNavigate, useParams } from "react-router-dom";
 import { useBubbles } from "../../contexts/BubbleContext";
 
@@ -7,6 +5,7 @@ export default function BubbleList({ searchParams }) {
   const { bubbles } = useBubbles();
   const navigate = useNavigate();
   const params = useParams();
+  if (!bubbles) return;
   return (
     <div className=" m-auto bg-transparent mt-5">
       {bubbles.length !== 0 ? (

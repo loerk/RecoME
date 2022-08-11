@@ -39,8 +39,7 @@ export default function Register() {
       return setStatus("The passwords have to match");
 
     const result = await createNewUser(registerData);
-
-    if (result.message !== "success")
+    if (result.message !== "successfully registered account")
       return setStatus("we could not register your account, try again");
 
     setStatus("Great! Please verify your email before you login");
