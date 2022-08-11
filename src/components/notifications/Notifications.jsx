@@ -10,7 +10,6 @@ import RecommendationToBubbleNotification from "./RecommendationToBubbleNotifica
 
 export default function Notifications() {
   const { notifications } = useNotifications();
-
   return (
     <div className="flex items-center flex-col pt-32 pb-12">
       <h1>WOW WOW WOW</h1>

@@ -5,9 +5,12 @@ import { VscCheck } from "react-icons/vsc";
 import { useNotifications } from "../../contexts/NotificationsContext";
 
 export default function RecommendationToBubbleNotification({ notification }) {
-  const { deleteNotification } = useNotifications();
+  const { deleteNotification, setShouldFetchNotifications } =
+    useNotifications();
+
   const handleDelete = async (id) => {
     await deleteNotification(id);
+    setShouldFetchNotifications(true);
   };
   return (
     <div className="flex mt-8 md:w-full justify-center">
@@ -22,7 +25,6 @@ export default function RecommendationToBubbleNotification({ notification }) {
               A new Reco was added to {notification.bubbleId.name.toUpperCase()}{" "}
               !
             </h5>
-            <p>{notification.recoId.title}</p>
             <p className="text-gray-900 text-base mb-4">
               by {notification.invitedBy.username.toUpperCase()} !
             </p>

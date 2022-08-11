@@ -1,12 +1,15 @@
 import React from "react";
 import { FiExternalLink } from "react-icons/fi";
 import { VscCheck } from "react-icons/vsc";
+
 import { useNotifications } from "../../contexts/NotificationsContext";
 
 export default function RecommendationNotification({ notification }) {
-  const { deleteNotification } = useNotifications();
+  const { deleteNotification, setShouldFetchNotifications } =
+    useNotifications();
   const handleDelete = async (id) => {
     await deleteNotification(id);
+    setShouldFetchNotifications(true);
   };
 
   return (
