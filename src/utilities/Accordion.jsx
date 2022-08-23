@@ -3,7 +3,13 @@ import { BsChevronUp, BsChevronDown } from "react-icons/bs";
 
 import { LinkPreview } from "./LinkPreview";
 
-export default function Accordion({ title, date, description, content }) {
+export default function Accordion({
+  avatar,
+  title,
+  date,
+  description,
+  content,
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const contentElement = useRef(null);
 
@@ -12,9 +18,18 @@ export default function Accordion({ title, date, description, content }) {
   };
   return (
     <div onClick={handleClick} className="w-full bg-yellow-100">
-      <div className="p-4 flex bg-yellow-200  justify-between">
-        <h4 className="text-sm mt-auto">{date}</h4>
+      <div className="p-4 flex bg-yellow-200  justify-between mb-4">
+        <div>
+          <img
+            src={avatar}
+            alt=""
+            className="w-9 h-9 object-cover shadow-lg rounded-full"
+          />
+          <h4 className="text-sm">{date}</h4>
+        </div>
+
         <h4>{title}</h4>
+
         {isOpen ? <BsChevronUp /> : <BsChevronDown />}
       </div>
       <div
@@ -26,8 +41,10 @@ export default function Accordion({ title, date, description, content }) {
         }
         className="overflow-hidden transition-all duration-200"
       >
-        <p className="p-4">{description}</p>
-        <LinkPreview url={content} />
+        <div className="w-full mb-6 md:flex flex-col md:justify-around">
+          <p className="p-4">{description}</p>
+          <LinkPreview url={content} />
+        </div>
       </div>
     </div>
   );
