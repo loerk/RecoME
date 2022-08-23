@@ -188,6 +188,7 @@ export default function AddReco() {
             name="title"
             onChange={handleChange}
             value={recoData.title}
+            required
           />
           <input
             type="categories"
@@ -196,6 +197,7 @@ export default function AddReco() {
             name="categories"
             onChange={handleChange}
             value={recoData.categories}
+            required
           />
           <input
             type="url"
@@ -204,6 +206,7 @@ export default function AddReco() {
             name="url"
             onChange={handleChange}
             value={recoData.url}
+            required
           />
           <input
             type="text"
@@ -212,11 +215,17 @@ export default function AddReco() {
             name="description"
             onChange={handleChange}
             value={recoData.description}
+            required
           />
           <button
             onClick={handleSubmit}
             className="w-full hover:translate-y-1 text-3xl p-3 bg-black  text-white font-face-tm my-4"
-            disabled={!recoData.title}
+            disabled={
+              !recoData.title ||
+              !recoData.description ||
+              !recoData.url ||
+              !recoData.categories
+            }
           >
             Create
           </button>
@@ -231,6 +240,7 @@ export default function AddReco() {
             name="title"
             onChange={handleChange}
             value={recoData.title}
+            required
           />
           <input
             type="categories"
@@ -239,6 +249,7 @@ export default function AddReco() {
             name="categories"
             onChange={handleChange}
             value={recoData.categories}
+            required
           />
           <input
             type="url"
@@ -247,6 +258,7 @@ export default function AddReco() {
             name="url"
             onChange={handleChange}
             value={recoData.url}
+            required
           />
           <input
             type="text"
@@ -255,11 +267,17 @@ export default function AddReco() {
             name="description"
             onChange={handleChange}
             value={recoData.description}
+            required
           />
           <button
             onClick={handleSubmit}
             className="w-full hover:translate-y-1 text-3xl p-3 bg-black  text-white font-face-tm my-4"
-            disabled={!recoData.title}
+            disabled={
+              !recoData.title ||
+              !recoData.description ||
+              !recoData.url ||
+              !recoData.categories
+            }
           >
             Create Recommendation
           </button>
