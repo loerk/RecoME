@@ -21,37 +21,28 @@ import { useUsers } from "./contexts/UsersContext";
 export default function App() {
   const { currentUser } = useUsers();
 
-  const ProtectedRoute = ({ currentUser, redirectPath = "/login" }) => {
-    if (!currentUser) {
-      return <Navigate to={redirectPath} replace />;
-    }
-    return <Outlet />;
-  };
-
   return (
     <div className="h-full ">
       <Header />
       <Routes>
         <Route path="register" element={<Register />} />
         <Route path="login" element={<Login />} />
-        <Route element={<ProtectedRoute currentUser={currentUser} />}>
-          <Route path="/" element={<Landing />} />
-          <Route path="settings" element={<Settings />} />
-          <Route path="bubbles" element={<Bubbles />}>
-            <Route path=":bubbleId" element={<Bubble />} />
-            <Route path="addBubble" element={<AddBubble />} />
-            <Route path=":bubbleId/addReco" element={<AddReco />} />
-            <Route path=":bubbleId/addFriend" element={<AddFriend />} />
-          </Route>
-          <Route path="friends" element={<Friends />}>
-            <Route path=":friendId" element={<Friend />} />
-            <Route path="addFriend" element={<AddFriend />} />
-          </Route>
-          <Route path="recos" element={<Recos />}>
-            <Route path="addReco" element={<AddReco />} />
-          </Route>
-          <Route path="notifications" element={<Notifications />} />
+        <Route path="/" element={<Landing />} />
+        <Route path="settings" element={<Settings />} />
+        <Route path="bubbles" element={<Bubbles />}>
+          <Route path=":bubbleId" element={<Bubble />} />
+          <Route path="addBubble" element={<AddBubble />} />
+          <Route path=":bubbleId/addReco" element={<AddReco />} />
+          <Route path=":bubbleId/addFriend" element={<AddFriend />} />
         </Route>
+        <Route path="friends" element={<Friends />}>
+          <Route path=":friendId" element={<Friend />} />
+          <Route path="addFriend" element={<AddFriend />} />
+        </Route>
+        <Route path="recos" element={<Recos />}>
+          <Route path="addReco" element={<AddReco />} />
+        </Route>
+        <Route path="notifications" element={<Notifications />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </div>
