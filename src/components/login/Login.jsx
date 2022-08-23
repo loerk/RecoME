@@ -4,11 +4,9 @@ import { Blob } from "react-interactive-blob";
 
 import { useBubbles } from "../../contexts/BubbleContext";
 import { useNotifications } from "../../contexts/NotificationsContext";
-import { useTheme } from "../../contexts/ThemeContext";
 import { useUsers } from "../../contexts/UsersContext";
 
 export default function Login() {
-  const { theme } = useTheme();
   const { loginUser, setFriends, currentUser } = useUsers();
   const { setShouldFetchBubbles } = useBubbles();
   const { setShouldFetchNotifications } = useNotifications();
@@ -90,11 +88,7 @@ export default function Login() {
                 checked={loginData.stayLoggedIn}
               />
               <label
-                className={
-                  theme
-                    ? "pl-3 font-face-tm text-2xl text-white"
-                    : "pl-3 font-face-tm text-2xl text-black"
-                }
+                className="pl-3 font-face-tm text-2xl text-black"
                 htmlFor="okayToEmail"
               >
                 I want to stay logged in
@@ -102,22 +96,14 @@ export default function Login() {
             </div>
             {!!status && <p className="text-fuchsia-600">{status}</p>}
             <button
-              className={
-                theme
-                  ? "w-full active:translate-y-1  text-3xl p-3 bg-white  text-black  font-face-tm my-4"
-                  : "w-full active:translate-y-1  text-3xl p-3 bg-black  text-white  font-face-tm my-4"
-              }
+              className="w-full active:translate-y-1  text-3xl p-3 bg-black  text-white  font-face-tm my-4"
               disabled={!loginData.email || !loginData.password}
             >
               Sign in
             </button>
             <NavLink
               to="/register"
-              className={
-                theme
-                  ? "w-full text-2xl p-1 bg-black  hover:translate-y-1 text-center text-white border-2 border-white-900 font-face-tm"
-                  : "w-full text-2xl p-1 bg-white  hover:translate-y-1 text-center text-black border-2 border-black-900 font-face-tm"
-              }
+              className="w-full text-2xl p-1 bg-white  hover:translate-y-1 text-center text-black border-2 border-black-900 font-face-tm"
             >
               Register
             </NavLink>

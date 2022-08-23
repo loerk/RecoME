@@ -16,7 +16,6 @@ export default function AddFriend() {
   );
   const [email, setEmail] = useState("");
   const [friendsList, setFriendsList] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
 
   const isFriendInvited = (id) => friendsList.includes(id);
 
@@ -37,9 +36,8 @@ export default function AddFriend() {
       setStatus({ group: "please select at least one friend" });
       return;
     }
-    setIsLoading(true);
+
     const result = await inviteUsers(selectedBubbleId, friendsList);
-    setIsLoading(false);
     if (result) {
       setStatus({ group: "the friends who are not yet members got invited" });
       setFriendsList([]);

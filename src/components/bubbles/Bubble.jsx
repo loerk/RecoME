@@ -3,7 +3,6 @@ import { useParams, Link } from "react-router-dom";
 import moment from "moment";
 
 import { AddButton } from "../../utilities/Buttons";
-import { useTheme } from "../../contexts/ThemeContext";
 import { useBubbles } from "../../contexts/BubbleContext";
 import { useRecos } from "../../contexts/RecoContext";
 import bubbleImg from "../../assets/images/bubble.jpg";
@@ -18,7 +17,6 @@ export default function Bubble() {
 
   let { bubbleId } = useParams();
 
-  const theme = useTheme();
   const { getBubbleById, bubble } = useBubbles();
   const { getRecosFromBubble } = useRecos();
 
@@ -101,7 +99,6 @@ export default function Bubble() {
           <ul>
             {bubbleRecos ? (
               bubbleRecos.map((reco) => {
-                //const date = new Date(reco.createdAt);
                 return (
                   <div key={reco._id}>
                     <Accordion
@@ -134,11 +131,7 @@ export default function Bubble() {
           option
         </p>
         <button
-          className={
-            theme
-              ? "w-40 hover:translate-y-1  text-3xl p-3 bg-white  text-black  font-face-tm my-4"
-              : "w-40 hover:translate-y-1  text-3xl p-3 bg-black  text-white  font-face-tm my-4"
-          }
+          className="w-40 hover:translate-y-1  text-3xl p-3 bg-black  text-white  font-face-tm my-4"
           onClick={handleModal}
         >
           DELETE BUBBLE

@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from "react";
 
 import { useBubbles } from "../../contexts/BubbleContext";
-import { useTheme } from "../../contexts/ThemeContext";
 import { useUsers } from "../../contexts/UsersContext";
 import { useNavigate, useParams } from "react-router-dom";
 import { useRecos } from "../../contexts/RecoContext";
 
 export default function AddReco() {
-  const theme = useTheme();
   const navigate = useNavigate();
   const { bubbleId } = useParams();
-
   const { friends } = useUsers();
   const { bubbles, getBubbleById, bubble } = useBubbles();
   const { addReco, setShouldFetchRecos } = useRecos();
@@ -19,6 +16,7 @@ export default function AddReco() {
     bubble: "",
     user: "",
   });
+
   const getBubble = async (id) => {
     await getBubbleById(id);
   };
@@ -217,11 +215,7 @@ export default function AddReco() {
           />
           <button
             onClick={handleSubmit}
-            className={
-              theme
-                ? "w-full hover:translate-y-1  text-3xl p-3 bg-white  text-black  font-face-tm my-4"
-                : "w-full hover:translate-y-1  text-3xl p-3 bg-black  text-white  font-face-tm my-4"
-            }
+            className="w-full hover:translate-y-1 text-3xl p-3 bg-black  text-white font-face-tm my-4"
             disabled={!recoData.title}
           >
             Create
@@ -264,11 +258,7 @@ export default function AddReco() {
           />
           <button
             onClick={handleSubmit}
-            className={
-              theme
-                ? "w-full hover:translate-y-1  text-3xl p-3 bg-white  text-black  font-face-tm my-4"
-                : "w-full hover:translate-y-1  text-3xl p-3 bg-black  text-white  font-face-tm my-4"
-            }
+            className="w-full hover:translate-y-1 text-3xl p-3 bg-black  text-white font-face-tm my-4"
             disabled={!recoData.title}
           >
             Create Recommendation

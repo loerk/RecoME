@@ -1,13 +1,10 @@
 import React, { useState } from "react";
-import { useTheme } from "../../contexts/ThemeContext";
 import { useNavigate, NavLink } from "react-router-dom";
 import { Blob } from "react-interactive-blob";
 
 import { useUsers } from "../../contexts/UsersContext";
 
 export default function Register() {
-  const { theme } = useTheme();
-
   const [status, setStatus] = useState();
   const [registerData, setRegisterData] = useState({
     username: "",

@@ -14,6 +14,7 @@ export default function Bubbles() {
 
   useEffect(() => {
     setShouldFetchBubbles(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   window.scrollTo(0, 0);

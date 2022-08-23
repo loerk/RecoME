@@ -1,4 +1,3 @@
-import { useTheme } from "./contexts/ThemeContext";
 import { Routes, Route, Outlet, Navigate } from "react-router-dom";
 
 import Header from "./components/header/Header";
@@ -20,7 +19,6 @@ import Notifications from "./components/notifications/Notifications";
 import { useUsers } from "./contexts/UsersContext";
 
 export default function App() {
-  const { theme } = useTheme();
   const { currentUser } = useUsers();
 
   const ProtectedRoute = ({ currentUser, redirectPath = "/login" }) => {
@@ -31,7 +29,7 @@ export default function App() {
   };
 
   return (
-    <div className={theme ? "bg-black min-h-screen  h-full" : "h-full "}>
+    <div className="h-full ">
       <Header />
       <Routes>
         <Route path="register" element={<Register />} />
