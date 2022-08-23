@@ -1,37 +1,61 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
+import moment from "moment";
 
 import { AddButton } from "../../utilities/Buttons";
-import { useTheme } from "../../contexts/ThemeContext";
 import { useBubbles } from "../../contexts/BubbleContext";
 import { useRecos } from "../../contexts/RecoContext";
-import { useUsers } from "../../contexts/UsersContext";
-
+import bubbleImg from "../../assets/images/bubble.jpg";
 import Accordion from "../../utilities/Accordion";
 import DeleteBubbleModal from "../../utilities/DeleteBubbleModal";
+
 export default function Bubble() {
   const [showModal, setShowModal] = useState(false);
+  const [fetchBubbleInfo, setFetchBubbleInfo] = useState(true);
+
+  const [bubbleRecos, setBubbleRecos] = useState([]);
 
   let { bubbleId } = useParams();
 
-  const theme = useTheme();
-  const { getBubbleById } = useBubbles();
+  const { getBubbleById, bubble } = useBubbles();
   const { getRecosFromBubble } = useRecos();
-  const { findUserById, currentUser } = useUsers();
 
-  const bubble = getBubbleById(bubbleId);
-  const bubbleRecos = getRecosFromBubble(bubbleId);
+  useEffect(() => {
+    const getCurrentBubbleInfo = async () => {
+      try {
+        const recoResult = await getRecosFromBubble(bubbleId);
+        await getBubbleById(bubbleId);
+        setBubbleRecos(recoResult);
+        setFetchBubbleInfo(false);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    if (fetchBubbleInfo) {
+      getCurrentBubbleInfo();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fetchBubbleInfo]);
 
-  const handleModal = (id) => {
+  const handleModal = () => {
     setShowModal(true);
   };
+  if (!Object.keys(bubble).length) return;
 
   return (
     <div>
       <div className="pt-20">
         <div className="relative w-full">
           <div className="relative overflow-hidden bg-contain">
-            <img src={bubble.imageUrl} className="block  w-96 m-auto" alt="" />
+            {bubble.defaultImg ? (
+              <img src={bubbleImg} className="block  w-96 m-auto" alt="" />
+            ) : (
+              <img
+                src={bubble.imageUrl}
+                className="block  w-96 m-auto"
+                alt=""
+              />
+            )}
             <div className="absolute top-0 right-0 bottom-0 left-0 w-full h-full overflow-hidden bg-fixed bg-black opacity-50"></div>
           </div>
           <div className="md:block absolute top-6 left-1/3 text-white  uppercase">
@@ -45,15 +69,14 @@ export default function Bubble() {
           <h1 className="py-10 uppercase">Members</h1>
           <div>
             {!!bubble.members.length ? (
-              <div className="flex gap-2">
-                {bubble.members.map((memberId) => {
-                  const member = findUserById(memberId);
+              <div className="flex gap-2 flex-wrap">
+                {bubble.members.map((member) => {
                   return (
-                    <div className="m-auto" key={memberId}>
+                    <div className="m-auto" key={member._id}>
                       <img
                         src={member.avatarUrl}
                         alt=""
-                        className="w-16 aspect-square shadow-lg rounded-full"
+                        className="w-16 shadow-lg rounded-full"
                       />
                       <p>{member.username}</p>
                     </div>
@@ -75,21 +98,19 @@ export default function Bubble() {
           <h1 className="mt-20 mb-5 uppercase">Recommendations</h1>
           <ul>
             {bubbleRecos ? (
-              bubbleRecos
-                .filter((reco) => !reco.ignoredBy?.includes(currentUser.id))
-                .map((reco) => {
-                  const date = new Date(reco.createdAt);
-                  return (
-                    <div key={reco.id}>
-                      <Accordion
-                        title={reco.title}
-                        date={date.toLocaleDateString("en-GB")}
-                        comment={reco.comment}
-                        content={reco.url}
-                      />
-                    </div>
-                  );
-                })
+              bubbleRecos.map((reco) => {
+                return (
+                  <div key={reco._id}>
+                    <Accordion
+                      avatar={reco.createdBy.avatarUrl}
+                      title={reco.title}
+                      date={moment(reco.createdAt).fromNow()}
+                      description={reco.description}
+                      content={reco.recoUrl}
+                    />
+                  </div>
+                );
+              })
             ) : (
               <>
                 <p>
@@ -110,11 +131,7 @@ export default function Bubble() {
           option
         </p>
         <button
-          className={
-            theme
-              ? "w-40 hover:translate-y-1  text-3xl p-3 bg-white  text-black  font-face-tm my-4"
-              : "w-40 hover:translate-y-1  text-3xl p-3 bg-black  text-white  font-face-tm my-4"
-          }
+          className="w-40 hover:translate-y-1  text-3xl p-3 bg-black  text-white  font-face-tm my-4"
           onClick={handleModal}
         >
           DELETE BUBBLE

@@ -13,18 +13,20 @@ export default function DeleteBubbleModal({
 }) {
   const [deletionType, setDeletionType] = useState(null);
 
-  const { deleteBubble, exitBubble } = useBubbles();
+  const { deleteBubble, exitBubble, setShouldFetchBubbles } = useBubbles();
 
   const navigate = useNavigate();
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (deletionType === "ALL") {
-      deleteBubble(bubbleId);
-      navigate("/bubbles");
+      await deleteBubble(bubbleId);
+      navigate("/bubbles", { replace: true });
     }
     if (deletionType === "USER") {
-      exitBubble(bubbleId);
-      navigate("/bubbles");
+      await exitBubble(bubbleId);
+      navigate("/bubbles", { replace: true });
     }
+    setShouldFetchBubbles(true);
+
     setShowModal(false);
   };
 
@@ -66,7 +68,7 @@ export default function DeleteBubbleModal({
             onClick={() => handleDelete()}
             className="px-5 py-2 bg-gray-700 text-white m-3 rounded"
           >
-            Delete
+            Remove
           </button>
         </div>
       </div>

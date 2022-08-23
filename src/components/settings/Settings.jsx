@@ -8,7 +8,7 @@ export default function Settings() {
   const navigate = useNavigate();
 
   const deleteCurrentUser = () => {
-    deleteUser(currentUser);
+    deleteUser(currentUser._id);
     navigate("/login");
   };
 

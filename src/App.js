@@ -1,4 +1,3 @@
-import { useTheme } from "./contexts/ThemeContext";
 import { Routes, Route, Outlet, Navigate } from "react-router-dom";
 
 import Header from "./components/header/Header";
@@ -15,28 +14,25 @@ import Friend from "./components/friends/Friend";
 import AddFriend from "./components/friends/AddFriend";
 import Recos from "./components/recommendations/Recos";
 import AddReco from "./components/recommendations/AddReco";
-import Reco from "./components/recommendations/Reco";
 import Notifications from "./components/notifications/Notifications";
 
 import { useUsers } from "./contexts/UsersContext";
 
-function App() {
-  const { theme } = useTheme();
+export default function App() {
   const { currentUser } = useUsers();
 
   const ProtectedRoute = ({ currentUser, redirectPath = "/login" }) => {
     if (!currentUser) {
       return <Navigate to={redirectPath} replace />;
     }
-
     return <Outlet />;
   };
 
   return (
-    <div className={theme ? "bg-black min-h-screen h-full" : "h-screen "}>
+    <div className="h-full ">
       <Header />
       <Routes>
-        <Route path="/register" element={<Register />} />
+        <Route path="register" element={<Register />} />
         <Route path="login" element={<Login />} />
         <Route element={<ProtectedRoute currentUser={currentUser} />}>
           <Route path="/" element={<Landing />} />
@@ -52,7 +48,6 @@ function App() {
             <Route path="addFriend" element={<AddFriend />} />
           </Route>
           <Route path="recos" element={<Recos />}>
-            <Route path=":recoId" element={<Reco />} />
             <Route path="addReco" element={<AddReco />} />
           </Route>
           <Route path="notifications" element={<Notifications />} />
@@ -62,5 +57,3 @@ function App() {
     </div>
   );
 }
-
-export default App;
