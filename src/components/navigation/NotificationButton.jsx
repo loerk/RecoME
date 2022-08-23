@@ -8,7 +8,6 @@ export default function NotificationButton() {
   const { notifications, setShouldFetchNotifications } = useNotifications();
   useEffect(() => {
     const intervalId = setInterval(() => {
-      console.log("fetch notis");
       setShouldFetchNotifications(true);
     }, 3000);
 
@@ -18,7 +17,7 @@ export default function NotificationButton() {
 
   return (
     <div className="relative">
-      {!!notifications.length && (
+      {!!notifications?.length && (
         <div className="">
           <button
             onClick={() => navigate("/notifications")}
