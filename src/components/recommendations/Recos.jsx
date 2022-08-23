@@ -90,7 +90,7 @@ export default function Recos() {
                                 alt=""
                                 className="w-9 h-9 z-3 relative left-3 shadow-lg rounded-full"
                               />
-                              {reco.bubbleId ? (
+                              {reco.bubbleId.ImageUrl ? (
                                 <img
                                   src={reco.bubbleId.imageUrl || bubbleImg}
                                   alt=""
