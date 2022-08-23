@@ -50,28 +50,32 @@ export function UsersContextProvider({ children }) {
   }, [currentUser, friends]);
 
   const loginUser = async (loginData) => {
-    const resp = await loginFetchData("/auth/signin", loginData);
-    if (resp.message === "please confirm your email first") return resp.message;
-    if (resp.message !== "successfully logged in")
-      return "something went wrong, try again";
+    try {
+      const result = await loginFetchData("/auth/signin", loginData);
+      if (result.message === "please confirm your email first")
+        return result.message;
+      if (result.message !== "successfully logged in")
+        return "something went wrong, try again";
 
-    setCurrentUser(() => resp.existingUser);
-    localStorage.setItem(
-      "currentUser",
-      JSON.stringify({
-        _id: resp.existingUser._id,
-        avatarUrl: resp.existingUser.avatarUrl,
-        friends: resp.existingUser.friends,
-        username: resp.existingUser.username,
-      })
-    );
-    localStorage.setItem(
-      "expiresAt",
-      JSON.stringify({
-        expiresAt: resp.expiresAt,
-      })
-    );
-    return currentUser;
+      setCurrentUser(() => result.existingUser);
+      localStorage.setItem(
+        "currentUser",
+        JSON.stringify({
+          _id: result.existingUser._id,
+          avatarUrl: result.existingUser.avatarUrl,
+          username: result.existingUser.username,
+        })
+      );
+      localStorage.setItem(
+        "expiresAt",
+        JSON.stringify({
+          expiresAt: result.expiresAt,
+        })
+      );
+      return currentUser;
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const logoutUser = () => {

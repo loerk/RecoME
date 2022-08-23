@@ -23,18 +23,12 @@ export default function Login() {
     if (isLoggedIn) {
       setShouldFetchBubbles(true);
       setShouldFetchNotifications(true);
+      setStatus("");
+      navigate("/", { replace: true });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoggedIn]);
 
-  useEffect(() => {
-    if (currentUser) {
-      setStatus("");
-      setIsLoggedIn(true);
-      navigate("/", { replace: true });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentUser]);
   function handleChange(event) {
     const { name, value, type, checked } = event.target;
     setLoginData((prevLoginData) => ({
@@ -51,12 +45,13 @@ export default function Login() {
     }
     const result = await loginUser(loginData);
     if (typeof result === "string") return setStatus(result);
-    if (result) setFriends(() => result.currentUser.friends);
+
+    if (currentUser && result) {
+      setFriends(() => result.currentUser.friends);
+      setIsLoggedIn(true);
+    }
   };
 
-  if (currentUser) {
-    navigate("/");
-  }
   return (
     <div className="flex justify-center mt-10">
       <Blob color="#8FE3CF" markers={false} />
