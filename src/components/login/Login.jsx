@@ -56,7 +56,8 @@ export default function Login() {
     if (currentUser) {
       navigate("/");
     }
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUser]);
 
   return (
     <div className="flex justify-center mt-10">
