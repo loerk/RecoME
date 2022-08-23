@@ -1,92 +1,126 @@
 import React, { createContext, useContext, useState } from "react";
-import { v1 as uuidv1 } from "uuid";
-import { useGetCurrentUser } from "./UsersContext";
+import { useEffect } from "react";
+import { fetchData } from "../api/fetchers";
+import { useUsers } from "./UsersContext";
 
 const BubbleContext = createContext([]);
 
 export const useBubbles = () => {
   return useContext(BubbleContext);
 };
-const initialBubbles = JSON.parse(localStorage.getItem("bubbles"));
 
 export function BubbleContextProvider({ children }) {
-  const [bubbles, setBubbles] = useState(initialBubbles || []);
-  const getCurrentUser = useGetCurrentUser();
+  const [bubbles, setBubbles] = useState([]);
+  const [bubble, setBubble] = useState({});
+  const [shouldFetchBubbles, setShouldFetchBubbles] = useState(true);
 
-  const addBubble = (newBubble) => {
-    const currentUser = getCurrentUser();
-    const newBubblesArr = [
-      ...bubbles,
-      {
-        ...newBubble,
-        id: uuidv1(),
-        createdAt: Date.now(),
-        createdBy: currentUser.id,
-        members: [currentUser.id],
-      },
-    ];
-    setBubbles(newBubblesArr);
-    localStorage.setItem("bubbles", JSON.stringify(newBubblesArr));
-  };
-  const getBubbles = () => {
-    const currentUser = getCurrentUser();
-    return bubbles.filter(
-      (bubble) =>
-        bubble.createdBy === currentUser.id ||
-        bubble.members.find((member) => member === currentUser.id)
-    );
+  const { currentUser } = useUsers();
+
+  useEffect(() => {
+    const fetchBubbles = async () => {
+      const result = await fetchData("/bubbles", "GET");
+
+      if (!result) throw new Error("no valid response while getting bubbles");
+      setBubbles(() => result.userBubbles);
+      setShouldFetchBubbles(false);
+    };
+    if (shouldFetchBubbles && currentUser) fetchBubbles();
+  }, [shouldFetchBubbles, currentUser]);
+
+  const addBubble = async (bubbleData) => {
+    const result = await fetchData("/bubbles", "POST", bubbleData);
+    return result;
   };
 
-  const getBubbleById = (id) => {
-    return bubbles.find((bubble) => bubble.id === id);
-  };
-  const updateBubble = (updatedBubble) => {
-    const updatedBubblesArray = bubbles.map((bubble) =>
-      bubble.id === updatedBubble.id ? updatedBubble : bubble
-    );
+  const getBubbles = async () => {
+    try {
+      const result = await fetchData("/bubbles", "GET");
+      if (!result) throw new Error("no valid response while getting bubbles");
 
-    setBubbles(updatedBubblesArray);
-    localStorage.setItem("bubbles", JSON.stringify(updatedBubblesArray));
-  };
-  const deleteBubble = (id) => {
-    const deletedBubbleArr = bubbles.filter((bubble) => bubble.id !== id);
-    setBubbles(deletedBubbleArr);
-    localStorage.setItem("bubbles", JSON.stringify(deletedBubbleArr));
-  };
-  const exitBubble = (id) => {
-    const currentUser = getCurrentUser();
-    const currentBubble = getBubbleById(id);
-
-    if (
-      currentBubble.members.length === 0 ||
-      currentBubble.members.length === 1
-    ) {
-      return deleteBubble(id);
+      return result.userBubbles;
+    } catch (error) {
+      console.log(error);
     }
-    const updatedMembersArr = currentBubble.members.filter(
-      (member) => member !== currentUser.id
-    );
-    const updatedBubble = { ...currentBubble, members: updatedMembersArr };
-    updateBubble(updatedBubble);
   };
-  const findBubbleMember = (bubble, userId) => {
-    bubble.members.find((member) => member === userId);
+
+  const updateBubble = async (updatedBubble) => {
+    try {
+      const result = await fetchData(
+        `/bubbles/${updatedBubble._id}`,
+        "PUT",
+        updatedBubble
+      );
+      if (!result) throw new Error("invalid response while updating bubble");
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
   };
-  const addMember = (memberId, bubbleId) => {
-    const bubble = getBubbleById(bubbleId);
-    if (bubble.members.includes(memberId)) return;
-    updateBubble({ ...bubble, members: [...bubble.members, memberId] });
+
+  const deleteBubble = async (id) => {
+    try {
+      const result = await fetchData(`/bubbles/${id}`, "DELETE");
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getBubbleById = async (id) => {
+    try {
+      const resp = await fetchData(`/bubbles/${id}`, "GET");
+      setBubble(resp.bubble);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const exitBubble = async (id) => {
+    try {
+      const result = await fetchData(`/bubbles/${id}/leave`, "DELETE");
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const inviteUsers = async (bubbleId, userIds) => {
+    try {
+      const result = await fetchData(
+        `/bubbles/${bubbleId}/inviteUsers`,
+        "PUT",
+        {
+          userIds,
+        }
+      );
+      if (result.message) throw new Error("something went wrong");
+      return result.currentBubble;
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
+  };
+
+  const inviteUserByEmail = async (bubbleId, email) => {
+    const result = await fetchData(`/bubbles/${bubbleId}/inviteUsers`, "PUT", {
+      email,
+    });
+    return result;
   };
 
   const contextValue = {
-    findBubbleMember,
+    bubble,
+    setShouldFetchBubbles,
+    bubbles,
     addBubble,
     getBubbles,
     getBubbleById,
     updateBubble,
+    shouldFetchBubbles,
     deleteBubble,
     exitBubble,
-    addMember,
+    inviteUsers,
+    inviteUserByEmail,
   };
   return (
     <BubbleContext.Provider value={contextValue}>
@@ -94,3 +128,10 @@ export function BubbleContextProvider({ children }) {
     </BubbleContext.Provider>
   );
 }
+
+export const useGetCurrentBubble = () => {
+  const context = useBubbles();
+  return () => {
+    return context.bubbles;
+  };
+};

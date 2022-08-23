@@ -2,17 +2,11 @@ import React, { useState } from "react";
 import { useUsers } from "../../contexts/UsersContext";
 import { useBubbles } from "../../contexts/BubbleContext";
 import { useParams } from "react-router-dom";
-import { useNotifications } from "../../contexts/NotificationsContext";
 
 export default function AddFriend() {
   const params = useParams();
-  const { findUserById, currentUser, findUserByEmail } = useUsers();
-  const { getBubbles, getBubbleById, findBubbleMember } = useBubbles();
-  const {
-    addBubbleNotification,
-    getUserNotificationsToBubble,
-    isAlreadyInvitedToBubble,
-  } = useNotifications();
+  const { friends } = useUsers();
+  const { inviteUsers, bubbles, inviteUserByEmail } = useBubbles();
   const [invitationStatus, setInvitationStatus] = useState({
     single: "",
     group: "",
@@ -22,10 +16,6 @@ export default function AddFriend() {
   );
   const [email, setEmail] = useState("");
   const [friendsList, setFriendsList] = useState([]);
-
-  const bubbles = getBubbles();
-  const { friends } = currentUser;
-  const selectedBubble = getBubbleById(selectedBubbleId);
 
   const isFriendInvited = (id) => friendsList.includes(id);
 
@@ -37,7 +27,7 @@ export default function AddFriend() {
     }
   };
 
-  const inviteFriends = () => {
+  const inviteUsersList = async () => {
     if (!selectedBubbleId) {
       setStatus({ group: "please select a bubble first" });
       return;
@@ -47,23 +37,15 @@ export default function AddFriend() {
       return;
     }
 
-    const filteredInvitedFriendsList = friendsList.filter((friendId) => {
-      const isAlreadyMember = !!findBubbleMember(selectedBubble, friendId);
-      const isAlreadyInvited = !!getUserNotificationsToBubble(
-        friendId,
-        selectedBubble.id
-      ).length;
-      if (isAlreadyInvited || isAlreadyMember) return false;
-      return true;
-    });
-    addBubbleNotification(selectedBubbleId, filteredInvitedFriendsList);
-
-    if (filteredInvitedFriendsList.length === friendsList.length) {
-      setStatus({ group: "all your friends got invited" });
-    } else {
+    const result = await inviteUsers(selectedBubbleId, friendsList);
+    if (result) {
       setStatus({ group: "the friends who are not yet members got invited" });
+      setFriendsList([]);
+    } else {
+      setStatus({
+        group: "Maybe your friends are already invited or already member",
+      });
     }
-    setFriendsList([]);
   };
 
   function setStatus(message) {
@@ -73,48 +55,21 @@ export default function AddFriend() {
     }, 4000);
   }
 
-  const inviteFriend = () => {
+  const inviteUser = async () => {
     if (!selectedBubbleId) {
       setStatus({ single: "please select a bubble" });
       return;
     }
+    const result = await inviteUserByEmail(selectedBubbleId, email);
 
-    const friend = findUserByEmail(email);
-    if (!friend) {
+    if (result === "Conflict") {
       setStatus({
-        single:
-          "Oh, we dont know your friend,yet... please ask your friend to register first",
+        single: "Maybe your friend is already invited or already member",
       });
       return;
     }
-
-    const selectedBubble = getBubbleById(selectedBubbleId);
-    const isAlreadyMember = findBubbleMember(selectedBubble, friend.id);
-
-    if (isAlreadyMember) {
-      setStatus({
-        single: `Your friend is already member of ${selectedBubble.name} !`,
-      });
-      return;
-    }
-    const isAlreadyInvited = isAlreadyInvitedToBubble(
-      friend.id,
-      selectedBubbleId
-    );
-
-    if (isAlreadyInvited) {
-      setStatus({
-        single: "Oh, your friend is already invited",
-      });
-      return;
-    }
-    addBubbleNotification(selectedBubbleId, [friend.id]);
     setStatus({ single: "Great, your friend got invited!" });
   };
-
-  if (!selectedBubble && params.bubbleId) {
-    return;
-  }
 
   return (
     <div>
@@ -152,7 +107,7 @@ export default function AddFriend() {
                 <option value="">select a bubble</option>
                 {bubbles.map((bubble) => {
                   return (
-                    <option key={bubble.id} value={bubble.id}>
+                    <option key={bubble._id} value={bubble._id}>
                       {bubble.name}
                     </option>
                   );
@@ -162,9 +117,7 @@ export default function AddFriend() {
           )}
           {params.bubbleId && (
             <div className="w-72 m-auto mt-8">
-              <h1 className=" my-10 uppercase">
-                YEJ - invite your friends to {selectedBubble.name}
-              </h1>
+              <h1 className=" my-10 uppercase">YEJ - invite your friends!</h1>
             </div>
           )}
           <div className="w-72 m-auto mt-8">
@@ -200,14 +153,14 @@ export default function AddFriend() {
             {email ? (
               <button
                 className="inline-block leading-tight uppercase  shadow-md hover:bg-gradient-to-r from-cyan-500 to-blue-500 hover:shadow-lg focus:bg-black focus:shadow-lg focus:outline-none focus:ring-0 active:bg-pink-800 active:shadow-lg transition duration-150 ease-in-out bg-black rounded-md  text-white px-2 py-1"
-                onClick={inviteFriend}
+                onClick={inviteUser}
               >
                 Invite Friend to your Bubble
               </button>
             ) : (
               <button
                 className="inline-block leading-tight uppercase  shadow-md  focus:bg-black  disabled:bg-slate-300 disabled:opacity-50 rounded-md  text-white px-2 py-1"
-                onClick={inviteFriend}
+                onClick={inviteUser}
                 disabled
               >
                 Invite Friend to your Bubble
@@ -227,26 +180,25 @@ export default function AddFriend() {
           <ul className="pt-6 ">
             <h1 className=" pb-5 ">...or choose from your friends:</h1>
             <div className="flex  gap-4 flex-wrap mb-2  w-56  text-center">
-              {friends.map((friendId) => {
-                let currFriend = findUserById(friendId);
+              {friends.map((friend) => {
                 if (params.friendId === undefined) {
                   return (
-                    <li key={friendId}>
+                    <li key={friend._id}>
                       <div className="">
                         <div
                           className={
-                            isFriendInvited(currFriend.id)
+                            isFriendInvited(friend._id)
                               ? "bg-gradient-to-r from-cyan-500 to-blue-500 shadow-lg "
                               : null
                           }
                         >
                           <img
-                            onClick={() => toggleFriend(currFriend.id)}
+                            onClick={() => toggleFriend(friend._id)}
                             className="w-14 h-14 p-1 object-cover object-center shadow-lg  rounded-full cursor-pointer"
-                            src={currFriend.avatarUrl}
+                            src={friend.avatarUrl}
                             alt=""
                           />
-                          <p className="relative">{currFriend.username}</p>
+                          <p className="relative">{friend.username}</p>
                         </div>
                       </div>
                     </li>
@@ -260,14 +212,14 @@ export default function AddFriend() {
               {friendsList.length !== 0 ? (
                 <button
                   className="inline-block leading-tight uppercase shadow-md hover:bg-gradient-to-r from-cyan-500 to-blue-500 hover:shadow-lg focus:bg-black focus:shadow-lg focus:outline-none focus:ring-0 active:bg-pink-800 active:shadow-lg transition duration-150 ease-in-out bg-black rounded-md  text-white px-2 py-1"
-                  onClick={inviteFriends}
+                  onClick={inviteUsersList}
                 >
                   Invite selected Friends
                 </button>
               ) : (
                 <button
                   className="inline-block leading-tight uppercase  shadow-md  focus:bg-black  disabled:bg-slate-400 disabled:opacity-50 rounded-md  text-white px-2 py-1"
-                  onClick={inviteFriends}
+                  onClick={inviteUsersList}
                   disabled
                 >
                   Invite selected Friends

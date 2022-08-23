@@ -6,17 +6,29 @@ import { useNotifications } from "../../contexts/NotificationsContext";
 import { useUsers } from "../../contexts/UsersContext";
 
 export default function BubbleNotification({ notification }) {
-  const { currentUser, addFriend } = useUsers();
-  const { addMember, getBubbleById } = useBubbles();
+  const {
+    deleteNotification,
+    acceptNotification,
+    setShouldFetchNotifications,
+  } = useNotifications();
+  const { setShouldUpdateFriends } = useUsers();
+  const { setShouldFetchBubbles } = useBubbles();
 
-  const { deleteNotification } = useNotifications();
-  const currentBubble = getBubbleById(notification.bubbleId);
-  const acceptBubbleInvitation = (friendId, notificationId) => {
-    addFriend(friendId);
-    addMember(currentUser.id, notification.bubbleId);
-    deleteNotification(notificationId);
+  const handleAccept = async (id) => {
+    try {
+      await acceptNotification(id);
+      setShouldFetchBubbles(true);
+      setShouldFetchNotifications(true);
+      setShouldUpdateFriends(true);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
+  const handleDelete = async (id) => {
+    await deleteNotification(id);
+  };
+  if (!notification) return;
   return (
     <div className="flex mt-8 w-full justify-center">
       <div className="flex w-64 md:w-full flex-col md:flex-row md:max-w-xl rounded-lg bg-gradient-to-r from-cyan-500 to-blue-300 shadow-lg">
@@ -32,25 +44,22 @@ export default function BubbleNotification({ notification }) {
             <h5 className="text-gray-900 uppercase text-xl font-medium">
               Invitation to BUBBLE
             </h5>
-            <h5 className="mb-2">{notification.bubble.name.toUpperCase()}</h5>
+            <h5 className="mb-2">{notification.bubbleId.name.toUpperCase()}</h5>
             <p className="text-gray-900 text-base mb-4">
-              by {notification.invitedByUser.toUpperCase()} !
+              by {notification.invitedBy.username.toUpperCase()} !
             </p>
           </div>
           <div className="text-black flex justify-between gap-3">
-            <Link to={`/bubbles/${currentBubble.id}`}>go to bubble</Link>
+            <Link to={`/bubbles/${notification.bubbleId._id}`}>
+              go to bubble
+            </Link>
             <div className="flex gap-3">
               <VscChromeClose
-                onClick={() => deleteNotification(notification.id)}
+                onClick={() => handleDelete(notification._id)}
                 className="cursor-pointer"
               ></VscChromeClose>
               <VscCheck
-                onClick={() =>
-                  acceptBubbleInvitation(
-                    notification.invitedBy,
-                    notification.id
-                  )
-                }
+                onClick={() => handleAccept(notification._id)}
                 className="cursor-pointer"
               ></VscCheck>
             </div>

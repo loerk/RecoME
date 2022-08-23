@@ -1,7 +1,8 @@
-import React, { createContext, useContext, useState } from "react";
-import { v1 as uuidv1 } from "uuid";
-import { useBubbles } from "./BubbleContext";
-import { useGetCurrentUser } from "./UsersContext";
+import React, { createContext, useContext, useEffect, useState } from "react";
+
+import { fetchData } from "../api/fetchers";
+import { useUsers } from "./UsersContext";
+
 export const NotificationType = {
   INVITATION_TO_BUBBLE: "INVITATION_TO_BUBBLE",
   INVITATION_TO_RECO: "INVITATION_TO_RECO",
@@ -13,152 +14,99 @@ export const useNotifications = () => {
   return useContext(NotificationsContext);
 };
 
-const initialNotifications = JSON.parse(localStorage.getItem("notifications"));
+export function NotificationsContextProvider({ children }) {
+  const [notifications, setNotifications] = useState([]);
+  const [shouldFetchNotifications, setShouldFetchNotifications] =
+    useState(true);
+  const { currentUser, setFriends } = useUsers();
 
-export function NotifivationsContextProvider({ children }) {
-  const [notifications, setNotifications] = useState(
-    initialNotifications || []
-  );
-  const getCurrentUser = useGetCurrentUser();
-  const { getBubbleById } = useBubbles();
-
-  const findNotificationById = (id) =>
-    notifications.find((notification) => notification.id === id);
-
-  const addBubbleNotification = (bubbleId, friendsList) => {
-    const currentUser = getCurrentUser();
-    const newNotification = {
-      id: uuidv1(),
-      user: friendsList,
-      bubbleId,
-      invitedAt: Date.now(),
-      type: NotificationType.INVITATION_TO_BUBBLE,
-      invitedBy: currentUser.id,
-      invitedByUser: currentUser.username,
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      const result = await fetchData("/notifications", "GET");
+      setNotifications(() => result.notifications);
+      setShouldFetchNotifications(false);
+      return result.notifications;
     };
-    setNotifications([...notifications, newNotification]);
-    localStorage.setItem(
-      "notifications",
-      JSON.stringify([...notifications, newNotification])
-    );
-  };
+    if (shouldFetchNotifications && currentUser) fetchNotifications();
+  }, [shouldFetchNotifications, currentUser]);
 
-  const addRecoToUserNotification = (recoId, userId) => {
-    const currentUser = getCurrentUser();
-    const newNotification = {
-      id: uuidv1(),
-      user: [userId],
-      invitedAt: Date.now(),
-      type: NotificationType.INVITATION_TO_RECO,
-      invitedBy: currentUser.id,
-      recoId: recoId,
-      invitedByUser: currentUser.username,
-    };
-    setNotifications([...notifications, newNotification]);
-    localStorage.setItem(
-      "notifications",
-      JSON.stringify([...notifications, newNotification])
-    );
-  };
-
-  const addRecoToBubbleNotification = (bubbleId, recoId, membersList) => {
-    const currentUser = getCurrentUser();
-    const newNotification = {
-      id: uuidv1(),
-      user: [...membersList],
-      invitedAt: Date.now(),
-      type: NotificationType.NOTIFICATION_ABOUT_RECO_IN_BUBBLE,
-      invitedBy: currentUser.id,
-      toBubble: bubbleId,
-      invitedByUser: currentUser.username,
-      recoId: recoId,
-    };
-    setNotifications([...notifications, newNotification]);
-    localStorage.setItem(
-      "notifications",
-      JSON.stringify([...notifications, newNotification])
-    );
-  };
-
-  const isAlreadyInvitedToBubble = (userId, bubbleId) => {
-    return getNotificationsByUserId(userId).some(
-      (notification) => notification.bubbleId === bubbleId
-    );
-  };
-
-  const getNotificationsByUserId = (userId) => {
-    return notifications
-      .filter((notification) => notification.user.find((id) => id === userId))
-      .map((notification) => {
-        if (notification.type === NotificationType.INVITATION_TO_BUBBLE) {
-          const bubble = getBubbleById(notification.bubbleId);
-          return {
-            ...notification,
-            bubble: { name: bubble.name, imageUrl: bubble.imageUrl },
-          };
-        }
-        return notification;
-      });
-  };
-
-  const getNotifications = () => {
-    const currentUser = getCurrentUser();
-    return getNotificationsByUserId(currentUser.id);
-  };
-
-  const getUserNotificationsToBubble = (userId, bubbleId) => {
-    const userNotifications = getNotifications(userId);
-    return userNotifications.filter(
-      (notification) => notification.bubbleId === bubbleId
-    );
-  };
-  const updateNotifications = (updatedNotification) => {
-    const updatedNotificationsArray = notifications.map((notification) => {
-      if (notification.id === updatedNotification.id)
-        return updatedNotification;
-      return notification;
-    });
-    setNotifications(updatedNotificationsArray);
-    localStorage.setItem(
-      "notifications",
-      JSON.stringify(updatedNotificationsArray)
-    );
-  };
-  const deleteNotification = (id) => {
-    const currentNotification = findNotificationById(id);
-    const currentUser = getCurrentUser();
-    if (currentNotification.user.length > 1) {
-      const filteredUsers = currentNotification.user.filter(
-        (userId) => userId !== currentUser.id
-      );
-      const updatedNotification = {
-        ...currentNotification,
-        user: filteredUsers,
+  const addBubbleNotification = async (bubbleId, friendsList) => {
+    try {
+      const notification = {
+        userIds: friendsList,
+        bubbleId,
+        type: NotificationType.INVITATION_TO_BUBBLE,
       };
-      updateNotifications(updatedNotification);
-    } else {
-      const filteredNotifications = notifications.filter(
-        (notification) => notification.id !== id
-      );
-      setNotifications(filteredNotifications);
-      localStorage.setItem(
-        "notifications",
-        JSON.stringify(filteredNotifications)
-      );
+      await fetchData(`/notifications/`, "POST", notification);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const addRecoToUserNotification = async (recoId, userId) => {
+    const notification = {
+      userIds: [userId],
+      recoId,
+      type: NotificationType.INVITATION_TO_RECO,
+    };
+    try {
+      await fetchData(`/notifications/`, "POST", notification);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const addRecoToBubbleNotification = async (bubbleId, recoId, membersList) => {
+    const notification = {
+      userIds: [...membersList],
+      bubbleId,
+      recoId,
+      type: NotificationType.NOTIFICATION_ABOUT_RECO_IN_BUBBLE,
+    };
+    try {
+      await fetchData(`/notifications/`, "POST", notification);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getNotifications = async () => {
+    try {
+      const result = await fetchData(`/notifications`, "GET");
+      setNotifications(result);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const acceptNotification = async (id) => {
+    try {
+      const result = await fetchData(`/notifications/${id}`, "PUT");
+      if (currentUser.friends.length !== result.currentUser.friends.length)
+        setFriends(() => result.currentUser.friends);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const deleteNotification = async (id) => {
+    try {
+      const notifications = await fetchData(`/notifications/${id}`, "DELETE");
+      if (typeof notifications !== "string")
+        setNotifications(() => notifications);
+    } catch (error) {
+      console.log(error);
     }
   };
 
   const contextValue = {
-    findNotificationById,
+    acceptNotification,
+    notifications,
+    setShouldFetchNotifications,
     addBubbleNotification,
     addRecoToUserNotification,
     addRecoToBubbleNotification,
     getNotifications,
-    getNotificationsByUserId,
-    isAlreadyInvitedToBubble,
     deleteNotification,
-    updateNotifications,
-    getUserNotificationsToBubble,
   };
   return (
     <NotificationsContext.Provider value={contextValue}>

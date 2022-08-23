@@ -4,18 +4,19 @@ const DeletionType = {
   USER: "USER",
   ALL: "ALL",
 };
-export default function DeleteRecoModal({
-  showModal,
-  setShowModal,
-  recoIdToDelete,
-}) {
+export default function DeleteRecoModal({ showModal, setShowModal, recoId }) {
   const [deletionType, setDeletionType] = useState(null);
 
-  const { deleteReco, ignoreReco } = useRecos();
+  const { deleteReco, setShouldFetchRecos, ignoreReco } = useRecos();
 
-  const handleDelete = () => {
-    if (deletionType === "ALL") deleteReco(recoIdToDelete);
-    if (deletionType === "USER") ignoreReco(recoIdToDelete);
+  const handleDelete = async () => {
+    if (deletionType === "ALL") {
+      await deleteReco(recoId);
+    }
+    if (deletionType === "USER") {
+      await ignoreReco(recoId);
+    }
+    setShouldFetchRecos(true);
     setShowModal(false);
   };
 
@@ -41,7 +42,7 @@ export default function DeleteRecoModal({
               onChange={() => setDeletionType(DeletionType.USER)}
               className="border border-gray-700 p-2 mr-2 rounded mb-5"
             />
-            delete Reco only for me
+            ignore Reco
           </label>
           <label htmlFor="">
             <input
@@ -57,7 +58,7 @@ export default function DeleteRecoModal({
             onClick={() => handleDelete()}
             className="px-5 py-2 bg-gray-700 text-white m-3 rounded"
           >
-            Delete
+            Remove
           </button>
         </div>
       </div>
