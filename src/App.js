@@ -15,7 +15,6 @@ import Friend from "./components/friends/Friend";
 import AddFriend from "./components/friends/AddFriend";
 import Recos from "./components/recommendations/Recos";
 import AddReco from "./components/recommendations/AddReco";
-import Reco from "./components/recommendations/Reco";
 import Notifications from "./components/notifications/Notifications";
 
 import { useUsers } from "./contexts/UsersContext";
@@ -51,7 +50,6 @@ export default function App() {
             <Route path="addFriend" element={<AddFriend />} />
           </Route>
           <Route path="recos" element={<Recos />}>
-            <Route path=":recoId" element={<Reco />} />
             <Route path="addReco" element={<AddReco />} />
           </Route>
           <Route path="notifications" element={<Notifications />} />
