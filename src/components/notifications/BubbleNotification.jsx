@@ -13,7 +13,6 @@ export default function BubbleNotification({ notification }) {
   } = useNotifications();
   const { setShouldUpdateFriends } = useUsers();
   const { setShouldFetchBubbles } = useBubbles();
-
   const handleAccept = async (id) => {
     try {
       await acceptNotification(id);
@@ -29,7 +28,7 @@ export default function BubbleNotification({ notification }) {
     await deleteNotification(id);
   };
 
-  if (!notification.bubbleId) return;
+  if (!notification) return;
   return (
     <div className="flex mt-8 w-full justify-center">
       <div className="flex w-64 md:w-full flex-col md:flex-row md:max-w-xl rounded-lg bg-gradient-to-r from-cyan-500 to-blue-300 shadow-lg">
