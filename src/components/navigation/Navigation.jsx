@@ -2,13 +2,20 @@ import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import Notifications from "./NotificationButton";
 import { HiOutlineMenuAlt1 } from "react-icons/hi";
+import { useNotifications } from "../../contexts/NotificationsContext";
 
 export default function Navigation() {
+  const { notifications } = useNotifications();
   const [showNav, setShowNav] = useState(false);
 
   return (
     <nav className="left-5 pt-2 w-full absolute gap-3">
-      <div className="">
+      <div>
+        {notifications.length >= 1 && (
+          <div className="bg-red-200 md:hidden absolute text-center w-4 h-4 text-sm  rounded-full aspect-square">
+            {notifications.length}
+          </div>
+        )}
         {showNav ? (
           <HiOutlineMenuAlt1
             onClick={() => setShowNav(!showNav)}
