@@ -53,7 +53,7 @@ export default function AddReco() {
   const handleSubmit = async () => {
     const { sharedWithFriends, sharedWithBubbles, url, ...rest } = recoData;
 
-    if (selected.bubble || bubble._id === bubbleId) {
+    if (selected.bubble || (!!bubbleId && bubble._id === bubbleId)) {
       const recoToBubble = {
         ...rest,
         bubbleId: bubble._id || selected.bubble,
