@@ -21,6 +21,11 @@ export function UsersContextProvider({ children }) {
       const result = await fetchData(`/users/${currentUser._id}`, "GET");
       if (!result) throw new Error("no valid response while getting User");
       setCurrentUser(() => result.currentUser);
+      if (friends.length !== result.currentUser.friends.length) {
+        setFriends(result.currentUser.friends);
+        setShouldUpdateFriends(false);
+      }
+
       setShouldFetchCurrentUser(false);
     };
 
@@ -34,12 +39,10 @@ export function UsersContextProvider({ children }) {
   useEffect(() => {
     const fetchFriends = async () => {
       const result = await fetchData(`/users/${currentUser._id}`, "GET");
-
       if (result?.foundUser) setFriends(() => result.foundUser.friends);
       setShouldUpdateFriends(false);
       return result.foundUser.friends;
     };
-
     if (shouldUpdateFriends && currentUser) {
       fetchFriends();
     }
