@@ -27,6 +27,14 @@ export default function Login() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoggedIn]);
 
+  useEffect(() => {
+    if (currentUser) {
+      setStatus("");
+      setIsLoggedIn(true);
+      navigate("/", { replace: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUser]);
   function handleChange(event) {
     const { name, value, type, checked } = event.target;
     setLoginData((prevLoginData) => ({
@@ -43,12 +51,7 @@ export default function Login() {
     }
     const result = await loginUser(loginData);
     if (typeof result === "string") return setStatus(result);
-    if (result && currentUser) {
-      setStatus("");
-      setIsLoggedIn(true);
-      setFriends(() => result.currentUser.friends);
-      navigate("/", { replace: true });
-    }
+    if (result) setFriends(() => result.currentUser.friends);
   };
 
   if (currentUser) {
