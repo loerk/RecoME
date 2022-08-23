@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 import { fetchData } from "../api/fetchers";
-import { useBubbles } from "./BubbleContext";
 import { useUsers } from "./UsersContext";
 
 export const NotificationType = {
@@ -81,10 +80,8 @@ export function NotificationsContextProvider({ children }) {
   };
 
   const acceptNotification = async (id) => {
-    console.log("accept");
     try {
       const result = await fetchData(`/notifications/${id}`, "PUT");
-      console.log(result);
       if (currentUser.friends.length !== result.currentUser.friends.length)
         setFriends(() => result.currentUser.friends);
     } catch (error) {
@@ -94,7 +91,8 @@ export function NotificationsContextProvider({ children }) {
   const deleteNotification = async (id) => {
     try {
       const notifications = await fetchData(`/notifications/${id}`, "DELETE");
-      setNotifications(() => notifications);
+      if (typeof notifications !== "string")
+        setNotifications(() => notifications);
     } catch (error) {
       console.log(error);
     }
