@@ -5,7 +5,7 @@ import { AddButton } from "../../utilities/Buttons";
 import { useTheme } from "../../contexts/ThemeContext";
 import { useBubbles } from "../../contexts/BubbleContext";
 import { useRecos } from "../../contexts/RecoContext";
-
+import bubbleImg from "../../assets/images/bubble.jpg";
 import Accordion from "../../utilities/Accordion";
 import DeleteBubbleModal from "../../utilities/DeleteBubbleModal";
 import { useEffect } from "react";
@@ -42,14 +42,22 @@ export default function Bubble() {
   const handleModal = () => {
     setShowModal(true);
   };
-
   if (!Object.keys(bubble).length) return;
+
   return (
     <div>
       <div className="pt-20">
         <div className="relative w-full">
           <div className="relative overflow-hidden bg-contain">
-            <img src={bubble.imageUrl} className="block  w-96 m-auto" alt="" />
+            {bubble.defaultImg ? (
+              <img src={bubbleImg} className="block  w-96 m-auto" alt="" />
+            ) : (
+              <img
+                src={bubble.imageUrl}
+                className="block  w-96 m-auto"
+                alt=""
+              />
+            )}
             <div className="absolute top-0 right-0 bottom-0 left-0 w-full h-full overflow-hidden bg-fixed bg-black opacity-50"></div>
           </div>
           <div className="md:block absolute top-6 left-1/3 text-white  uppercase">

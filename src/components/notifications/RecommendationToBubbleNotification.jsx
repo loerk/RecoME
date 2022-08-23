@@ -7,7 +7,6 @@ import { useNotifications } from "../../contexts/NotificationsContext";
 export default function RecommendationToBubbleNotification({ notification }) {
   const { deleteNotification, setShouldFetchNotifications } =
     useNotifications();
-
   const handleDelete = async (id) => {
     await deleteNotification(id);
     setShouldFetchNotifications(true);
