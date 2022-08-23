@@ -15,6 +15,16 @@ export default function Landing() {
   const { friends, setShouldUpdateFriends } = useUsers();
   const { setShouldFetchNotifications } = useNotifications();
 
+  const navigateToBubble = (id) => {
+    navigate(`/bubbles/${id}`);
+  };
+  const navigateToFriend = (id) => {
+    navigate(`/friends/${id}`);
+  };
+
+  const navigateToRecos = () => {
+    navigate("/recos");
+  };
   useEffect(() => {
     setShouldFetchBubbles(true);
     setShouldFetchRecos(true);
@@ -34,14 +44,14 @@ export default function Landing() {
                   <div className="w-28 h-28 object-cover object-center opacity-50  hover:opacity-100 rounded-full cursor-pointer">
                     {bubble.defaultImg ? (
                       <img
-                        onClick={() => navigate(`/bubbles/${bubble._id}`)}
+                        onClick={() => navigateToBubble(bubble._id)}
                         className="rounded-full object-cover h-28 w-28"
                         src={bubbleImg}
                         alt=""
                       />
                     ) : (
                       <img
-                        onClick={() => navigate(`/bubbles/${bubble._id}`)}
+                        onClick={() => navigateToBubble(bubble._id)}
                         className="rounded-full object-cover h-28 w-28"
                         src={bubble.imageUrl}
                         alt=""
@@ -68,7 +78,7 @@ export default function Landing() {
                   <div className="text-center m-2">
                     <div className="w-28 h-28 object-cover object-center opacity-50  hover:opacity-100 rounded-full cursor-pointer">
                       <img
-                        onClick={() => navigate(`/friends/${friend._id}`)}
+                        onClick={() => navigateToFriend(friend._id)}
                         src={friend.avatarUrl}
                         alt=""
                       />
@@ -89,7 +99,7 @@ export default function Landing() {
           <h1 className="px-10">Latest Recos</h1>
           <ul className="flex overflow-x-hidden w-2/3">
             {recos?.map((reco) => (
-              <button key={reco._id} onClick={() => navigate("/recos")}>
+              <button key={reco._id} onClick={navigateToRecos}>
                 <div className="flex m-2 items-center w-28 h-28 opacity-60 bg-yellow-200  hover:opacity-100 rounded-full cursor-pointer">
                   <div className="truncate px-3 ">{reco.title}</div>
                 </div>
