@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
+import moment from "moment";
 
 import { AddButton } from "../../utilities/Buttons";
 import { useTheme } from "../../contexts/ThemeContext";
@@ -8,7 +9,6 @@ import { useRecos } from "../../contexts/RecoContext";
 import bubbleImg from "../../assets/images/bubble.jpg";
 import Accordion from "../../utilities/Accordion";
 import DeleteBubbleModal from "../../utilities/DeleteBubbleModal";
-import { useEffect } from "react";
 
 export default function Bubble() {
   const [showModal, setShowModal] = useState(false);
@@ -71,14 +71,14 @@ export default function Bubble() {
           <h1 className="py-10 uppercase">Members</h1>
           <div>
             {!!bubble.members.length ? (
-              <div className="flex gap-2">
+              <div className="flex gap-2 flex-wrap">
                 {bubble.members.map((member) => {
                   return (
                     <div className="m-auto" key={member._id}>
                       <img
                         src={member.avatarUrl}
                         alt=""
-                        className="w-16 aspect-square shadow-lg rounded-full"
+                        className="w-16 shadow-lg rounded-full"
                       />
                       <p>{member.username}</p>
                     </div>
@@ -101,12 +101,13 @@ export default function Bubble() {
           <ul>
             {bubbleRecos ? (
               bubbleRecos.map((reco) => {
-                const date = new Date(reco.createdAt);
+                //const date = new Date(reco.createdAt);
                 return (
                   <div key={reco._id}>
                     <Accordion
+                      avatar={reco.createdBy.avatarUrl}
                       title={reco.title}
-                      date={date.toLocaleDateString("en-GB")}
+                      date={moment(reco.createdAt).fromNow()}
                       description={reco.description}
                       content={reco.recoUrl}
                     />
