@@ -1,44 +1,44 @@
-import React, { useState } from "react";
-import { v1 as uuidv1 } from "uuid";
+import React, { useEffect, useState } from "react";
 
 import { useBubbles } from "../../contexts/BubbleContext";
-import { useTheme } from "../../contexts/ThemeContext";
 import { useUsers } from "../../contexts/UsersContext";
 import { useNavigate, useParams } from "react-router-dom";
 import { useRecos } from "../../contexts/RecoContext";
-import { useNotifications } from "../../contexts/NotificationsContext";
 
 export default function AddReco() {
-  const theme = useTheme();
   const navigate = useNavigate();
   const { bubbleId } = useParams();
-  const { findUserById, currentUser } = useUsers();
-  const { getBubbles, getBubbleById } = useBubbles();
-  const { addReco } = useRecos();
-  const { addRecoToUserNotification, addRecoToBubbleNotification } =
-    useNotifications();
+  const { friends } = useUsers();
+  const { bubbles, getBubbleById, bubble } = useBubbles();
+  const { addReco, setShouldFetchRecos } = useRecos();
 
-  const [selected, setSelected] = useState(
-    bubbleId
-      ? {
-          bubble: getBubbleById(bubbleId),
-          user: "",
-        }
-      : { bubble: "", user: "" }
-  );
+  const [selected, setSelected] = useState({
+    bubble: "",
+    user: "",
+  });
 
+  const getBubble = async (id) => {
+    await getBubbleById(id);
+  };
+  useEffect(() => {
+    if (bubbleId) getBubble(bubbleId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [bubbleId]);
+
+  useEffect(() => {
+    const selectedBubbleId = selected.bubble;
+    if (selectedBubbleId) getBubble(selectedBubbleId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selected]);
   const [recoData, setRecoData] = useState({
     title: "",
-    private: false,
-    sharedWithBubbles: false,
-    sharedWithFriends: false,
-    sharedWith: [],
+    userIds: [],
     categories: "",
     url: "",
-    comment: "",
-    id: uuidv1(),
+    description: "",
+    sharedWithBubbles: false,
+    sharedWithFriends: false,
   });
-  const bubbles = getBubbles();
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -48,30 +48,29 @@ export default function AddReco() {
     }));
   };
 
-  const handleSubmit = () => {
-    if (selected.bubble.id) {
-      const recoToBubble = {
-        ...recoData,
-        sharedWith: selected.bubble.id,
-        sharedWithBubbles: true,
-      };
-      addReco(recoToBubble);
-      addRecoToBubbleNotification(selected.bubble.id, recoData.id, [
-        ...selected.bubble.members.filter(
-          (member) => member !== currentUser.id
-        ),
-      ]);
+  const handleSubmit = async () => {
+    const { sharedWithFriends, sharedWithBubbles, url, ...rest } = recoData;
 
+    if (selected.bubble || (!!bubbleId && bubble._id === bubbleId)) {
+      const recoToBubble = {
+        ...rest,
+        bubbleId: bubble._id || selected.bubble,
+        recoUrl: url,
+        userIds: bubble.members,
+      };
+      await addReco(recoToBubble);
+      setShouldFetchRecos(true);
       navigate("/recos");
     }
 
-    if (selected.user.id) {
+    if (selected.user) {
       const recoToFriend = {
-        ...recoData,
-        sharedWith: selected.user.id,
+        ...rest,
+        userIds: [selected.user],
+        recoUrl: url,
       };
-      addReco(recoToFriend);
-      addRecoToUserNotification(recoData.id, selected.user.id);
+      await addReco(recoToFriend);
+      setShouldFetchRecos(true);
       navigate("/recos");
     }
   };
@@ -81,12 +80,12 @@ export default function AddReco() {
       <h1 className="uppercase tracking-wider text-3xl mb-8">
         create a Recommendation
       </h1>
-      {!selected.bubble.name ? (
+      {!bubbleId ? (
         <div className="flex flex-wrap gap-2">
           <div className="flex flex-col gap-3 mb-8">
             <label className="pl-3 font-face-tm text-2xl">
               <input
-                className="mr-3"
+                className="mr-3 scale-150"
                 id="isSharedInBubble"
                 type="checkbox"
                 name="sharedWithBubbles"
@@ -97,7 +96,7 @@ export default function AddReco() {
             </label>
             <label className="pl-3 font-face-tm text-2xl">
               <input
-                className="mr-3"
+                className="mr-3 scale-150"
                 id="isSharedWithFriends"
                 type="checkbox"
                 name="sharedWithFriends"
@@ -112,7 +111,7 @@ export default function AddReco() {
               onChange={(e) => {
                 setSelected({
                   ...selected,
-                  bubble: getBubbleById(e.target.value),
+                  bubble: e.target.value,
                 });
               }}
               name="bubble"
@@ -135,9 +134,9 @@ export default function AddReco() {
             focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
             >
               <option value="">select a bubble</option>
-              {bubbles.map((bubble) => {
+              {bubbles.map((bubble, index) => {
                 return (
-                  <option key={bubble.id} value={bubble.id}>
+                  <option key={index} value={bubble._id}>
                     {bubble.name}
                   </option>
                 );
@@ -149,7 +148,7 @@ export default function AddReco() {
               onChange={(e) => {
                 setSelected({
                   ...selected,
-                  user: findUserById(e.target.value),
+                  user: e.target.value,
                 });
               }}
               name="friends"
@@ -172,10 +171,9 @@ export default function AddReco() {
             focus:text-gray-700 focus:bg-white focus:border-black focus:outline-none"
             >
               <option value="">select a friend</option>
-              {currentUser.friends.map((friendId) => {
-                const friend = findUserById(friendId);
+              {friends.map((friend) => {
                 return (
-                  <option key={friend.id} value={friend.id}>
+                  <option key={friend._id} value={friend._id}>
                     {friend.username}
                   </option>
                 );
@@ -209,29 +207,23 @@ export default function AddReco() {
           />
           <input
             type="text"
-            placeholder="comment your reco"
+            placeholder="describe your reco"
             className=" w-full font-face-tm text-2xl p-2 border-2"
-            name="comment"
+            name="description"
             onChange={handleChange}
-            value={recoData.comment}
+            value={recoData.description}
           />
           <button
             onClick={handleSubmit}
-            className={
-              theme
-                ? "w-full hover:translate-y-1  text-3xl p-3 bg-white  text-black  font-face-tm my-4"
-                : "w-full hover:translate-y-1  text-3xl p-3 bg-black  text-white  font-face-tm my-4"
-            }
-            disabled={!recoData.title || !recoData.url}
+            className="w-full hover:translate-y-1 text-3xl p-3 bg-black  text-white font-face-tm my-4"
+            disabled={!recoData.title}
           >
             Create
           </button>
         </div>
       ) : (
         <div className="flex flex-col gap-3 mb-8">
-          <h2 className="my-5">
-            to the bubble {selected.bubble.name.toUpperCase()}
-          </h2>
+          <h2 className="my-5">to bubble {bubble.name?.toUpperCase()}</h2>
           <input
             type="text"
             placeholder="title"
@@ -258,20 +250,16 @@ export default function AddReco() {
           />
           <input
             type="text"
-            placeholder="comment your reco"
+            placeholder="describe your reco"
             className=" w-full font-face-tm text-2xl p-2 border-2"
-            name="comment"
+            name="description"
             onChange={handleChange}
-            value={recoData.comment}
+            value={recoData.description}
           />
           <button
             onClick={handleSubmit}
-            className={
-              theme
-                ? "w-full hover:translate-y-1  text-3xl p-3 bg-white  text-black  font-face-tm my-4"
-                : "w-full hover:translate-y-1  text-3xl p-3 bg-black  text-white  font-face-tm my-4"
-            }
-            disabled={!recoData.title || !recoData.url}
+            className="w-full hover:translate-y-1 text-3xl p-3 bg-black  text-white font-face-tm my-4"
+            disabled={!recoData.title}
           >
             Create Recommendation
           </button>
