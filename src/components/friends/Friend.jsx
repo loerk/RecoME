@@ -15,7 +15,7 @@ export default function Friend() {
   };
 
   return (
-    <div className="flex m-10">
+    <div className="md:flex m-10">
       <img src={friend.avatarUrl} alt="friendAvatar" />
       <div>
         <h2 className="tracking-widest pb-4">
