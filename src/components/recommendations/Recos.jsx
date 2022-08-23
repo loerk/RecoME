@@ -2,13 +2,15 @@ import React, { useState } from "react";
 import { Outlet, useLocation, Link } from "react-router-dom";
 import { RiDeleteBinLine } from "react-icons/ri";
 import { v1 as uuidv1 } from "uuid";
+import { AiOutlineHeart } from "react-icons/ai";
+import moment from "moment";
+
 import { AddButton } from "../../utilities/Buttons";
 import { LinkPreview } from "../../utilities/LinkPreview";
 import { useRecos } from "../../contexts/RecoContext";
+import bubbleImg from "../../assets/images/bubble.jpg";
 import DeleteRecoModal from "../../utilities/DeleteRecoModal";
 import LoadingModal from "../../utilities/LoadingModal";
-import moment from "moment";
-import { AiOutlineHeart } from "react-icons/ai";
 
 export default function Recos() {
   const [showModal, setShowModal] = useState(false);
@@ -90,7 +92,7 @@ export default function Recos() {
                               />
                               {reco.bubbleId ? (
                                 <img
-                                  src={reco.bubbleId.imageUrl}
+                                  src={reco.bubbleId.imageUrl || bubbleImg}
                                   alt=""
                                   className="w-9 h-9 object-cover shadow-lg rounded-full"
                                 />
