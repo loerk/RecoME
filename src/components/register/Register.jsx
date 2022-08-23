@@ -41,7 +41,9 @@ export default function Register() {
       return setStatus("we could not register your account, try again");
 
     setStatus("Great! Please verify your email before you login");
-    navigate("/");
+    setTimeout(() => {
+      navigate("/");
+    }, 5000);
   };
 
   return (
