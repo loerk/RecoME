@@ -15,13 +15,6 @@ export default function Landing() {
   const { friends, setShouldUpdateFriends } = useUsers();
   const { setShouldFetchNotifications } = useNotifications();
 
-  useEffect(() => {
-    setShouldFetchBubbles(true);
-    setShouldFetchRecos(true);
-    setShouldFetchNotifications(true);
-    setShouldUpdateFriends(true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
   window.scrollTo(0, 0);
   return (
     <div className="pb-12 pt-32">
