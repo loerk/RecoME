@@ -76,7 +76,6 @@ export function BubbleContextProvider({ children }) {
   };
 
   const exitBubble = async (id) => {
-    console.log(id);
     try {
       const result = await fetchData(`/bubbles/${id}/leave`, "DELETE");
       return result;
@@ -106,7 +105,6 @@ export function BubbleContextProvider({ children }) {
     const result = await fetchData(`/bubbles/${bubbleId}/inviteUsers`, "PUT", {
       email,
     });
-    console.log(result);
     return result;
   };
 
