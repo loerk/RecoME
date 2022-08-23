@@ -23,7 +23,6 @@ export function RecoContextProvider({ children }) {
         if (result) setIsLoadingRecos(false);
         setRecos(() => result.recos);
         setShouldFetchRecos(false);
-        //localStorage.setItem("recos", JSON.stringify(result.recos));
       } catch (error) {
         console.log(error);
       }
@@ -68,7 +67,7 @@ export function RecoContextProvider({ children }) {
   const deleteReco = async (id) => {
     try {
       await fetchData(`/recos/${id}`, "DELETE");
-      setShouldFetchRecos(true);
+      setRecos(recos.filter((reco) => reco.id !== id));
     } catch (error) {
       console.log(error);
     }
@@ -76,8 +75,7 @@ export function RecoContextProvider({ children }) {
 
   const ignoreReco = async (id) => {
     try {
-      const result = await fetchData(`/recos/${id}/ignore`, "PUT");
-      console.log(result);
+      await fetchData(`/recos/${id}/ignore`, "PUT");
       setShouldFetchRecos(true);
     } catch (error) {
       console.log(error);
