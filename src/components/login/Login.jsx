@@ -52,6 +52,9 @@ export default function Login() {
     }
   };
 
+  if (currentUser) {
+    navigate("/");
+  }
   return (
     <div className="flex justify-center mt-10">
       <Blob color="#8FE3CF" markers={false} />
