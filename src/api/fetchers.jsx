@@ -4,6 +4,8 @@ export const loginFetchData = async (path, data) => {
   const url = `${BASE_URL}${path}`;
   const postHeaders = {
     "Content-Type": "application/json",
+    Accept: "application/json",
+    "Access-Control-Allow-Origin": BASE_URL,
   };
 
   const postOptions = {
