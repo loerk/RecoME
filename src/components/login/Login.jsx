@@ -50,6 +50,7 @@ export default function Login() {
       navigate("/", { replace: true });
     }
   };
+
   if (currentUser) {
     navigate("/");
   }
@@ -60,6 +61,7 @@ export default function Login() {
         <h1 className="mt-8 font-face-tb text-8xl text-center py-5 text-black">
           LOGIN
         </h1>
+        <div>{currentUser}</div>
         <div className="w-72 m-auto">
           <form className="flex flex-wrap gap-2" onSubmit={handleSubmit}>
             <input
