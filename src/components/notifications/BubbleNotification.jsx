@@ -28,7 +28,8 @@ export default function BubbleNotification({ notification }) {
   const handleDelete = async (id) => {
     await deleteNotification(id);
   };
-  if (!notification) return;
+
+  if (!notification.bubbleId) return;
   return (
     <div className="flex mt-8 w-full justify-center">
       <div className="flex w-64 md:w-full flex-col md:flex-row md:max-w-xl rounded-lg bg-gradient-to-r from-cyan-500 to-blue-300 shadow-lg">
@@ -44,13 +45,15 @@ export default function BubbleNotification({ notification }) {
             <h5 className="text-gray-900 uppercase text-xl font-medium">
               Invitation to BUBBLE
             </h5>
-            <h5 className="mb-2">{notification.bubbleId.name.toUpperCase()}</h5>
+            <h5 className="mb-2">
+              {notification.bubbleId?.name.toUpperCase()}
+            </h5>
             <p className="text-gray-900 text-base mb-4">
               by {notification.invitedBy.username.toUpperCase()} !
             </p>
           </div>
           <div className="text-black flex justify-between gap-3">
-            <Link to={`/bubbles/${notification.bubbleId._id}`}>
+            <Link to={`/bubbles/${notification.bubbleId?._id}`}>
               go to bubble
             </Link>
             <div className="flex gap-3">

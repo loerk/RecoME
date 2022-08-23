@@ -36,7 +36,6 @@ export default function AddFriend() {
       setStatus({ group: "please select at least one friend" });
       return;
     }
-
     const result = await inviteUsers(selectedBubbleId, friendsList);
     if (result) {
       setStatus({ group: "the friends who are not yet members got invited" });
