@@ -53,7 +53,7 @@ export default function Login() {
     }
   };
   useEffect(() => {
-    if (isLoggedIn) {
+    if (currentUser) {
       navigate("/");
     }
   });
