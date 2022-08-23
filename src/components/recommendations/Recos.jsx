@@ -80,7 +80,7 @@ export default function Recos() {
                           <div className="z-2 flex justify-between">
                             <div className="p-4">
                               <p className="tracking-widest text-xs">{date}</p>
-                              <h5 className="text-xl font-medium mb-2">
+                              <h5 className="text-xl w-24 break-words font-medium mb-2">
                                 {reco.title}
                               </h5>
                             </div>
