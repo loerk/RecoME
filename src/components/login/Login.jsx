@@ -24,7 +24,7 @@ export default function Login() {
       setShouldFetchBubbles(true);
       setShouldFetchNotifications(true);
       setStatus("");
-      //navigate("/", { replace: true });
+      navigate("/", { replace: true });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoggedIn]);
@@ -54,7 +54,7 @@ export default function Login() {
   };
   useEffect(() => {
     if (currentUser) {
-      //navigate("/");
+      navigate("/");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUser]);
