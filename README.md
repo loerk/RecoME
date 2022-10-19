@@ -1,8 +1,7 @@
 # recoMe
-I started this project as my first fullstack web app and i am continously improving it. My idea behind it was to solve the problem finding the recommendations i got way back in one of the thousand social media channels and couldnt remember where. 
+I started this project as my first fullstack web app and I'm continuously improving it. My idea behind it was to solve the problem of finding the recommendations I got a long time ago in one of the thousand social media channels and couldn't remember where.
 
-check the Backend <a href="https://github.com/loerk/RecoME-backend" target="_blank">here</a>
-
+check out the Backend <a href="https://github.com/loerk/RecoME-backend" target="_blank">here</a>
 
 
 <!-- FEATURES -->
