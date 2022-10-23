@@ -1,4 +1,7 @@
-import { MdArrowForwardIos } from 'react-icons/md';
+import {
+  MdOutlineArrowBackIos,
+  MdOutlineArrowForwardIos,
+} from 'react-icons/md';
 import { Link, useNavigate } from 'react-router-dom';
 import { useUsers } from '../../contexts/UsersContext';
 import { useBubbles } from '../../contexts/BubbleContext';
@@ -16,8 +19,31 @@ export default function Landing() {
   const { setShouldFetchNotifications } = useNotifications();
 
   const onImageError = (e) => {
-    console.log('e', e);
     e.target.src = bubbleImg;
+  };
+  const slideBubblesLeft = () => {
+    const bubbleSlider = document.getElementById('bubbleSlider');
+    bubbleSlider.scrollLeft = bubbleSlider.scrollLeft - 500;
+  };
+  const slideBubblesRight = () => {
+    const bubbleSlider = document.getElementById('bubbleSlider');
+    bubbleSlider.scrollLeft = bubbleSlider.scrollLeft + 500;
+  };
+  const slideFriendsLeft = () => {
+    const friendSlider = document.getElementById('friendsSlider');
+    friendSlider.scrollLeft = friendSlider.scrollLeft - 500;
+  };
+  const slideFriendsRight = () => {
+    const friendSlider = document.getElementById('friendsSlider');
+    friendSlider.scrollLeft = friendSlider.scrollLeft + 500;
+  };
+  const slideRecosLeft = () => {
+    const recoSlider = document.getElementById('recoSlider');
+    recoSlider.scrollLeft = recoSlider.scrollLeft - 500;
+  };
+  const slideRecosRight = () => {
+    const recoSlider = document.getElementById('recoSlider');
+    recoSlider.scrollLeft = recoSlider.scrollLeft + 500;
   };
   useEffect(() => {
     setShouldFetchBubbles(true);
@@ -29,74 +55,113 @@ export default function Landing() {
   return (
     <div className='pb-12 pt-32'>
       <div className='flex items-center m-auto gap-7 mt-16 py-5 flex-col h-76 rounded shadow-2xl '>
-        <div className='flex justify-around items-center w-full content-center'>
-          <h1 className='px-10'>Your bubbles</h1>
-          <ul className='flex overflow-x-scroll w-2/3'>
-            {bubbles?.map((bubble) => (
-              <li key={bubble._id}>
-                <div className='text-center m-2'>
-                  <div className='w-28 h-28 object-cover object-center opacity-50  hover:opacity-100 rounded-full cursor-pointer'>
-                    <img
-                      onClick={() => navigate(`/bubbles/${bubble._id}`)}
-                      className='rounded-full object-cover h-28 w-28'
-                      src={bubble.defaultImg ? bubbleImg : bubble.imageUrl}
-                      onError={(e) => onImageError(e)}
-                      alt='costum background'
-                    />
-                  </div>
-                  <button className=' w-28 truncate px-3'>{bubble.name}</button>
-                </div>
-              </li>
-            ))}
-          </ul>
+        <div className='flex flex-col justify-around items-center w-full content-center'>
           <Link to={'/bubbles'}>
-            <MdArrowForwardIos className='mx-6 text-2xl md:text-3xl'></MdArrowForwardIos>
+            <h4 className='my-3 text-md md:text-2xl'>Your bubbles</h4>
           </Link>
-        </div>
-      </div>
-      <div className='flex items-center m-auto gap-7 my-7 py-5 flex-col h-76  rounded shadow-2xl '>
-        <div className='flex justify-around items-center w-full content-center'>
-          <h1 className='px-10'>Your friends</h1>
-          <ul className='flex overflow-x-scroll w-2/3'>
-            {friends?.map((friend) => {
-              return (
-                <li key={friend._id}>
+          <div className='flex items-center w-full'>
+            <MdOutlineArrowBackIos
+              onClick={slideBubblesLeft}
+              className='opacity-50 cursor-pointer hover:opacity-100 mx-6 text-2xl md:text-3xl'
+            ></MdOutlineArrowBackIos>
+            <ul
+              id='bubbleSlider'
+              className='flex overflow-x-scroll scroll-smooth w-full scrollbar-hide'
+            >
+              {bubbles?.map((bubble) => (
+                <li key={bubble._id}>
                   <div className='text-center m-2'>
-                    <div className='w-28 h-28 object-cover object-center opacity-50  hover:opacity-100 rounded-full cursor-pointer'>
+                    <div className='w-28 h-28 object-cover object-center opacity-50  duration-300  hover:opacity-100 rounded-full cursor-pointer'>
                       <img
-                        onClick={() => navigate(`/friends/${friend._id}`)}
-                        src={friend.avatarUrl}
-                        alt=''
+                        onClick={() => navigate(`/bubbles/${bubble._id}`)}
+                        className='rounded-full object-cover h-28 w-28 hover:scale-105 duration-300  '
+                        src={bubble.defaultImg ? bubbleImg : bubble.imageUrl}
+                        onError={(e) => onImageError(e)}
+                        alt='costum background'
                       />
                     </div>
-                    <button className='relative truncate px-3'>
-                      {friend.username}
+                    <button className=' w-28 truncate px-3'>
+                      {bubble.name}
                     </button>
                   </div>
                 </li>
-              );
-            })}
-          </ul>
-          <Link to={'/friends'}>
-            <MdArrowForwardIos className='mx-6 text-2xl md:text-3xl'></MdArrowForwardIos>
-          </Link>
+              ))}
+            </ul>
+            <MdOutlineArrowForwardIos
+              onClick={slideBubblesRight}
+              className='opacity-50 cursor-pointer hover:opacity-100 mx-6 text-2xl md:text-3xl'
+            ></MdOutlineArrowForwardIos>
+          </div>
         </div>
-      </div>{' '}
-      <div className='flex items-center m-auto gap-7 my-7 py-5 flex-col h-76 rounded shadow-2xl '>
-        <div className='flex justify-around items-center w-full content-center'>
-          <h1 className='px-10'>Latest Recos</h1>
-          <ul className='flex overflow-x-scroll w-2/3'>
-            {recos?.map((reco) => (
-              <button key={reco._id} onClick={() => navigate('/recos')}>
-                <div className='flex m-2 items-center w-28 h-28 opacity-60 bg-yellow-200  hover:opacity-100 rounded-full cursor-pointer'>
-                  <div className='truncate px-3 '>{reco.title}</div>
-                </div>
-              </button>
-            ))}
-          </ul>
-          <Link to={'/recos'}>
-            <MdArrowForwardIos className='mx-6 text-2xl md:text-3xl'></MdArrowForwardIos>
+      </div>
+      <div className='flex items-center m-auto gap-7 mt-16 py-5 flex-col h-76 rounded shadow-2xl '>
+        <div className='flex flex-col justify-around items-center w-full content-center'>
+          <Link to={'/friends'}>
+            <h4 className='my-3 text-md md:text-2xl'>Your friends</h4>
           </Link>
+          <div className='flex items-center w-full'>
+            <MdOutlineArrowBackIos
+              onClick={slideFriendsLeft}
+              className='opacity-50 cursor-pointer hover:opacity-100 mx-6 text-2xl md:text-3xl'
+            ></MdOutlineArrowBackIos>
+            <ul
+              id='friendSlider'
+              className='flex overflow-x-scroll scroll-smooth w-full scrollbar-hide'
+            >
+              {friends?.map((friend) => {
+                return (
+                  <li key={friend._id}>
+                    <div className='text-center m-2'>
+                      <div className='w-28 h-28 object-cover object-center opacity-50  duration-300 hover:opacity-100 rounded-full cursor-pointer'>
+                        <img
+                          className='hover:scale-105 ease-in-out duration-300'
+                          onClick={() => navigate(`/friends/${friend._id}`)}
+                          src={friend.avatarUrl}
+                          alt=''
+                        />
+                      </div>
+                      <button className='relative truncate px-3'>
+                        {friend.username}
+                      </button>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+            <MdOutlineArrowForwardIos
+              onClick={slideFriendsRight}
+              className='opacity-50 cursor-pointer hover:opacity-100 mx-6 text-2xl md:text-3xl'
+            ></MdOutlineArrowForwardIos>
+          </div>
+        </div>
+      </div>
+      <div className='flex items-center m-auto gap-7 mt-16 py-5 flex-col h-76 rounded shadow-2xl '>
+        <div className='flex flex-col justify-around items-center w-full content-center'>
+          <Link to={'/friends'}>
+            <h4 className='my-3 text-md md:text-2xl'>Latest Recos</h4>
+          </Link>
+          <div className='flex items-center w-full'>
+            <MdOutlineArrowBackIos
+              onClick={slideRecosLeft}
+              className='opacity-50 cursor-pointer hover:opacity-100 mx-6 text-2xl md:text-3xl'
+            ></MdOutlineArrowBackIos>
+            <ul
+              id='recoSlider'
+              className='flex overflow-x-scroll scroll-smooth w-full scrollbar-hide'
+            >
+              {recos?.map((reco) => (
+                <button key={reco._id} onClick={() => navigate('/recos')}>
+                  <div className='flex m-2 items-center w-28 h-28 opacity-60 bg-yellow-200  hover:opacity-100 hover:scale-105 duration-300  rounded-full cursor-pointer'>
+                    <div className='truncate px-3 '>{reco.title}</div>
+                  </div>
+                </button>
+              ))}
+            </ul>
+            <MdOutlineArrowForwardIos
+              onClick={slideRecosRight}
+              className='opacity-50 cursor-pointer hover:opacity-100 mx-6 text-2xl md:text-3xl'
+            ></MdOutlineArrowForwardIos>
+          </div>
         </div>
       </div>
     </div>
