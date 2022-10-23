@@ -66,7 +66,7 @@ export default function Landing() {
             ></MdOutlineArrowBackIos>
             <ul
               id='bubbleSlider'
-              className='flex overflow-x-scroll scroll-smooth w-full scrollbar-hide'
+              className='flex overflow-x-scroll justify-center scroll-smooth w-full scrollbar-hide'
             >
               {bubbles?.map((bubble) => (
                 <li key={bubble._id}>
@@ -106,7 +106,7 @@ export default function Landing() {
             ></MdOutlineArrowBackIos>
             <ul
               id='friendSlider'
-              className='flex overflow-x-scroll scroll-smooth w-full scrollbar-hide'
+              className='flex overflow-x-scroll justify-center scroll-smooth w-full scrollbar-hide'
             >
               {friends?.map((friend) => {
                 return (
@@ -147,7 +147,7 @@ export default function Landing() {
             ></MdOutlineArrowBackIos>
             <ul
               id='recoSlider'
-              className='flex overflow-x-scroll scroll-smooth w-full scrollbar-hide'
+              className='flex overflow-x-scroll justify-center scroll-smooth w-full scrollbar-hide'
             >
               {recos?.map((reco) => (
                 <button key={reco._id} onClick={() => navigate('/recos')}>
