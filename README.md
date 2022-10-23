@@ -1,70 +1,51 @@
-# Getting Started with Create React App
+# recoMe
+I started this project as my first fullstack web app and I'm continuously improving it. My idea behind it was to solve the problem of finding the recommendations I got a long time ago in one of the thousand social media channels and couldn't remember where.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+check out the Backend <a href="https://github.com/loerk/RecoME-backend" target="_blank">here</a>
 
-## Available Scripts
 
-In the project directory, you can run:
+<!-- FEATURES -->
 
-### `npm start`
+## Features
+### Email Confirmation
+<img src="./readmeImages/Confirmation.png" width="650"/>
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### Landing Overview 
+<img src="./readmeImages/LandingFilled.png" width="650"/>
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Bubbles Overview 
+<img src="./readmeImages/Bubbles.png" width="650"/>
 
-### `npm test`
+### Recommendations Overview 
+<img src="./readmeImages/Reco.png" width="650"/>
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Bubble 
+<img src="./readmeImages/Bubble.png" width="650"/>
 
-### `npm run build`
+### Invite Friends 
+<img src="./readmeImages/InviteFriends.png" width="650"/>
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Notifications 
+<img src="./readmeImages/Notifications2.png" width="650"/>
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Exit Bubble
+<img src="./readmeImages/exitBubble.png" width="650"/>
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `npm run eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Technologies
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Frontend
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+![](https://img.shields.io/badge/-react-4FC08D?logo=react&logoColor=white)&nbsp;![](https://img.shields.io/badge/-tailwind-7FBCD2?logo=tailwind&logoColor=white)&nbsp;![](https://img.shields.io/badge/-ContextApi-FFEEAF?logo=ContextApi&logoColor=white)
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Backend
 
-## Learn More
+![](https://img.shields.io/badge/-Node.js-339933?logo=Node.js&logoColor=white)&nbsp;![](https://img.shields.io/badge/-Express-000000?logo=Express&logoColor=white)&nbsp;![](https://img.shields.io/badge/-mongoDB-4169E1?logo=mongoDB&logoColor=white)&nbsp;![](https://img.shields.io/badge/-mongoose-569A31?logo=mongoose&logoColor=white)
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
 
-### Code Splitting
+### Try it out
+>please be aware you have to confirm your registration via email  
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+[recoMe](https://recomenow.netlify.app/)
