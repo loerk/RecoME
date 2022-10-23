@@ -1,11 +1,11 @@
-import { MdArrowForwardIos } from "react-icons/md";
-import { Link, useNavigate } from "react-router-dom";
-import { useUsers } from "../../contexts/UsersContext";
-import { useBubbles } from "../../contexts/BubbleContext";
-import { useRecos } from "../../contexts/RecoContext";
-import { useEffect } from "react";
-import { useNotifications } from "../../contexts/NotificationsContext";
-import bubbleImg from "../../assets/images/bubble.jpg";
+import { MdArrowForwardIos } from 'react-icons/md';
+import { Link, useNavigate } from 'react-router-dom';
+import { useUsers } from '../../contexts/UsersContext';
+import { useBubbles } from '../../contexts/BubbleContext';
+import { useRecos } from '../../contexts/RecoContext';
+import { useEffect } from 'react';
+import { useNotifications } from '../../contexts/NotificationsContext';
+import bubbleImg from '../../assets/images/bubble.jpg';
 
 export default function Landing() {
   const navigate = useNavigate();
@@ -15,6 +15,10 @@ export default function Landing() {
   const { friends, setShouldUpdateFriends } = useUsers();
   const { setShouldFetchNotifications } = useNotifications();
 
+  const onImageError = (e) => {
+    console.log('e', e);
+    e.target.src = bubbleImg;
+  };
   useEffect(() => {
     setShouldFetchBubbles(true);
     setShouldFetchRecos(true);
@@ -30,23 +34,15 @@ export default function Landing() {
           <ul className="flex overflow-x-hidden w-2/3">
             {bubbles?.map((bubble) => (
               <li key={bubble._id}>
-                <div className="text-center m-2">
-                  <div className="w-28 h-28 object-cover object-center opacity-50  hover:opacity-100 rounded-full cursor-pointer">
-                    {bubble.defaultImg ? (
-                      <img
-                        onClick={() => navigate(`/bubbles/${bubble._id}`)}
-                        className="rounded-full object-cover h-28 w-28"
-                        src={bubbleImg}
-                        alt=""
-                      />
-                    ) : (
-                      <img
-                        onClick={() => navigate(`/bubbles/${bubble._id}`)}
-                        className="rounded-full object-cover h-28 w-28"
-                        src={bubble.imageUrl}
-                        alt=""
-                      />
-                    )}
+                <div className='text-center m-2'>
+                  <div className='w-28 h-28 object-cover object-center opacity-50  hover:opacity-100 rounded-full cursor-pointer'>
+                    <img
+                      onClick={() => navigate(`/bubbles/${bubble._id}`)}
+                      className='rounded-full object-cover h-28 w-28'
+                      src={bubble.defaultImg ? bubbleImg : bubble.imageUrl}
+                      onError={(e) => onImageError(e)}
+                      alt='costum background'
+                    />
                   </div>
                   <button>{bubble.name}</button>
                 </div>
