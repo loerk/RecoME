@@ -15,15 +15,16 @@ export const loginFetchData = async (path, data) => {
     body: JSON.stringify(data),
   };
 
-  return fetch(url, postOptions)
-    .then((response) => {
-      if (response.ok) {
-        return response.json();
-      }
-      throw new Error(response.statusText);
-    })
-    .then((data) => data)
-    .catch((err) => err.message);
+  const response = await fetch(url, postOptions);
+  try {
+    if (response.ok) {
+      const data = response.json();
+      return data;
+    }
+    throw new Error("sorry, something went wrong");
+  } catch (error) {
+    return error.message;
+  }
 };
 
 export const fetchData = async (path, method, data) => {
@@ -50,14 +51,17 @@ export const fetchData = async (path, method, data) => {
     method: method,
     headers: getHeaders,
   };
-  return fetch(
+  const response = await fetch(
     url,
     method === "GET" || method === "DELETE" ? getOptions : postOptions
-  )
-    .then((response) => {
-      if (response.ok) return response.json();
-      throw new Error(response.statusText);
-    })
-    .then((data) => data)
-    .catch((err) => err.message);
+  );
+  try {
+    if (response.ok) {
+      const data = response.json();
+      return data;
+    }
+    throw new Error("sorry, something went wrong");
+  } catch (error) {
+    throw error;
+  }
 };
