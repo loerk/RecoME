@@ -3,23 +3,23 @@
 @tailwind utilities;
 
 @font-face {
-  font-family: "ThunderBold";
-  src: local("ThunderBold"),
-    url("./assets/fonts/titleFont/Thunder-BlackLC.otf") format("truetype");
+  font-family: 'ThunderBold';
+  src: local('ThunderBold'),
+    url('./assets/fonts/titleFont/Thunder-BlackLC.otf') format('truetype');
   font-weight: bold;
 }
 
 @font-face {
-  font-family: "ThunderLight";
-  src: local("ThunderLight"),
-    url("./assets/fonts/textFont/Thunder-HC.otf") format("truetype");
+  font-family: 'ThunderLight';
+  src: local('ThunderLight'),
+    url('./assets/fonts/textFont/Thunder-HC.otf') format('truetype');
   font-weight: light;
 }
 
 @font-face {
-  font-family: "ThunderMedium";
-  src: local("ThunderMedium"),
-    url("./assets/fonts/textFont/Thunder-MediumLC.otf") format("truetype");
+  font-family: 'ThunderMedium';
+  src: local('ThunderMedium'),
+    url('./assets/fonts/textFont/Thunder-MediumLC.otf') format('truetype');
   font-weight: lighter;
 }
 
@@ -32,13 +32,13 @@
 }
 
 .font-face-tl {
-  font-family: "ThunderLight";
+  font-family: 'ThunderLight';
 }
 .font-face-tm {
-  font-family: "ThunderMedium";
+  font-family: 'ThunderMedium';
 }
 .font-face-tb {
-  font-family: "ThunderBold";
+  font-family: 'ThunderBold';
 }
 
 .darkmode-text {
@@ -55,4 +55,10 @@
 
 .lightmode-bg {
   background-color: black;
+}
+
+#bubbleSlider::-webkit-scrollbar,
+#friendSlider::-webkit-scrollbar,
+#recoSlider::-webkit-scrollbar {
+  display: none;
 }
