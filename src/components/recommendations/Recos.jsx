@@ -8,6 +8,7 @@ import moment from 'moment';
 import { AddButton } from '../../utilities/Buttons';
 import { LinkPreview } from '../../utilities/LinkPreview';
 import { useRecos } from '../../contexts/RecoContext';
+import { useUsers } from '../../contexts/UsersContext';
 import bubbleImg from '../../assets/images/bubble.jpg';
 import DeleteRecoModal from '../../utilities/DeleteRecoModal';
 
@@ -16,7 +17,7 @@ export default function Recos() {
   const [searchFor, setSearchFor] = useState('');
   const [recoIdToDelete, setRecoIdToDelete] = useState(null);
   const navigate = useNavigate();
-
+  const { currentUser } = useUsers();
   const location = useLocation();
   const { recos, isLoadingRecos } = useRecos();
   const onImageError = (e) => {
@@ -26,9 +27,9 @@ export default function Recos() {
     setShowModal(true);
     setRecoIdToDelete(id);
   };
+  console.log(recos);
   if (isLoadingRecos) return <div>Loading</div>;
   if (!recos) return;
-
   return (
     <div className='pt-32 pb-12'>
       {location.pathname === '/recos' ? (
@@ -90,9 +91,12 @@ export default function Recos() {
                             </div>
                             <div className='relative flex p-4'>
                               <img
-                                onClick={() =>
-                                  navigate(`/friends/${reco?.createdBy?._id}`)
-                                }
+                                onClick={() => {
+                                  if (reco?.createdBy?._id !== currentUser._id)
+                                    return navigate(
+                                      `/friends/${reco?.createdBy?._id}`
+                                    );
+                                }}
                                 src={reco?.createdBy?.avatarUrl || bubbleImg}
                                 alt='user avatar'
                                 onError={(e) => onImageError(e)}
@@ -101,7 +105,7 @@ export default function Recos() {
                               {reco.bubbleId ? (
                                 <img
                                   onClick={() =>
-                                    navigate(`/bubbles/${reco.bubbleId}`)
+                                    navigate(`/bubbles/${reco.bubbleId._id}`)
                                   }
                                   src={reco.bubbleId.imageUrl || bubbleImg}
                                   onError={(e) => onImageError(e)}
@@ -110,9 +114,10 @@ export default function Recos() {
                                 />
                               ) : (
                                 <img
-                                  onClick={() =>
-                                    navigate(`/friends/${reco.userIds[0]}`)
-                                  }
+                                  onClick={() => {
+                                    if (reco.userIds[0] !== currentUser._id)
+                                      navigate(`/friends/${reco.userIds[0]}`);
+                                  }}
                                   src={reco?.userIds[0]?.avatarUrl || bubbleImg}
                                   alt='user avatar'
                                   onError={(e) => onImageError(e)}
