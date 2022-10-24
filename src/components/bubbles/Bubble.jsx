@@ -74,8 +74,8 @@ export default function Bubble() {
                   return (
                     <div className='m-auto' key={member._id}>
                       <img
-                        src={member.avatarUrl}
-                        alt=''
+                        src={member?.avatarUrl ?? bubbleImg}
+                        alt='avatar of member'
                         className='w-16 shadow-lg rounded-full'
                       />
                       <p>{member.username}</p>
@@ -102,7 +102,7 @@ export default function Bubble() {
                 return (
                   <div key={reco._id}>
                     <Accordion
-                      avatar={reco.createdBy.avatarUrl}
+                      avatar={reco.createdBy?.avatarUrl ?? bubbleImg}
                       title={reco.title}
                       date={moment(reco.createdAt).fromNow()}
                       description={reco.description}

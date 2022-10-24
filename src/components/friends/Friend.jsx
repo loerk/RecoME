@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useUsers } from '../../contexts/UsersContext';
+import defaultImg from '../../assets/images/bubble.jpg';
 
 export default function Friend() {
   const navigate = useNavigate();
@@ -13,10 +14,10 @@ export default function Friend() {
     setShouldUpdateFriends(true);
     navigate('/friends');
   };
-
+  if (!friend) return <div> Sorry, this person is not your friend anymore</div>;
   return (
     <div className='md:flex m-10'>
-      <img src={friend.avatarUrl} alt='friendAvatar' />
+      <img src={friend?.avatarUrl ?? defaultImg} alt='friendAvatar' />
       <div>
         <h2 className='tracking-widest pb-4'>
           {friend.username.toUpperCase()}
