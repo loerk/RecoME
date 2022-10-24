@@ -115,8 +115,10 @@ export default function Recos() {
                               ) : (
                                 <img
                                   onClick={() => {
-                                    if (reco.userIds[0] !== currentUser._id)
-                                      navigate(`/friends/${reco.userIds[0]}`);
+                                    if (reco.userIds[0]._id !== currentUser._id)
+                                      navigate(
+                                        `/friends/${reco.userIds[0]._id}`
+                                      );
                                   }}
                                   src={reco?.userIds[0]?.avatarUrl || bubbleImg}
                                   alt='user avatar'
