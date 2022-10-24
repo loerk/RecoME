@@ -30,11 +30,11 @@ export default function Landing() {
     bubbleSlider.scrollLeft = bubbleSlider.scrollLeft + 500;
   };
   const slideFriendsLeft = () => {
-    const friendSlider = document.getElementById('friendsSlider');
+    const friendSlider = document.getElementById('friendSlider');
     friendSlider.scrollLeft = friendSlider.scrollLeft - 500;
   };
   const slideFriendsRight = () => {
-    const friendSlider = document.getElementById('friendsSlider');
+    const friendSlider = document.getElementById('friendSlider');
     friendSlider.scrollLeft = friendSlider.scrollLeft + 500;
   };
   const slideRecosLeft = () => {
