@@ -116,7 +116,7 @@ export default function Recos() {
                                 onClick={() =>
                                   navigate(`/friends/${reco.userIds[0]}`)
                                 }
-                                src={reco.userIds[0].avatarUrl}
+                                src={reco?.userIds[0]?.avatarUrl || bubbleImg}
                                 alt=''
                                 className='w-9 h-9 shadow-lg cursor-pointer rounded-full hover:scale-110 duration-300'
                               />
