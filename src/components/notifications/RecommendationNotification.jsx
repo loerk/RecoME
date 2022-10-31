@@ -4,11 +4,10 @@ import { VscCheck } from "react-icons/vsc";
 import { useNotifications } from "../../contexts/NotificationsContext";
 
 export default function RecommendationNotification({ notification }) {
-  const { deleteNotification, setShouldFetchNotifications } =
-    useNotifications();
+  const { deleteNotification, fetchNotifications } = useNotifications();
   const handleDelete = async (id) => {
     const result = await deleteNotification(id);
-    if (result) setShouldFetchNotifications(true);
+    if (result) fetchNotifications();
   };
 
   if (notification)

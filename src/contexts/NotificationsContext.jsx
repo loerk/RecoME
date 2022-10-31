@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useState } from "react";
 
 import { fetchData } from "../api/fetchers";
 import { useUsers } from "./UsersContext";
@@ -16,19 +16,38 @@ export const useNotifications = () => {
 
 export function NotificationsContextProvider({ children }) {
   const [notifications, setNotifications] = useState([]);
-  const [shouldFetchNotifications, setShouldFetchNotifications] =
-    useState(true);
+  const [notificationsListAsync, setNotificationsListAsync] = useState({
+    isLoading: false,
+    error: null,
+  });
+
   const { currentUser, setFriends } = useUsers();
 
-  useEffect(() => {
-    const fetchNotifications = async () => {
+  const fetchNotifications = async () => {
+    setNotificationsListAsync({ isLoading: true, error: null });
+    try {
       const result = await fetchData("/notifications", "GET");
       setNotifications(() => result.notifications);
-      setShouldFetchNotifications(false);
-      return result.notifications;
-    };
-    if (shouldFetchNotifications && currentUser) fetchNotifications();
-  }, [shouldFetchNotifications, currentUser]);
+      setNotificationsListAsync({ isLoading: false, error: null });
+    } catch (error) {
+      setNotificationsListAsync({ isLoading: false, error: error });
+    }
+  };
+
+  // useEffect(() => {
+  //   const fetchNotifications = async () => {
+  //     setNotificationsListAsync({ isLoading: true, error: null });
+  //     try {
+  //       const result = await fetchData("/notifications", "GET");
+  //       setNotifications(() => result.notifications);
+  //       fetchNotifications(false);
+  //       setNotificationsListAsync({ isLoading: false, error: null });
+  //     } catch (error) {
+  //       setNotificationsListAsync({ isLoading: false, error: error });
+  //     }
+  //   };
+  //   if (shouldFetchNotifications && currentUser) fetchNotifications();
+  // }, [shouldFetchNotifications, currentUser]);
 
   const addBubbleNotification = async (bubbleId, friendsList) => {
     try {
@@ -37,7 +56,7 @@ export function NotificationsContextProvider({ children }) {
         bubbleId,
         type: NotificationType.INVITATION_TO_BUBBLE,
       };
-      await fetchData(`/notifications/`, "POST", notification);
+      await fetchData("/notifications/", "POST", notification);
     } catch (error) {
       console.log(error);
     }
@@ -99,9 +118,10 @@ export function NotificationsContextProvider({ children }) {
   };
 
   const contextValue = {
+    fetchNotifications,
+    notificationsListAsync,
     acceptNotification,
     notifications,
-    setShouldFetchNotifications,
     addBubbleNotification,
     addRecoToUserNotification,
     addRecoToBubbleNotification,

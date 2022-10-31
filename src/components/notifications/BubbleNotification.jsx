@@ -6,18 +6,15 @@ import { useNotifications } from "../../contexts/NotificationsContext";
 import { useUsers } from "../../contexts/UsersContext";
 
 export default function BubbleNotification({ notification }) {
-  const {
-    deleteNotification,
-    acceptNotification,
-    setShouldFetchNotifications,
-  } = useNotifications();
+  const { deleteNotification, acceptNotification, fetchNotifications } =
+    useNotifications();
   const { setShouldUpdateFriends } = useUsers();
   const { setShouldFetchBubbles } = useBubbles();
   const handleAccept = async (id) => {
     try {
       await acceptNotification(id);
       setShouldFetchBubbles(true);
-      setShouldFetchNotifications(true);
+      fetchNotifications();
       setShouldUpdateFriends(true);
     } catch (error) {
       console.log(error);

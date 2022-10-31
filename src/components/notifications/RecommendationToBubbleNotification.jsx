@@ -5,11 +5,10 @@ import { VscCheck } from "react-icons/vsc";
 import { useNotifications } from "../../contexts/NotificationsContext";
 
 export default function RecommendationToBubbleNotification({ notification }) {
-  const { deleteNotification, setShouldFetchNotifications } =
-    useNotifications();
+  const { deleteNotification, fetchNotifications } = useNotifications();
   const handleDelete = async (id) => {
     await deleteNotification(id);
-    setShouldFetchNotifications(true);
+    fetchNotifications();
   };
   return (
     <div className="flex mt-8 md:w-full justify-center">

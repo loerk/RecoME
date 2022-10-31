@@ -5,10 +5,10 @@ import { useNotifications } from "../../contexts/NotificationsContext";
 export default function NotificationButton() {
   const navigate = useNavigate();
 
-  const { notifications, setShouldFetchNotifications } = useNotifications();
+  const { notifications, fetchNotifications } = useNotifications();
   useEffect(() => {
     const intervalId = setInterval(() => {
-      setShouldFetchNotifications(true);
+      fetchNotifications();
     }, 3000);
 
     return clearInterval(intervalId);

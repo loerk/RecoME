@@ -16,8 +16,7 @@ export default function Landing() {
   const { bubbles, setShouldFetchBubbles } = useBubbles();
   const { recos, setShouldFetchRecos } = useRecos();
   const { friends, setShouldUpdateFriends } = useUsers();
-  const { setShouldFetchNotifications } = useNotifications();
-
+  const { fetchNotifications } = useNotifications();
   const onImageError = (e) => {
     e.target.src = bubbleImg;
   };
@@ -48,7 +47,7 @@ export default function Landing() {
   useEffect(() => {
     setShouldFetchBubbles(true);
     setShouldFetchRecos(true);
-    setShouldFetchNotifications(true);
+    fetchNotifications();
     setShouldUpdateFriends(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -66,7 +65,7 @@ export default function Landing() {
             ></MdOutlineArrowBackIos>
             <ul
               id='bubbleSlider'
-              className='flex overflow-x-scroll scroll-smooth w-full scrollbar-hide'
+              className='flex overflow-x-scroll scroll-smooth w-full '
             >
               {bubbles?.map((bubble) => (
                 <li key={bubble._id}>
@@ -77,7 +76,7 @@ export default function Landing() {
                         className='rounded-full object-cover h-28 w-28 hover:scale-105 duration-300  '
                         src={bubble.defaultImg ? bubbleImg : bubble.imageUrl}
                         onError={(e) => onImageError(e)}
-                        alt='costum background'
+                        alt='costum bubble background'
                       />
                     </div>
                     <button className=' w-28 truncate px-3'>
@@ -106,7 +105,7 @@ export default function Landing() {
             ></MdOutlineArrowBackIos>
             <ul
               id='friendSlider'
-              className='flex overflow-x-scroll scroll-smooth w-full scrollbar-hide'
+              className='flex overflow-x-scroll scroll-smooth w-full'
             >
               {friends?.map((friend) => {
                 return (
@@ -147,7 +146,7 @@ export default function Landing() {
             ></MdOutlineArrowBackIos>
             <ul
               id='recoSlider'
-              className='flex overflow-x-scroll scroll-smooth w-full scrollbar-hide'
+              className='flex overflow-x-scroll scroll-smooth w-full'
             >
               {recos?.map((reco) => (
                 <button key={reco._id} onClick={() => navigate('/recos')}>

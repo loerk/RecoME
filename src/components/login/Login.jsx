@@ -9,7 +9,7 @@ import { useUsers } from "../../contexts/UsersContext";
 export default function Login() {
   const { loginUser, setFriends, currentUser } = useUsers();
   const { setShouldFetchBubbles } = useBubbles();
-  const { setShouldFetchNotifications } = useNotifications();
+  const { fetchNotifications } = useNotifications();
   const [status, setStatus] = useState("");
   const [loginData, setLoginData] = useState({
     email: "",
@@ -22,7 +22,7 @@ export default function Login() {
   useEffect(() => {
     if (isLoggedIn) {
       setShouldFetchBubbles(true);
-      setShouldFetchNotifications(true);
+      fetchNotifications();
       setStatus("");
       navigate("/", { replace: true });
     }
