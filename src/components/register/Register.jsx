@@ -37,6 +37,11 @@ export default function Register() {
       return setStatus('The passwords have to match');
 
     const result = await createNewUser(registerData);
+    if (result.message === 'there was a problem creating your account') {
+      return setStatus(
+        'we could not register your account, is this a valid Email?'
+      );
+    }
     if (result.message !== 'successfully registered account')
       return setStatus('we could not register your account, try again');
 
