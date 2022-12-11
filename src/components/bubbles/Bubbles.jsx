@@ -1,14 +1,14 @@
-import React, { useEffect } from "react";
+import React, { useEffect } from 'react';
 import {
   Outlet,
   useNavigate,
   useSearchParams,
   useParams,
-} from "react-router-dom";
-import { AddButton } from "../../utilities/Buttons";
+} from 'react-router-dom';
+import { AddButton } from '../../utilities/Buttons';
 
-import BubbleList from "./BubbleList";
-import { useBubbles } from "../../contexts/BubbleContext";
+import BubbleList from './BubbleList';
+import { useBubbles } from '../../contexts/BubbleContext';
 export default function Bubbles() {
   const { setShouldFetchBubbles } = useBubbles();
 
@@ -24,27 +24,27 @@ export default function Bubbles() {
   const params = useParams();
 
   const addBubble = () => {
-    navigate("/bubbles/addBubble");
+    navigate('/bubbles/addBubble');
   };
 
   return (
-    <div className="pt-32 pb-12">
+    <div className='pt-32 pb-12'>
       {!params.bubbleId ? (
         <div>
-          <div className="flex  justify-center">
-            <div className="mb-3 xl:w-96">
+          <div className='flex  justify-center'>
+            <div className='mb-3 xl:w-96'>
               <input
-                value={searchParams.get("filter") || ""}
+                value={searchParams.get('filter') || ''}
                 onChange={(e) => {
                   let filter = e.target.value;
                   if (filter) {
                     setSearchParams({ filter });
                   } else {
-                    setSearchParams({ filter: "" });
+                    setSearchParams({ filter: '' });
                   }
                 }}
-                type="search"
-                className="
+                type='search'
+                className='
                     text-center
                   form-control
                   block
@@ -61,9 +61,9 @@ export default function Bubbles() {
                   ease-in-out
                   m-0
                   focus:text-gray-700 focus:bg-white focus:border-slate-600 focus:outline-none
-                "
-                id="exampleSearch"
-                placeholder="Search Bubble"
+                '
+                id='exampleSearch'
+                placeholder='Search Bubble'
               />
             </div>
           </div>

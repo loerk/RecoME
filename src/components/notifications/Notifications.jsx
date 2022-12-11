@@ -1,17 +1,17 @@
-import React from "react";
+import React from 'react';
 
 import {
   NotificationType,
   useNotifications,
-} from "../../contexts/NotificationsContext";
-import RecommendationNotification from "./RecommendationNotification";
-import BubbleNotification from "./BubbleNotification";
-import RecommendationToBubbleNotification from "./RecommendationToBubbleNotification";
+} from '../../contexts/NotificationsContext';
+import RecommendationNotification from './RecommendationNotification';
+import BubbleNotification from './BubbleNotification';
+import RecommendationToBubbleNotification from './RecommendationToBubbleNotification';
 
 export default function Notifications() {
   const { notifications } = useNotifications();
   return (
-    <div className="flex items-center flex-col pt-32 pb-12">
+    <div className='flex items-center flex-col pt-32 pb-12'>
       <h1>WOW WOW WOW</h1>
       <p>here are your news</p>
       {notifications.length ? (
@@ -47,7 +47,7 @@ export default function Notifications() {
           return null;
         })
       ) : (
-        <h1 className="mt-10"> : - / </h1>
+        <h1 className='mt-10'> : - / </h1>
       )}
     </div>
   );

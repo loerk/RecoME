@@ -1,12 +1,12 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { fetchData, loginFetchData } from "../api/fetchers";
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { fetchData, loginFetchData } from '../api/fetchers';
 
 const UsersContext = createContext([]);
 
 export const useUsers = () => {
   return useContext(UsersContext);
 };
-const initialValueCurrentUser = JSON.parse(localStorage.getItem("currentUser"));
+const initialValueCurrentUser = JSON.parse(localStorage.getItem('currentUser'));
 
 export function UsersContextProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(
@@ -18,8 +18,8 @@ export function UsersContextProvider({ children }) {
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
-      const result = await fetchData(`/users/${currentUser._id}`, "GET");
-      if (!result) throw new Error("no valid response while getting User");
+      const result = await fetchData(`/users/${currentUser._id}`, 'GET');
+      if (!result) throw new Error('no valid response while getting User');
       setCurrentUser(() => result.currentUser);
       if (friends.length !== result.currentUser.friends.length) {
         setFriends(result.currentUser.friends);
@@ -38,7 +38,7 @@ export function UsersContextProvider({ children }) {
 
   useEffect(() => {
     const fetchFriends = async () => {
-      const result = await fetchData(`/users/${currentUser._id}`, "GET");
+      const result = await fetchData(`/users/${currentUser._id}`, 'GET');
       if (result?.foundUser) setFriends(() => result.foundUser.friends);
       setShouldUpdateFriends(false);
       return result.foundUser.friends;
@@ -51,15 +51,15 @@ export function UsersContextProvider({ children }) {
 
   const loginUser = async (loginData) => {
     try {
-      const result = await loginFetchData("/auth/signin", loginData);
-      if (result.message === "please confirm your email first")
+      const result = await loginFetchData('/auth/signin', loginData);
+      if (result.message === 'please confirm your email first')
         return result.message;
-      if (result.message !== "successfully logged in")
-        return "something went wrong, try again";
+      if (result.message !== 'successfully logged in')
+        return 'something went wrong, try again';
 
       setCurrentUser(() => result.existingUser);
       localStorage.setItem(
-        "currentUser",
+        'currentUser',
         JSON.stringify({
           _id: result.existingUser._id,
           avatarUrl: result.existingUser.avatarUrl,
@@ -67,7 +67,7 @@ export function UsersContextProvider({ children }) {
         })
       );
       localStorage.setItem(
-        "expiresAt",
+        'expiresAt',
         JSON.stringify({
           expiresAt: result.expiresAt,
         })
@@ -84,24 +84,24 @@ export function UsersContextProvider({ children }) {
   };
 
   const unfriendUser = async (id) => {
-    const result = await fetchData(`/users/${id}`, "PUT");
+    const result = await fetchData(`/users/${id}`, 'PUT');
     if (result.updatedCurrentUser) setCurrentUser(result.updatedCurrentUser);
   };
 
   const findUserById = async (id) => {
-    const resp = await fetchData(`/users/${id}`, "GET");
+    const resp = await fetchData(`/users/${id}`, 'GET');
     if (!resp) return null;
     return resp;
   };
 
   const createNewUser = async (registeredUser) => {
-    const newUser = await fetchData("/auth/signup", "POST", registeredUser);
+    const newUser = await fetchData('/auth/signup', 'POST', registeredUser);
     if (!newUser) return null;
     return newUser;
   };
 
   const deleteUser = async (id) => {
-    await fetchData(`/users/${id}`, "DELETE");
+    await fetchData(`/users/${id}`, 'DELETE');
     setCurrentUser(null);
   };
 

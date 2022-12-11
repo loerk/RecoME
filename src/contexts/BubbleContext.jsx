@@ -1,7 +1,7 @@
-import React, { createContext, useContext, useState } from "react";
-import { useEffect } from "react";
-import { fetchData } from "../api/fetchers";
-import { useUsers } from "./UsersContext";
+import React, { createContext, useContext, useState } from 'react';
+import { useEffect } from 'react';
+import { fetchData } from '../api/fetchers';
+import { useUsers } from './UsersContext';
 
 const BubbleContext = createContext([]);
 
@@ -18,9 +18,9 @@ export function BubbleContextProvider({ children }) {
 
   useEffect(() => {
     const fetchBubbles = async () => {
-      const result = await fetchData("/bubbles", "GET");
+      const result = await fetchData('/bubbles', 'GET');
 
-      if (!result) throw new Error("no valid response while getting bubbles");
+      if (!result) throw new Error('no valid response while getting bubbles');
       setBubbles(() => result.userBubbles);
       setShouldFetchBubbles(false);
     };
@@ -28,14 +28,14 @@ export function BubbleContextProvider({ children }) {
   }, [shouldFetchBubbles, currentUser]);
 
   const addBubble = async (bubbleData) => {
-    const result = await fetchData("/bubbles", "POST", bubbleData);
+    const result = await fetchData('/bubbles', 'POST', bubbleData);
     return result;
   };
 
   const getBubbles = async () => {
     try {
-      const result = await fetchData("/bubbles", "GET");
-      if (!result) throw new Error("no valid response while getting bubbles");
+      const result = await fetchData('/bubbles', 'GET');
+      if (!result) throw new Error('no valid response while getting bubbles');
 
       return result.userBubbles;
     } catch (error) {
@@ -47,10 +47,10 @@ export function BubbleContextProvider({ children }) {
     try {
       const result = await fetchData(
         `/bubbles/${updatedBubble._id}`,
-        "PUT",
+        'PUT',
         updatedBubble
       );
-      if (!result) throw new Error("invalid response while updating bubble");
+      if (!result) throw new Error('invalid response while updating bubble');
       return result;
     } catch (error) {
       console.log(error);
@@ -59,7 +59,7 @@ export function BubbleContextProvider({ children }) {
 
   const deleteBubble = async (id) => {
     try {
-      const result = await fetchData(`/bubbles/${id}`, "DELETE");
+      const result = await fetchData(`/bubbles/${id}`, 'DELETE');
       return result;
     } catch (error) {
       console.log(error);
@@ -68,7 +68,7 @@ export function BubbleContextProvider({ children }) {
 
   const getBubbleById = async (id) => {
     try {
-      const resp = await fetchData(`/bubbles/${id}`, "GET");
+      const resp = await fetchData(`/bubbles/${id}`, 'GET');
       setBubble(resp.bubble);
     } catch (error) {
       console.log(error);
@@ -77,7 +77,7 @@ export function BubbleContextProvider({ children }) {
 
   const exitBubble = async (id) => {
     try {
-      const result = await fetchData(`/bubbles/${id}/leave`, "DELETE");
+      const result = await fetchData(`/bubbles/${id}/leave`, 'DELETE');
       return result;
     } catch (error) {
       console.log(error);
@@ -88,12 +88,12 @@ export function BubbleContextProvider({ children }) {
     try {
       const result = await fetchData(
         `/bubbles/${bubbleId}/inviteUsers`,
-        "PUT",
+        'PUT',
         {
           userIds,
         }
       );
-      if (result.message) throw new Error("something went wrong");
+      if (result.message) throw new Error('something went wrong');
       return result.currentBubble;
     } catch (error) {
       console.log(error);
@@ -102,7 +102,7 @@ export function BubbleContextProvider({ children }) {
   };
 
   const inviteUserByEmail = async (bubbleId, email) => {
-    const result = await fetchData(`/bubbles/${bubbleId}/inviteUsers`, "PUT", {
+    const result = await fetchData(`/bubbles/${bubbleId}/inviteUsers`, 'PUT', {
       email,
     });
     return result;

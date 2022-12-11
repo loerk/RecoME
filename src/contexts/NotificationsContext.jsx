@@ -1,12 +1,12 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from 'react';
 
-import { fetchData } from "../api/fetchers";
-import { useUsers } from "./UsersContext";
+import { fetchData } from '../api/fetchers';
+import { useUsers } from './UsersContext';
 
 export const NotificationType = {
-  INVITATION_TO_BUBBLE: "INVITATION_TO_BUBBLE",
-  INVITATION_TO_RECO: "INVITATION_TO_RECO",
-  NOTIFICATION_ABOUT_RECO_IN_BUBBLE: "NOTIFICATION_ABOUT_RECO_IN_BUBBLE",
+  INVITATION_TO_BUBBLE: 'INVITATION_TO_BUBBLE',
+  INVITATION_TO_RECO: 'INVITATION_TO_RECO',
+  NOTIFICATION_ABOUT_RECO_IN_BUBBLE: 'NOTIFICATION_ABOUT_RECO_IN_BUBBLE',
 };
 const NotificationsContext = createContext([]);
 
@@ -22,7 +22,7 @@ export function NotificationsContextProvider({ children }) {
 
   useEffect(() => {
     const fetchNotifications = async () => {
-      const result = await fetchData("/notifications", "GET");
+      const result = await fetchData('/notifications', 'GET');
       setNotifications(() => result.notifications);
       setShouldFetchNotifications(false);
       return result.notifications;
@@ -37,7 +37,7 @@ export function NotificationsContextProvider({ children }) {
         bubbleId,
         type: NotificationType.INVITATION_TO_BUBBLE,
       };
-      await fetchData(`/notifications/`, "POST", notification);
+      await fetchData(`/notifications/`, 'POST', notification);
     } catch (error) {
       console.log(error);
     }
@@ -50,7 +50,7 @@ export function NotificationsContextProvider({ children }) {
       type: NotificationType.INVITATION_TO_RECO,
     };
     try {
-      await fetchData(`/notifications/`, "POST", notification);
+      await fetchData(`/notifications/`, 'POST', notification);
     } catch (error) {
       console.log(error);
     }
@@ -64,7 +64,7 @@ export function NotificationsContextProvider({ children }) {
       type: NotificationType.NOTIFICATION_ABOUT_RECO_IN_BUBBLE,
     };
     try {
-      await fetchData(`/notifications/`, "POST", notification);
+      await fetchData(`/notifications/`, 'POST', notification);
     } catch (error) {
       console.log(error);
     }
@@ -72,7 +72,7 @@ export function NotificationsContextProvider({ children }) {
 
   const getNotifications = async () => {
     try {
-      const result = await fetchData(`/notifications`, "GET");
+      const result = await fetchData(`/notifications`, 'GET');
       setNotifications(result);
     } catch (error) {
       console.log(error);
@@ -81,7 +81,7 @@ export function NotificationsContextProvider({ children }) {
 
   const acceptNotification = async (id) => {
     try {
-      const result = await fetchData(`/notifications/${id}`, "PUT");
+      const result = await fetchData(`/notifications/${id}`, 'PUT');
       if (currentUser.friends.length !== result.currentUser.friends.length)
         setFriends(() => result.currentUser.friends);
     } catch (error) {
@@ -90,8 +90,8 @@ export function NotificationsContextProvider({ children }) {
   };
   const deleteNotification = async (id) => {
     try {
-      const notifications = await fetchData(`/notifications/${id}`, "DELETE");
-      if (typeof notifications !== "string")
+      const notifications = await fetchData(`/notifications/${id}`, 'DELETE');
+      if (typeof notifications !== 'string')
         setNotifications(() => notifications);
     } catch (error) {
       console.log(error);

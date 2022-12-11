@@ -1,10 +1,10 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useBubbles } from "../contexts/BubbleContext";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useBubbles } from '../contexts/BubbleContext';
 
 const DeletionType = {
-  USER: "USER",
-  ALL: "ALL",
+  USER: 'USER',
+  ALL: 'ALL',
 };
 export default function DeleteBubbleModal({
   showModal,
@@ -17,13 +17,13 @@ export default function DeleteBubbleModal({
 
   const navigate = useNavigate();
   const handleDelete = async () => {
-    if (deletionType === "ALL") {
+    if (deletionType === 'ALL') {
       await deleteBubble(bubbleId);
-      navigate("/bubbles", { replace: true });
+      navigate('/bubbles', { replace: true });
     }
-    if (deletionType === "USER") {
+    if (deletionType === 'USER') {
       await exitBubble(bubbleId);
-      navigate("/bubbles", { replace: true });
+      navigate('/bubbles', { replace: true });
     }
     setShouldFetchBubbles(true);
 
@@ -32,41 +32,41 @@ export default function DeleteBubbleModal({
 
   if (!showModal) return null;
   const handleOnClose = (e) => {
-    if (e.target.id === "container") setShowModal(false);
+    if (e.target.id === 'container') setShowModal(false);
   };
 
   return (
     <div
-      id="container"
+      id='container'
       onClick={(e) => handleOnClose(e)}
-      className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex items-center justify-center"
+      className='fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex items-center justify-center'
     >
-      <div className="bg-white p-2 rounded w-72">
-        <h1 className="font-semibold my-2 text-center text-xl text-gray-700">
+      <div className='bg-white p-2 rounded w-72'>
+        <h1 className='font-semibold my-2 text-center text-xl text-gray-700'>
           I want to...
         </h1>
-        <div className="flex w-2/3 m-auto flex-col">
-          <label className="">
+        <div className='flex w-2/3 m-auto flex-col'>
+          <label className=''>
             <input
-              type="checkbox"
+              type='checkbox'
               onChange={() => setDeletionType(DeletionType.USER)}
-              className="border border-gray-700 p-2 mr-2 rounded mb-5"
+              className='border border-gray-700 p-2 mr-2 rounded mb-5'
             />
             exit Bubble
           </label>
-          <label htmlFor="">
+          <label htmlFor=''>
             <input
-              type="checkbox"
+              type='checkbox'
               onChange={() => setDeletionType(DeletionType.ALL)}
-              className="border border-gray-700 p-2 mr-2 rounded mb-5"
+              className='border border-gray-700 p-2 mr-2 rounded mb-5'
             />
             delete Bubble for everyone
           </label>
         </div>
-        <div className="text-center">
+        <div className='text-center'>
           <button
             onClick={() => handleDelete()}
-            className="px-5 py-2 bg-gray-700 text-white m-3 rounded"
+            className='px-5 py-2 bg-gray-700 text-white m-3 rounded'
           >
             Remove
           </button>

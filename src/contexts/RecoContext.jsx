@@ -1,7 +1,7 @@
-import React, { createContext, useContext, useState } from "react";
-import { useEffect } from "react";
-import { fetchData } from "../api/fetchers";
-import { useUsers } from "./UsersContext";
+import React, { createContext, useContext, useState } from 'react';
+import { useEffect } from 'react';
+import { fetchData } from '../api/fetchers';
+import { useUsers } from './UsersContext';
 
 const RecoContext = createContext([]);
 
@@ -19,7 +19,7 @@ export function RecoContextProvider({ children }) {
     const fetchRecos = async () => {
       setIsLoadingRecos(true);
       try {
-        const result = await fetchData(`/recos`, "GET");
+        const result = await fetchData(`/recos`, 'GET');
         if (result) setIsLoadingRecos(false);
         setRecos(() => result.recos);
         setShouldFetchRecos(false);
@@ -34,8 +34,8 @@ export function RecoContextProvider({ children }) {
 
   const addReco = async (newReco) => {
     try {
-      const result = await fetchData("/recos", "POST", newReco);
-      if (!result) throw new Error("no valid response while getting recos");
+      const result = await fetchData('/recos', 'POST', newReco);
+      if (!result) throw new Error('no valid response while getting recos');
       setRecos(result);
       return result;
     } catch (error) {
@@ -45,9 +45,9 @@ export function RecoContextProvider({ children }) {
 
   const getRecosFromBubble = async (id) => {
     try {
-      const result = await fetchData(`/recos/${id}`, "GET");
+      const result = await fetchData(`/recos/${id}`, 'GET');
       if (!result)
-        throw new Error("no valid response while getting BubbleRecos");
+        throw new Error('no valid response while getting BubbleRecos');
       return result.bubbleRecos;
     } catch (error) {
       console.log(error);
@@ -56,8 +56,8 @@ export function RecoContextProvider({ children }) {
 
   const getAllRecos = async () => {
     try {
-      const result = await fetchData("/recos", "GET");
-      if (!result) throw new Error("no valid response while getting recos");
+      const result = await fetchData('/recos', 'GET');
+      if (!result) throw new Error('no valid response while getting recos');
       return result;
     } catch (error) {
       console.log(error);
@@ -66,7 +66,7 @@ export function RecoContextProvider({ children }) {
 
   const deleteReco = async (id) => {
     try {
-      await fetchData(`/recos/${id}`, "DELETE");
+      await fetchData(`/recos/${id}`, 'DELETE');
       setRecos(recos.filter((reco) => reco.id !== id));
     } catch (error) {
       console.log(error);
@@ -75,7 +75,7 @@ export function RecoContextProvider({ children }) {
 
   const ignoreReco = async (id) => {
     try {
-      await fetchData(`/recos/${id}/ignore`, "PUT");
+      await fetchData(`/recos/${id}/ignore`, 'PUT');
       setShouldFetchRecos(true);
     } catch (error) {
       console.log(error);

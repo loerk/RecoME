@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useNotifications } from "../../contexts/NotificationsContext";
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useNotifications } from '../../contexts/NotificationsContext';
 
 export default function NotificationButton() {
   const navigate = useNavigate();
@@ -16,12 +16,12 @@ export default function NotificationButton() {
   }, []);
 
   return (
-    <div className="relative">
+    <div className='relative'>
       {!!notifications?.length && (
-        <div className="">
+        <div className=''>
           <button
-            onClick={() => navigate("/notifications")}
-            className="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-violet-500"
+            onClick={() => navigate('/notifications')}
+            className='bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-violet-500'
           >
             {notifications.length} NEWS
           </button>

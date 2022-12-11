@@ -27,7 +27,6 @@ export default function Recos() {
     setShowModal(true);
     setRecoIdToDelete(id);
   };
-  console.log(recos);
   if (isLoadingRecos) return <div>Loading</div>;
   if (!recos) return;
   return (
