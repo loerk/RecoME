@@ -7,6 +7,7 @@ import { useNotifications } from '../../contexts/NotificationsContext';
 import { useUsers } from '../../contexts/UsersContext';
 
 export default function Login() {
+  const [loading, setLoading] = useState(false);
   const { loginUser, setFriends, currentUser } = useUsers();
   const { setShouldFetchBubbles } = useBubbles();
   const { setShouldFetchNotifications } = useNotifications();
@@ -39,17 +40,24 @@ export default function Login() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
     if (!loginData.email || !loginData.password) {
       setStatus('All fields are required');
       return;
     }
-    const result = await loginUser(loginData);
-    if (typeof result === 'string') return setStatus(result);
+    try {
+      setLoading(true);
+      const result = await loginUser(loginData);
+      if (typeof result === 'string') return setStatus(result);
 
-    if (currentUser && result) {
-      setFriends(() => result.currentUser.friends);
-      setIsLoggedIn(true);
-      return;
+      if (currentUser && result) {
+        setFriends(() => result.currentUser.friends);
+        setIsLoggedIn(true);
+        return;
+      }
+    } catch (error) {
+    } finally {
+      setLoading(false);
     }
   };
   useEffect(() => {
@@ -100,6 +108,12 @@ export default function Login() {
                 I want to stay logged in
               </label>
             </div>
+            {loading && (
+              <div
+                class='center spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full'
+                role='status'
+              ></div>
+            )}
             {!!status && <p className='text-fuchsia-600'>{status}</p>}
             <button
               className='w-full active:translate-y-1  text-3xl p-3 bg-black  text-white  font-face-tm my-4'

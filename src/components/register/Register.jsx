@@ -5,7 +5,8 @@ import { Blob } from 'react-interactive-blob';
 import { useUsers } from '../../contexts/UsersContext';
 
 export default function Register() {
-  const [status, setStatus] = useState();
+  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState('');
   const [registerData, setRegisterData] = useState({
     username: '',
     email: '',
@@ -26,29 +27,35 @@ export default function Register() {
   }
 
   const handleSubmit = async (event) => {
-    event.preventDefault();
-    if (!registerData.email || !registerData.username)
-      return setStatus('All fields are required');
+    try {
+      event.preventDefault();
+      if (!registerData.email || !registerData.username)
+        return setStatus('All fields are required');
 
-    if (
-      registerData.password !== registerData.passwordConfirm ||
-      !registerData.password
-    )
-      return setStatus('The passwords have to match');
-
-    const result = await createNewUser(registerData);
-    if (result.message === 'there was a problem creating your account') {
-      return setStatus(
-        'we could not register your account, is this a valid Email?'
-      );
+      if (
+        registerData.password !== registerData.passwordConfirm ||
+        !registerData.password
+      )
+        return setStatus('The passwords have to match');
+      setLoading(true);
+      const result = await createNewUser(registerData);
+      if (result.message === 'there was a problem creating your account') {
+        return setStatus(
+          'we could not register your account, is this a valid Email?'
+        );
+      }
+      if (result.message !== 'successfully registered account')
+        return setStatus('we could not register your account, try again');
+      setStatus("Great, it's done! You can log in now");
+      // setStatus('Great! Please verify your email before you login');
+      setTimeout(() => {
+        navigate('/');
+      }, 2000);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
     }
-    if (result.message !== 'successfully registered account')
-      return setStatus('we could not register your account, try again');
-
-    setStatus('Great! Please verify your email before you login');
-    setTimeout(() => {
-      navigate('/');
-    }, 5000);
   };
 
   return (
@@ -102,6 +109,12 @@ export default function Register() {
                 checked={registerData.stayLoggedIn}
               />
             </div>
+            {loading && (
+              <div
+                class=' spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full'
+                role='status'
+              ></div>
+            )}
             {!!status && <p className='text-fuchsia-600'>{status}</p>}
             <button
               className='w-full hover:translate-y-1  text-3xl p-3 bg-black  text-white  font-face-tm my-4'
