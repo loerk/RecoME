@@ -99,16 +99,6 @@ export default function Register() {
               onChange={handleChange}
               value={registerData.passwordConfirm}
             />
-
-            <div>
-              <input
-                id='okayToEmail'
-                type='checkbox'
-                name='stayLoggedIn'
-                onChange={handleChange}
-                checked={registerData.stayLoggedIn}
-              />
-            </div>
             {loading && (
               <div
                 class=' spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full'

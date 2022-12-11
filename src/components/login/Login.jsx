@@ -92,22 +92,6 @@ export default function Login() {
               onChange={handleChange}
               value={loginData.password}
             />
-
-            <div className='form--marketing'>
-              <input
-                id='okayToEmail'
-                type='checkbox'
-                name='stayLoggedIn'
-                onChange={handleChange}
-                checked={loginData.stayLoggedIn}
-              />
-              <label
-                className='pl-3 font-face-tm text-2xl text-black'
-                htmlFor='okayToEmail'
-              >
-                I want to stay logged in
-              </label>
-            </div>
             {loading && (
               <div
                 class='center spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full'
