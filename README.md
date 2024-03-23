@@ -48,4 +48,4 @@ check out the Backend <a href="https://github.com/loerk/RecoME-backend" target="
 ### Try it out
 >please be aware you have to confirm your registration via email  
 
-[recoMe](https://recomenow.netlify.app/)
+[recoMe](https://reco-me.vercel.app/login)
